@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/10/24 16:30:31 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/10/30 13:42:26 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 #include "src/libft/libft.h"
+
+# define ERROR_NULL NULL
 
 /* ************************************************************************** */
 /*                                      structs                               */
@@ -28,8 +30,12 @@ typedef struct s_var_data
 /*                                      main                                  */
 /* ************************************************************************** */
 
-char **init_envvar_list(char **envp);
-char **change_envvar_list(char **envp);
+char 		**init_envvar_list(char **envp);
+char **change_envvar_list(char **old_envvar, char *string_to_add);
+t_var_data	*init_var_data(char **envp);
+void		*free_var_data(t_var_data *var_data);
+void		free_envvar(char **envvar);
+int			ft_print_error(char *string);
 
 /* ************************************************************************** */
 /*                                      cli                                   */

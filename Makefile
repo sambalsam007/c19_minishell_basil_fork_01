@@ -6,13 +6,13 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/24 11:58:53 by bclaeys           #+#    #+#              #
-#    Updated: 2024/10/24 16:30:31 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/10/30 12:50:49 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME=minishell
 
-MAIN_SRCS= minishell_main.c init_data.c
+MAIN_SRCS= minishell_main.c init_data.c big_free.c
 CLI_SRCS =
 EXECUTOR_SRCS =
 LEXER_SRCS =
@@ -45,8 +45,8 @@ $(NAME): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(INCFLAGS)
 	@echo "\033[33mMaking compile_commands.json...\033[0m"
 	@find . -type f -name "compile_commands.json" -delete
-	@find ./obj/ -type f -name "*.json" | xargs sed -e '1s/^/[\n/' -e '$$s/,$$/\n]/' >> compile_commands.json
-	@find ./src/libft/ -type f -name "*.json" | xargs sed -e '1s/^/[\n/' -e '$$s/,$$/\n]/' >> compile_commands.json
+	@find ./obj/ -type f -name "*.json" | xargs sed -e '1s/^/[\n/' >> compile_commands.json
+	@find ./src/libft/ -type f -name "*.json" | xargs sed -e '$$s/,$$/\n]/' >> compile_commands.json
 	@find ./obj/ -type f -name "*.json" -delete
 	@find ./src/libft/ -type f -name "*.json" -delete
 	@echo "\033[33mminishell created\033[0m"
