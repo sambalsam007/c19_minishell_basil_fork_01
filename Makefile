@@ -6,18 +6,19 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/24 11:58:53 by bclaeys           #+#    #+#              #
-#    Updated: 2024/10/30 12:50:49 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/11/05 11:15:10 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME=minishell
 
-MAIN_SRCS= minishell_main.c init_data.c big_free.c
+MAIN_SRCS= minishell_main.c init_data.c
 CLI_SRCS =
 EXECUTOR_SRCS =
-LEXER_SRCS =
+LEXER_SRCS = tokenizer.c exception_handler.c
 PARSER_SRCS =
 SIGHANDLER_SRCS =
+ERRORHANDLER_SRCS = error_checks.c big_free.c error_messages.c
 
 CC=cc
 CFLAGS= -Wall -Wextra -Werror -g
@@ -26,11 +27,11 @@ INCFLAGS= -I src/libft -L src/libft -lft
 LIBFT=./src/libft/libft.a
 
 SRCS = $(MAIN_SRCS) $(CLI_SCRS) $(EXECUTOR_SRCS) \
-	$(LEXER_SRCS) $(PARSER_SRCS) $(SIGHANDLER_SRCS)
+	$(LEXER_SRCS) $(PARSER_SRCS) $(SIGHANDLER_SRCS) $(ERRORHANDLER_SRCS)
 
 SRC_DIRS = src/cli src/executor/builtins src/executor/exec_base \
 		   src/executor/pipe src/executor/redir src/lexer src/main \
-		   src/parser src/sighandler
+		   src/parser src/sighandlers src/error_handler
 vpath %.c $(SRC_DIRS)  
 
 OBJECTS = $(patsubst %.c,obj/%.o,$(SRCS))

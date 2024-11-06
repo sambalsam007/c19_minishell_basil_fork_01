@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:24:49 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/08/28 11:56:51 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/06 14:26:21 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,5 +120,16 @@ void	ft_reset_s(char *s, int j);
 char	*ft_write_line(char *s, char *line, int bytes_returned, int j);
 int		ft_s_eof_check(char *s, char *line, int bytes_returned);
 void	ft_set_to_zero(int *i, int *j, int *k);
+
+/******************************************************************************/
+/*                               extra fcts                                   */
+/******************************************************************************/
+
+int		ft_iswhitespace(int c);
+char	***ft_create_or_addto_dict(char *key, char *value, char ***dict);
+void	ft_print_dict(char ***dict, char *separator);
+char	***ft_delete_from_dict(char *key, char ***dict);
+char	*ft_get_value(char *key, char ***dict);
+void	ft_delete_dict(char ***dict);
 
 #endif

@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   big_free.c                                         :+:      :+:    :+:   */
+/*   ft_delete_dict.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/30 12:35:17 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/10/30 13:42:48 by bclaeys          ###   ########.fr       */
+/*   Created: 2024/11/06 14:23:46 by bclaeys           #+#    #+#             */
+/*   Updated: 2024/11/06 14:26:20 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "libft.h"
 
-int	ft_print_error(char *string)
+void	ft_delete_dict(char ***dict)
 {
-	//change ft_printf to take a fd? 
-	ft_printf(string);
-	return (1);
-}
+	int	i_entry;
 
-void	free_envvar(char **envvar)
-{
-	int	i;
-
-	i = 0;
-	while (envvar[i])
+	i_entry = 0;
+	if (!dict)
+		return ;
+	while (dict[i_entry])
 	{
-		i++;		
-		free(envvar[i - 1]);
+		if (dict[i_entry][0])
+			free(dict[i_entry][0]);
+		if (dict[i_entry][1])
+			free(dict[i_entry][1]);
+		i_entry++;
 	}
-	free(envvar);
-}
-
-void	*free_var_data(t_var_data *var_data)
-{
-	if (var_data->envvar)
-		free_envvar(var_data->envvar);
-	if (var_data)
-		free(var_data);
-	return (NULL);
+	return ;
 }
