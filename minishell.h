@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/05 11:26:18 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/08 16:21:36 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,20 @@
 
 #include "src/libft/libft.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 # define ERROR_NULL NULL
-	typedef enum {
+
+typedef enum {
 	EXEC = 1,
 	ARGUMENT,
 	FLAG,
 	PIPE,
 	REDIRECT,
-} token_type_enum;
+} e_token_type_enum;
 
 /* ************************************************************************** */
 /*                                      structs                               */
@@ -47,24 +52,27 @@ typedef struct s_var_data
 /*                                      main                                  */
 /* ************************************************************************** */
 
-char		***init_envvar_list(char **envp, char ***dict);
+char		***init_envvar_list(char **envp);
 char 		**change_envvar_list(char **old_envvar, char *string_to_add);
 t_var_data	*init_var_data(char **envp);
 void		*free_var_data(t_var_data *var_data);
 void		free_envvar(char **envvar);
-int 		init_envvar_noenvp(char ***dict);
+char 		***init_envvar_noenvp();
 
 /* ************************************************************************** */
-/*                                      error_handler                         */
+/*                                      error_and_free                        */
 /* ************************************************************************** */
 
 int			prompt_error_checks(char *prompt);
 int			ft_print_error(char *string);
 void		*ft_print_error_null(char *string);
+void		free_lexer(t_token_node *first_node_lexer);
 
 /* ************************************************************************** */
 /*                                      cli                                   */
 /* ************************************************************************** */
+
+int			ms_command_line_inteface(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      lexer                                 */

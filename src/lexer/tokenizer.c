@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/05 12:03:16 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/11 11:35:39 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 char			*whitespace_exception(char *prompt, int *index, char ***envvar)
 {
-	void	*return_value;
+	char	*return_value;
 
-	if (!ft_strchr("><",  prompt[*index]))
-		return_value = redirect_handler;
-	if (!ft_strchr("'",  prompt[*index]))
+	if (ft_strchr("><",  prompt[*index]))
+		return_value = redirect_handler(prompt, index);
+	else if (ft_strchr("'",  prompt[*index]))
 		return_value = single_quote_handler(prompt, index);
-	if (prompt[*index] == '"')
+	else if (prompt[*index] == '"')
 		return_value = double_quote_handler(prompt, index, envvar);
+	else 
+		return_value = NULL;
 	return (return_value);
 }
 
@@ -44,34 +46,40 @@ static int			type_giver(char *prompt, t_token_node *prev_node)
 	return (EXEC);
 }
 
-char 				*ft_strtok(char *prompt, char ***envvar)
+// c'a'"t" of c'$VALUE'"$VAL" moet ook werken, strings worden 
+// samengevoegd tot command. Gewoon met de bestaande functies uitpakkan 
+// en samenvoegen tot node met EXEC type.
+int			ft_strtok(char *prompt, char ***envvar, char **token)
 {
-	static int	index;
-	char		*tokenized_string;
+	int			index;
 	int			temp_index;
 	
+	index = 0;
 	while (ft_iswhitespace(prompt[index]) && prompt[index])
 			index++;
 	if (!prompt[index])
-		return (NULL);
-	if (ft_strchr("'><",  prompt[index] || prompt[index] == '"'))
-		return (whitespace_exception(prompt, &index, envvar));
-	temp_index = index ;
+		return (index);
+	if (prompt[index] == '"' || ft_strchr("'><",  prompt[index]))
+	{
+		*token = whitespace_exception(prompt, &index, envvar);
+		return (index);
+	}
+	temp_index = index;
 	while (!ft_iswhitespace(prompt[index]) && prompt[index])
 		index++;
-	tokenized_string = malloc((sizeof(char) * (index - temp_index)) + 1);
-	if (!tokenized_string) 
-		return (ft_print_error_null("Error: malloc failed\n"));	
+	*token = malloc((sizeof(char) * (index - temp_index)) + 1);
+	if (!(*token)) 
+		return (ft_print_error("Error: malloc failed\n"));	
 	index = temp_index;
 	temp_index = 0;
 	while (prompt[index] && !ft_iswhitespace(prompt[index]))
 	{
-		tokenized_string[temp_index] = prompt[index];
+		(*token)[temp_index] = prompt[index];
 		temp_index++;
 		index++;
 	}
-	tokenized_string[temp_index] = '\0'; 
-	return (tokenized_string);
+	(*token)[temp_index] = '\0'; 
+	return (index);
 }
 
 static t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node)
@@ -98,13 +106,22 @@ t_token_node		*tokenizer(char *prompt, char ***envvar)
 	t_token_node 	*first_node;
 	t_token_node 	*current_node;
 	char			*temp_str;
+	int				i;
 
+	i = 0;
 	if (prompt_error_checks(prompt))
 		return (ERROR_NULL);
-	first_node = create_node(ft_strtok(prompt, envvar), NULL);
+	i = ft_strtok(prompt, envvar, &temp_str);
+	first_node = create_node(temp_str, NULL);
 	current_node = first_node;
-	while ((temp_str = ft_strtok(prompt, envvar)) != NULL)
-		current_node = create_node(temp_str, current_node);
+	while (prompt[i])
+	{
+		i += ft_strtok(&prompt[i], envvar, &temp_str);
+		current_node->next = create_node(temp_str, current_node);
+		if (!current_node->next)
+			return (NULL);
+		current_node = current_node->next;
+	}
 	// als strtok == NULL, protection toevoegen incl alles freeen
 	current_node->next = NULL;
 	return (first_node);

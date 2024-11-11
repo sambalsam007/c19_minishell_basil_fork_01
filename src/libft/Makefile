@@ -6,7 +6,7 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/22 11:15:35 by bclaeys           #+#    #+#              #
-#    Updated: 2024/11/06 14:25:51 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/11/07 17:25:47 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,11 +25,11 @@ CFILES=ft_format.c ft_printf.c ftpr_putchar.c ftpr_puthex.c ftpr_putint.c \
 	   ft_putchar_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_putstr_fd.c \
 	   ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
 	   ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c \
-	   ft_iswhitespace.c ft_create_or_addto_dict.c ft_get_value.c \
-	   ft_print_dict.c ft_deletefrom_dict.c  ft_delete_dict.c
+	   ft_iswhitespace.c ft_addto_dict.c ft_get_value.c \
+	   ft_print_dict.c ft_deletefrom_dict.c ft_delete_dict.c ft_create_dict.c
 
 OPT=-O0
-CC=cc
+CC=clang
 CFLAGS=-Wall -Wextra -Werror -g
 OBJECTS=$(patsubst %.c,obj/%.o,$(CFILES))
 

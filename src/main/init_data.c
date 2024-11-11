@@ -6,12 +6,46 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 15:18:48 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/04 15:14:56 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:07:15 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+char ***init_envvar_noenvp(void)
+{
+	char 	*temp[4];
+	
+	// temp[0] aanpassen met getcwd()
+	temp[0] = "PWD=/nfs/homes/bclaeys/common_core/minishell";
+	temp[1] = "SHLVL=1";
+	temp[2] = "_=/usr/bin/env";
+	temp[3] = NULL; 
+	return (ft_create_dict(temp, '='));
+}
+
+char	***init_envvar_list(char **envp)
+{
+	if (!envp[0])
+		return (init_envvar_noenvp());
+	return (ft_create_dict(envp, '='));
+}
+
+t_var_data	*init_var_data(char **envp)
+{
+	t_var_data	*var_data;
+
+	var_data = malloc(sizeof(t_var_data));
+	if (!var_data)
+		return (ft_print_error_null("Error: malloc failed\n"));
+	if (!(var_data->envvar_dict = init_envvar_list(envp)))
+	{
+		free_var_data(var_data);
+		return (ft_print_error_null("Error: malloc failedbla\n"));
+	}
+	var_data->first_node_lexer = NULL;
+	return (var_data);
+}
 /* char *search_envvar_value(char **envvar, char *variable) */
 /* { */
 /* 	int		i; */
@@ -97,63 +131,3 @@
 /* } */
 /**/
 
-// mag ik volgende hardcoden, of mss pwd command runnen?
-int init_envvar_noenvp(char ***dict)
-{
-	char 	**temp[3];
-
-	if (!(temp[0] = ft_split("fPWD=/nfs/homes/bclaeys/common_core/minishell", '='))
-				|| !ft_create_or_addto_dict(*temp[0], *temp[1], dict)
-				|| !(temp[1] = ft_split("SHLVL=1", '='))
-				|| !ft_create_or_addto_dict(*temp[0], *temp[1], dict)
-				|| !(temp[2] = ft_split("_=/usr/bin/env", '='))
-				|| !ft_create_or_addto_dict(*temp[0], *temp[1], dict))
-	{
-		if (dict)
-			ft_delete_dict(dict);
-		if (temp[0])
-			free(temp[0]);
-		if (temp[1])
-			free(temp[1]);
-		if (temp[2])
-			free(temp[2]);
-		return (ft_print_error("Error: malloc failed\n"));
-	}
-	return (0);
-}
-
-char	***init_envvar_list(char **envp, char ***dict)
-{
-	char 	**temp;
-	int		i;
-	
-	i = 0;
-	if (!envp[0])
-		if (init_envvar_noenvp(dict))
-			return (ft_print_error_null("Error: malloc failed\n"));
-	while(envp[i])	
-	{
-		temp = ft_split(envp[i], '=');
-		dict = ft_create_or_addto_dict(temp[0], temp[1], dict);
-		free(temp[0]);
-		free(temp[1]);
-		free(temp);
-		i++;
-	}
-	return (dict);
-}
-
-t_var_data	*init_var_data(char **envp)
-{
-	t_var_data	*var_data;
-
-	var_data = malloc(sizeof(t_var_data));
-	if (!var_data)
-		return (ft_print_error_null("Error: malloc failed\n"));
-	if (!(var_data->envvar_dict = init_envvar_list(envp, NULL)))
-	{
-		free_var_data(var_data);
-		return (ft_print_error_null("Error: malloc failedbla\n"));
-	}
-	return (var_data);
-}

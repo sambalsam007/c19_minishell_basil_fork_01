@@ -6,27 +6,28 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/24 11:58:53 by bclaeys           #+#    #+#              #
-#    Updated: 2024/11/05 11:15:10 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/11/11 11:35:01 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME=minishell
 
 MAIN_SRCS= minishell_main.c init_data.c
-CLI_SRCS =
+CLI_SRCS = command_line_inteface.c
 EXECUTOR_SRCS =
-LEXER_SRCS = tokenizer.c exception_handler.c
+LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c
 PARSER_SRCS =
 SIGHANDLER_SRCS =
 ERRORHANDLER_SRCS = error_checks.c big_free.c error_messages.c
 
-CC=cc
+CC=clang
 CFLAGS= -Wall -Wextra -Werror -g
-INCLUDES = -I ./libft
-INCFLAGS= -I src/libft -L src/libft -lft 
+DEBUG_FLAGS= -fsanitize=address -fsanitize=undefined -fsanitize=bounds -fsanitize=null
+INCLUDES = -I ./libf
+INCFLAGS= -I src/libft -L src/libft -lft -lreadline
 LIBFT=./src/libft/libft.a
 
-SRCS = $(MAIN_SRCS) $(CLI_SCRS) $(EXECUTOR_SRCS) \
+SRCS = $(MAIN_SRCS) $(CLI_SRCS) $(EXECUTOR_SRCS) \
 	$(LEXER_SRCS) $(PARSER_SRCS) $(SIGHANDLER_SRCS) $(ERRORHANDLER_SRCS)
 
 SRC_DIRS = src/cli src/executor/builtins src/executor/exec_base \
@@ -43,7 +44,7 @@ $(LIBFT):
 	@make -s -C src/libft 	
 
 $(NAME): $(OBJECTS) 
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(INCFLAGS)
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o $(NAME) $(OBJECTS) $(INCFLAGS)
 	@echo "\033[33mMaking compile_commands.json...\033[0m"
 	@find . -type f -name "compile_commands.json" -delete
 	@find ./obj/ -type f -name "*.json" | xargs sed -e '1s/^/[\n/' >> compile_commands.json
@@ -56,7 +57,7 @@ obj:
 	@mkdir -p obj
 
 obj/%.o: %.c
-	$(CC) $(CFLAGS) -MJ $@.json -c -o $@ $< $(INCLUDES)
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -MJ $@.json -c -o $@ $< $(INCLUDES)
 
 clean:
 	@rm -rf obj

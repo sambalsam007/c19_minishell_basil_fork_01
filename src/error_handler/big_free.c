@@ -12,14 +12,14 @@
 
 #include "../../minishell.h"
 
-static void	free_lexer(t_token_node *first_node_lexer)
+void	free_lexer(t_token_node *first_node_lexer)
 {
 	t_token_node	*current;
 	t_token_node	*tmp;
 
-	current = first_node_lexer;
 	if (!first_node_lexer)
 		return ;
+	current = first_node_lexer;
 	while (current)
 	{
 		tmp = current;

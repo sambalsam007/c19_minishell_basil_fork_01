@@ -15,17 +15,23 @@
 void	ft_delete_dict(char ***dict)
 {
 	int	i_entry;
+	int	j;
 
 	i_entry = 0;
+	j = 0;
 	if (!dict)
 		return ;
 	while (dict[i_entry])
 	{
-		if (dict[i_entry][0])
-			free(dict[i_entry][0]);
-		if (dict[i_entry][1])
-			free(dict[i_entry][1]);
+		while (dict[i_entry][j])
+		{
+			free(dict[i_entry][j]);
+			j++;
+		}
+		j = 0;
+		free(dict[i_entry]);
 		i_entry++;
 	}
+	free(dict);
 	return ;
 }
