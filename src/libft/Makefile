@@ -41,8 +41,8 @@ $(NAME): $(OBJECTS)
 	@echo "Making libft_compile_comands_json..."
 	@find . -type f -name "*.o" -delete
 
-# obj:
-# 	@mkdir -p obj
+obj:
+	@mkdir -p obj
 
 obj/%.o: %.c
 	$(CC) $(CFLAGS) -MJ $@.json -c -o $@ $<
@@ -52,7 +52,8 @@ obj/%.o: %.c
 	
 clean:
 	@rm -f $(OBJECTS) $(DEPFILES) $(TESTFILE)
-	@rm -f $(OBJECTS) $(DEPFILES) $(TESTFILE)
+	@rm -f obj/%.o.json
+	@rmdir obj
 
 fclean: clean
 	@rm -f $(NAME)
