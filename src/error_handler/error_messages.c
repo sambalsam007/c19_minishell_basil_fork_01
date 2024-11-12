@@ -12,16 +12,16 @@
 
 #include "../../minishell.h"
 
-int		ft_print_error(char *string)
+int	ft_print_error(char *string)
 {
-	//change ft_printf to take a fd? 
+	//change ft_printf to take a fd?
 	ft_printf(string);
 	return (1);
 }
 
 void	*ft_print_error_null(char *string)
 {
-	//change ft_printf to take a fd? 
+	//change ft_printf to take a fd?
 	ft_printf(string);
 	return (NULL);
 }

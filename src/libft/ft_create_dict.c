@@ -14,13 +14,13 @@
 
 static void	free_extra_values(char **dict_entry, char *new_value)
 {
-	int		i;
+	int	i;
 
 	i = 2;
 	while (dict_entry[i])
 		free(dict_entry[i++]);
-	dict_entry[1] = new_value; 
-	dict_entry[2] = NULL; 
+	dict_entry[1] = new_value;
+	dict_entry[2] = NULL;
 }
 
 static int	multiple_separators(char **dict_entry)
@@ -42,8 +42,8 @@ static int	multiple_separators(char **dict_entry)
 	i = 2;
 	while (dict_entry[i])
 	{
-		ft_strlcat(new_value, dict_entry[i], 
-				ft_strlen(new_value) + ft_strlen(dict_entry[i]));
+		ft_strlcat(new_value, dict_entry[i], ft_strlen(new_value)
+				+ ft_strlen(dict_entry[i]));
 		i++;
 	}
 	temp_value = dict_entry[1];
@@ -52,7 +52,7 @@ static int	multiple_separators(char **dict_entry)
 	return (0);
 }
 
-char		***ft_create_dict(char **list, char separator)
+char	***ft_create_dict(char **list, char separator)
 {
 	char	***dict;
 	int		i;

@@ -38,6 +38,7 @@ typedef struct s_token_node
 {
 	char 				*token;
 	int 				type;
+	bool 				argument_check;
 	struct s_token_node	*next;
 	struct s_token_node	*prev;
 } 						t_token_node;
@@ -83,6 +84,7 @@ char			*whitespace_exception(char *prompt, int *index, char ***envvar);
 char			*double_quote_handler(char *prompt, int *index,  char ***envvar);
 char			*single_quote_handler(char *prompt, int *index);
 char			*redirect_handler(char *prompt, int *index);
+char			*ft_get_key(char *prompt);
 
 /* ************************************************************************** */
 /*                                      parser                                */

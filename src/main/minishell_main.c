@@ -14,7 +14,7 @@
 
 int	main(int ac, char **av, char **envp)
 {
-	t_var_data		*var_data;
+	t_var_data	*var_data;
 
 	(void)av;
 	if (ac != 1)

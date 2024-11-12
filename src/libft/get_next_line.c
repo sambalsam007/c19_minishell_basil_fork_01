@@ -90,7 +90,7 @@ int	ft_extend(char **line, int *l_buf_mul)
 	i = 0;
 	(*l_buf_mul)++;
 	new_line = ft_calloc(BUFFER_SIZE + (BUFFER_SIZE * *l_buf_mul) + 1,
-			sizeof(char));
+							sizeof(char));
 	if (!new_line)
 		return (0);
 	while (line[0][i])

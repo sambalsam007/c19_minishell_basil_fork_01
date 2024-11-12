@@ -16,13 +16,13 @@
 
 static char	***ft_entry(int i_entry, char ***new_dict, char ***dict)
 {
-		new_dict[i_entry][0] = ft_strdup(dict[i_entry][0]);
-		new_dict[i_entry][1] = ft_strdup(dict[i_entry][1]);
-		new_dict[i_entry][2] = NULL;
-		new_dict[i_entry] = malloc(sizeof(char *) * 3);
-		if (!new_dict[i_entry])
-			return (NULL);
-		return (new_dict);
+	new_dict[i_entry][0] = ft_strdup(dict[i_entry][0]);
+	new_dict[i_entry][1] = ft_strdup(dict[i_entry][1]);
+	new_dict[i_entry][2] = NULL;
+	new_dict[i_entry] = malloc(sizeof(char *) * 3);
+	if (!new_dict[i_entry])
+		return (NULL);
+	return (new_dict);
 }
 
 static char	***ft_new_dict(char *key, char *value)
@@ -43,11 +43,10 @@ static char	***ft_new_dict(char *key, char *value)
 	return (new_dict);
 }
 
-char		***ft_existing_dict(char *key, char *value, char ***dict)
+char	***ft_existing_dict(char *key, char *value, char ***dict)
 {
 	int		i_entry;
 	char	***new_dict;
-
 
 	i_entry = 0;
 	while (dict[i_entry])
@@ -59,7 +58,7 @@ char		***ft_existing_dict(char *key, char *value, char ***dict)
 	while (dict[i_entry])
 	{
 		if (!ft_entry(i_entry, new_dict, dict))
-				return (NULL);
+			return (NULL);
 		i_entry++;
 	}
 	new_dict[i_entry] = malloc(sizeof(char *) * 3);
@@ -73,7 +72,7 @@ char		***ft_existing_dict(char *key, char *value, char ***dict)
 	return (new_dict);
 }
 
-char		***ft_addto_dict(char *key, char *value, char ***dict)
+char	***ft_addto_dict(char *key, char *value, char ***dict)
 {
 	if (!key)
 	{
@@ -82,6 +81,6 @@ char		***ft_addto_dict(char *key, char *value, char ***dict)
 	}
 	if (dict)
 		return (ft_existing_dict(key, value, dict));
-	else 
+	else
 		return (ft_new_dict(key, value));
 }

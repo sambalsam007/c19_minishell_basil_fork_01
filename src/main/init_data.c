@@ -12,15 +12,15 @@
 
 #include "../../minishell.h"
 
-char ***init_envvar_noenvp(void)
+char	***init_envvar_noenvp(void)
 {
-	char 	*temp[4];
-	
+	char	*temp[4];
+
 	// temp[0] aanpassen met getcwd()
 	temp[0] = "PWD=/nfs/homes/bclaeys/common_core/minishell";
 	temp[1] = "SHLVL=1";
 	temp[2] = "_=/usr/bin/env";
-	temp[3] = NULL; 
+	temp[3] = NULL;
 	return (ft_create_dict(temp, '='));
 }
 
@@ -60,7 +60,7 @@ t_var_data	*init_var_data(char **envp)
 /* 			if (envvar[i][j] != variable[j]) */
 /* 			{ */
 /* 				j = 0; */
-/* 				break; */
+/* 				break ; */
 /* 			} */
 /* 			if (envvar[i][j] == '=') */
 /* 				return (&envvar[i][j + 1]); */
@@ -84,7 +84,7 @@ t_var_data	*init_var_data(char **envp)
 /* 		i++; */
 /* 	envvar = malloc(sizeof(char *) * (i + 1)); */
 /* 	if (!envvar) */
-/* 		return (ft_print_error_null("Error: malloc failed\n"));	 */
+/* 		return (ft_print_error_null("Error: malloc failed\n"));		*/
 /* 	i = 0; */
 /* 	if (!envp[0]) */
 /* 		if (init_envvar_noenvp(envvar)) */
@@ -130,4 +130,3 @@ t_var_data	*init_var_data(char **envp)
 /* 	return (new_envvar); */
 /* } */
 /**/
-
