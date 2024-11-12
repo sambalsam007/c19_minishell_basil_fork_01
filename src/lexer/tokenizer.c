@@ -33,7 +33,8 @@ char	*whitespace_exception(char *prompt, int *index, char ***envvar)
 		else if (ft_strchr(" ", prompt[*index])) 
 			token = ft_strdup("$");
 		else 
-			token = ft_strdup("\n");
+			/* token = ft_strdup("\n"); */
+			token = NULL;
 		*index += ft_strlen(key) + 1;
 		free(key);
 	}
@@ -135,6 +136,7 @@ static t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node,
 }
 
 // echo $PAT$ moet $ printen, $ moet ook $ printen
+// gewoon spatie meegeven segfault 
 t_token_node	*tokenizer(char *prompt, char ***envvar)
 {
 	t_token_node	*first_node;
@@ -158,15 +160,16 @@ t_token_node	*tokenizer(char *prompt, char ***envvar)
 					+ ft_strlen(concatenated_str) + 1);
 			current_node = create_node(temp_str, current_node, current_node);
 		}
-
 		else
 			i += ft_strtok(&prompt[i], envvar, &temp_str);
 		if (!temp_str)
 		{
-			current_node = first_node;
-			first_node = create_node(NULL, NULL, NULL);
-			free_lexer(current_node);
-			return (first_node);
+			if (!first_node->token)
+			{
+				free_lexer(first_node);
+				return (create_node(NULL, NULL, NULL));
+			}
+			continue;
 		}
 		else
 			current_node->next = create_node(temp_str, current_node, NULL);

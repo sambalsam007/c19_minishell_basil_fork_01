@@ -24,7 +24,7 @@ void	free_lexer(t_token_node *first_node_lexer)
 	{
 		tmp = current;
 		current = current->next;
-		// Volgendes free loopt soms fout, "attempted double free", waarom?
+		// Volgende frees lopen soms fout, "attempted double free", waarom?
 		// Ik kan de fouten ook niet herhalen als ze voorkomen. 
 		if (tmp->token)
 			free(tmp->token);

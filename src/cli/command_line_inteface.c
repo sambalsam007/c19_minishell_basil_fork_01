@@ -16,6 +16,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 {
 	char			*prompt;
 	t_token_node	*tmp;
+	int				i;
 
 	prompt = NULL;
 	while (true)
@@ -24,12 +25,16 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		prompt = readline("\033[33mminishell>\033[0m");
 		if (!prompt)
 			break ;
-		if (!prompt[0])
+		i = 0;
+		while (ft_iswhitespace(prompt[i])) 
+			i++;
+		if (!prompt[0] || !prompt[i])
 			continue ;
 		if (var_data->first_node_lexer)
 			free_lexer(var_data->first_node_lexer);
 		var_data->first_node_lexer = tokenizer(prompt, var_data->envvar_dict);
-		if (!var_data->first_node_lexer->token)
+		if (!var_data->first_node_lexer->token 
+				&& !var_data->first_node_lexer->next)
 			continue ;
 		if (!var_data->first_node_lexer)
 			return (1);
