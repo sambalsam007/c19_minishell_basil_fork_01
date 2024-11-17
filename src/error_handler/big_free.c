@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:35:17 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/04 17:07:37 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/14 19:13:42 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_lexer(t_token_node *first_node_lexer)
 		tmp = current;
 		current = current->next;
 		// Volgende frees lopen soms fout, "attempted double free", waarom?
-		// Ik kan de fouten ook niet herhalen als ze voorkomen. 
+		// Ik kan de fouten ook niet herhalen als ze voorkomen.
 		if (tmp->token)
 			free(tmp->token);
 		if (tmp)

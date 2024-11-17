@@ -25,10 +25,7 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	// sighandler
 	if (ms_command_line_inteface(var_data))
-	{
-		free_var_data(var_data);
-		return (1);
-	}
+		return (free_var_data(var_data), 1);
 	free_var_data(var_data);
 	return (0);
 }

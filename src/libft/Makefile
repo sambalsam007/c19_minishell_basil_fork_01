@@ -53,7 +53,7 @@ obj/%.o: %.c
 clean:
 	@rm -f $(OBJECTS) $(DEPFILES) $(TESTFILE)
 	@rm -f obj/%.o.json
-	@rmdir obj
+	@rm -rf obj
 
 fclean: clean
 	@rm -f $(NAME)

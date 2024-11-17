@@ -6,11 +6,12 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 11:33:46 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/11 11:34:24 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/14 17:15:44 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <stddef.h>
 
 static void	fill_redirect_token(char *prompt, char *tokenized_string, int i)
 {
@@ -37,7 +38,7 @@ static void	fill_redirect_token(char *prompt, char *tokenized_string, int i)
 }
 
 // infinite loop
-char	*redirect_handler(char *prompt, int *index)
+char	*redirect_handler(char *prompt, size_t *index)
 {
 	char	*tokenized_string;
 	int		i;

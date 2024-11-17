@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/08 17:21:59 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/14 19:13:42 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,25 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	while (true)
 	{
 		free(prompt);
-		prompt = readline("\033[33mminishell>\033[0m");
+		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		if (!prompt)
 			break ;
 		i = 0;
-		while (ft_iswhitespace(prompt[i])) 
+		while (prompt[i] && ft_iswhitespace(prompt[i]))
 			i++;
 		if (!prompt[0] || !prompt[i])
 			continue ;
 		if (var_data->first_node_lexer)
 			free_lexer(var_data->first_node_lexer);
-		var_data->first_node_lexer = tokenizer(prompt, var_data->envvar_dict);
-		if (!var_data->first_node_lexer->token 
-				&& !var_data->first_node_lexer->next)
+		var_data->first_node_lexer = tokenizer(prompt, var_data->envvar_dict,
+				var_data->first_node_lexer, 0);
+		if (!var_data->first_node_lexer)
+		{
+			free(prompt);
+			return (1);
+		}
+		if (!var_data->first_node_lexer->token
+			&& !var_data->first_node_lexer->next)
 			continue ;
 		if (!var_data->first_node_lexer)
 			return (1);
