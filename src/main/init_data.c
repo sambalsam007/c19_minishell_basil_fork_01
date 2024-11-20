@@ -31,102 +31,28 @@ char	***init_envvar_list(char **envp)
 	return (ft_create_dict(envp, '='));
 }
 
+void	init_error_data(t_error_checks *error_checks)
+{
+	error_checks->lexer_level_syntax_error = false;
+	error_checks->parser_level_syntax_error = false;
+}
+
 t_var_data	*init_var_data(char **envp)
 {
-	t_var_data	*var_data;
+	t_var_data		*var_data;
+	t_error_checks	*error_checks;
 
 	var_data = malloc(sizeof(t_var_data));
+	error_checks = malloc(sizeof(t_error_checks));
 	if (!var_data)
 		return (ft_print_error_null("Error: malloc failed\n"));
-	if (!(var_data->envvar_dict = init_envvar_list(envp)))
+	if (!(var_data->envvar = init_envvar_list(envp)))
 	{
 		free_var_data(var_data);
 		return (ft_print_error_null("Error: malloc failedbla\n"));
 	}
+	var_data->error_checks = error_checks;
 	var_data->first_node_lexer = NULL;
+	var_data->first_node_ast = NULL;
 	return (var_data);
 }
-/* char *search_envvar_value(char **envvar, char *variable) */
-/* { */
-/* 	int		i; */
-/* 	int		j; */
-/**/
-/* 	i = 0; */
-/* 	j = 0; */
-/* 	while (envvar[i]) */
-/* 	{ */
-/* 		while(envvar[i][j]) */
-/* 		{ */
-/* 			if (envvar[i][j] != variable[j]) */
-/* 			{ */
-/* 				j = 0; */
-/* 				break ; */
-/* 			} */
-/* 			if (envvar[i][j] == '=') */
-/* 				return (&envvar[i][j + 1]); */
-/* 			j++; */
-/* 		} */
-/* 		i++; */
-/* 	} */
-/* 	return (ERROR_NULL); */
-/* } */
-/**/
-/**/
-/* char **init_envvar_list(char **envp) */
-/* { */
-/* 	int	i; */
-/* 	char **envvar; */
-/**/
-/* 	i = 0; */
-/* 	if (!envp[0]) */
-/* 		i = 3; */
-/* 	while (envp[i]) */
-/* 		i++; */
-/* 	envvar = malloc(sizeof(char *) * (i + 1)); */
-/* 	if (!envvar) */
-/* 		return (ft_print_error_null("Error: malloc failed\n"));		*/
-/* 	i = 0; */
-/* 	if (!envp[0]) */
-/* 		if (init_envvar_noenvp(envvar)) */
-/* 			return (ERROR_NULL); */
-/* 	while (envp[i]) */
-/* 	{ */
-/* 		envvar[i] = ft_strdup(envp[i]); */
-/* 		if (!envvar[i]) */
-/* 			return (ERROR_NULL); */
-/* 		i++; */
-/* 	} */
-/* 	if (!envp[0]) */
-/* 		envvar[3] = NULL; */
-/* 	else */
-/* 		envvar[i] = NULL; */
-/* 	return (envvar); */
-/* } */
-/**/
-/* // deze fct is nog niet getest, samen testen met export */
-/* char **change_envvar_list(char **old_envvar, char *string_to_add) */
-/* { */
-/* 	char 	**new_envvar; */
-/* 	int	i; */
-/**/
-/* 	i = 0; */
-/* 	while (old_envvar[i]) */
-/* 		i++; */
-/* 	new_envvar = malloc(sizeof(char *) * (i + 2)); */
-/* 	if (!new_envvar) */
-/* 	{ */
-/* 		ft_print_error("Error: malloc failed\n"); */
-/* 		return (ERROR_NULL); */
-/* 	} */
-/* 	i = 0; */
-/* 	while (old_envvar[i]) */
-/* 	{ */
-/* 		new_envvar[i] = old_envvar[i]; */
-/* 		i++; */
-/* 	} */
-/* 	new_envvar[i] = string_to_add;  */
-/* 	new_envvar[i + 1] = NULL; */
-/* 	free_envvar(old_envvar); */
-/* 	return (new_envvar); */
-/* } */
-/**/

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <stddef.h>
 #include <string.h>
 
 char	*ft_get_key(char *prompt)
@@ -21,67 +22,104 @@ char	*ft_get_key(char *prompt)
 	i = 0;
 	if (!prompt[i])
 		return (NULL);
-	while (prompt[i] && !ft_iswhitespace(prompt[i]) && prompt[i] != '"' 
-			&& prompt[i] != '$')
+	while (prompt[i] && !ft_iswhitespace(prompt[i]) && prompt[i] != '"'
+		&& prompt[i] != '$')
 		i++;
 	key = ft_substr(prompt, 0, i);
 	return (key);
 }
 
-int	fill_token_expd_vars(char *prompt, char *token_string, char *key,
-		char ***envvar)
+static int	handle_envvars(char *key, 
+							size_t *j, 
+							char *token_string,
+							char ***envvar)
 {
-	char	*value;
-	int		i;
-	int		j;
-	int		k;
+	char		*value;
+	size_t		k;
+
+	k = 0;
+	if (!key)
+		return (1);
+	value = ft_get_value(key, envvar);
+	while (value && value[k])
+		token_string[(*j)++] = value[k++];
+	return (0);
+}
+
+int			fill_token_expd_vars(char *prmpt, 
+							char *token_string, 
+							char *key,
+							char ***envvar)
+{
+	size_t		i;
+	size_t		j;
 
 	i = 0;
 	j = 0;
-	k = 0;
-	while (prompt[i] && prompt[i] != '"')
+	while (prmpt[i] && prmpt[i] != '"')
 	{
-		if (prompt[i] == '$')
+		if (prmpt[i] == '$')
 		{
-			key = ft_get_key(&prompt[i + 1]);
-			value = ft_get_value(key, envvar);
-			while (value && value[k])
-				token_string[j++] = value[k++];
-			k = 0;
-			i += ft_strlen(key) + 1;
-			free(key);
+				if ((prmpt[i+1] && prmpt[i+1] == '?') || !prmpt[i+1] 
+						|| ft_iswhitespace(prmpt[i+1]) || (prmpt[i+1]) == '"')
+					token_string[j++] = prmpt[i++];
+				else
+				{
+					key = ft_get_key(&prmpt[i+1]);
+					if (handle_envvars(key, &j, token_string, envvar))
+						return (-1);
+					i += ft_strlen(key) + 1;
+					free(key);
+				}
 		}
 		else
-			token_string[j++] = prompt[i++];
+			token_string[j++] = prmpt[i++];
 	}
-	token_string[j] = '\0';
-	return (i);
+	return (token_string[j] = '\0', i);
 }
 
-int	no_quotes_arg(char *prompt, size_t *index, char ***envvar, char **token)
+int			check_single_dollar(char *prompt, size_t *index, char **token)
 {
-	char	*key;
-
-	key = NULL;
-	if (!prompt[*index + 1] || ft_iswhitespace(prompt[*index + 1]))
-	{	
+	if (!prompt[*index + 1] || ft_iswhitespace(prompt[*index + 1])
+			|| prompt[*index+1] == '"')
+	{
 		*token = ft_strdup("$");
 		*index += 1;
 		if (!*token)
 			return (1);
 	}
+	else if (prompt[*index + 1] && prompt[*index + 1] == '?')
+	{
+		*token = ft_strdup("$?");
+		*index += 2;
+		if (!*token)
+			return (1);
+	}
+	else
+		return (0);
+	return (2);
+}
+
+int	no_quotes_arg(char *prompt, size_t *index, char ***envvar, char **token)
+{
+	char	*key;
+	int		flow_check;
+
+	key = NULL;
+	flow_check = check_single_dollar(prompt, index, token);
+	if (flow_check)
+		return (flow_check);
 	else
 	{
 		key = ft_get_key(&prompt[*index + 1]);
 		if (!key)
-			return(1);
+			return (1);
 		if (ft_get_value(key, envvar))
 		{
 			*token = ft_strdup(ft_get_value(key, envvar));
 			if (!*token)
 				return (1);
-			*index += ft_strlen(key) + 1;
-			return(free(key), 2);
+			return (*index += ft_strlen(key) + 1, free(key), 2);
 		}
 		else
 			*token = NULL;

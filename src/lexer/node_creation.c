@@ -27,8 +27,8 @@ static int	type_giver(char *prompt, t_token_node *prev_node)
 		return (FLAG);
 	if (prompt[i] == '<' || prompt[i] == '>')
 		return (REDIRECT);
-	if ((prev_node && prev_node->type == EXEC) ||
-		prompt[i] == 39 || prompt[i] == 34)
+	if ((prev_node && prev_node->type == EXEC) || prompt[i] == 39
+		|| prompt[i] == 34)
 		return (ARGUMENT);
 	while (tmp_node && tmp_node->type != PIPE)
 	{
@@ -39,9 +39,9 @@ static int	type_giver(char *prompt, t_token_node *prev_node)
 	return (EXEC);
 }
 
-t_token_node	*create_node(char *tokenized_str, 
-					t_token_node *prev_node,
-					t_token_node *current_node)
+t_token_node	*create_node(char *tokenized_str,
+							t_token_node *prev_node,
+							t_token_node *current_node)
 {
 	t_token_node	*token_node;
 

@@ -1,0 +1,280 @@
+WEIRD CASES
+cat line brak Cntr +\
+grep x line break Cntr+\
+./minishell - custom error needed.
+
+
+LEAKS SUITE TEST CASES => test one case, resolve leaks, test all cases over.
+cases where I found previosly leaks. RESOLVING make a change, check I did not break functionality. check leaks.
+
+10-437 echo a TODO
+11-231 echo a C-D
+catcat main.c clean
+1-18 cat main.c | grep void - seg fault
+
+Get echo a leak free.
+cat main.c | grep void segfault. something is wrong with env and pwd. 
+echo a
+8-427 echo a
+4-12-410 echo a
+normal operations do not work cat main.c | grep env
+echo a | sort
+echo a echo a cat main.c | grep void 2-414
+echo a > t1 2-404
+grep void < t1 | grep a --cmd is wrong
+grep void < t1 | grep list >> t2
+grep void < t1 | grep list >> t2 | grep lex > t3
+ecco ctrl-D
+cat << EOF >> t1 -- in the middle of the heredoc ctrl-C if ctrl-D then clean
+export aa=1000 cntr-D
+export cntr-D -- still reachablesi, conditional jumps
+export aa=1000 unset aa 4-225
+unset
+export aa=100
+export aa=100 bb=101, env, unset
+export aa=101 changing the value of an existing env.
+export aa=100 bb=101 , unset aa
+export all cases still reachables.
+export AA="echo ls" , export BB=AA , echo $BB
+
+cd ctrl-D
+cd -
+cd tilde
+cd Minishell - leaks like hell
+cd /nfs/homes/rsainas
+exit
+exit 5
+ecco + $? + Ctrl-D more cases needed, ecco, cat main.cd, env
+env
+pwd
+move backwards, since there are mistakes, I also have added free, so can double
+malloc @ list.c:48 214 still reachables is ok. 
+lexing_utils:44 invalid free leaks like hell. 
+parsing echo $PWD -- invalid reads in 3 blocks.
+echo $OLDPWD
+echo $USER$USER
+echo $USER$
+echo $USER" $USER"
+echo $USER " $USER "
+echo '"$USER"'
+echo "'$USER'"
+parser all mallocs again. norm
+exec_utils_add:41
+execution:19, function >25 lines.
+exec_utils_add:83
+export a leaks, error handling.
+builtin_export:127
+
+
+
+CRITICAL evv last value is not correct.
+Critical ls does not work. diff te_1 te_2 meaning missing?
+
+
+----BOOKMARK--- functionality
+/bin/lsfilaeadfasdf may be an issue Syscall param execve(filename) points to unaddressable byte(s)
+quotes closed error does not add to history.
+block command cat enter + cntr-C displays the readline twice. - ask someone!
+
+done readline fail leak check.
+done write fails leak check.
+
+--BOOKMARK_ERROR-- (error management, malloc failures execution, after that other error)
+CRITICAL / check again all malloc leaks for flag 6, 7, 8!!!
+
+func inprovment relative and abs path instead of a command.
+alter data->final_path in case token type ABS_PATH
+in case token starts with / then final path == token.
+error case cd Minishell/ in home
+
+
+Error rmanagment for write fails
+
+FUNCTIONALITY
+$? not getting past the parser
+echo $?
+export a
+export AA="''" , echo $AA should display '' 
+
+find_paths.c61 access == 2
+
+OPEN CASES
+echo $ --- one block still reachable, in case malloc fail parser.c:59 and 54
+echo $PWDa --- one block still reachable, in case strdup fail parser.c:54
+echo $PWDa$PWD --not behaving well
+echo a b -- block definetely lost in case strdup fail redir_utils.c:32 needs a function to free an array where cmd[0][0] is NULL and cmd[0][0] is a and cmd[0][2] is NULL
+NICE TO HAVE child process malloc failure would exit ie redir_utils.c:32
+
+
+HANDLE in ERROR handling PHASE
+export aa=100 bb100, missing = sign, part of error handling.
+exit asd
+exit 1 1
+cd Minishell - in minishell folder has a double free
+cd non_existing_folder - error case
+
+
+
+NOT working cases:
+pwd pwd - double free
+ls -solved
+env - solved
+pwd solved
+cd - solved
+echo asd > t1 --solved
+cat << EOF > t1 -- solved
+cat main.c | sort -- solved
+echo a b | sort --solved
+
+Bookmark pwd pwd not working, execution.c:106 needs cleanup.
+5-10-416 echo a 
+
+
+open case to be solved 1 block in case o  find_path.c:57 data->final_path
+echo "a""
+cat main.c C_D
+
+
+
+redir and bultin and pipeline
+env | grep PWD
+echo asd > t1
+
+redir and pipe on one line
+cat t4 | grep 1 > t9 | cat > t10 in bash creates an empty t10 file
+The same in zsh filles the t1 with grep result.
+We will implemnt unified behaviour, whenever there is a redirection on the line,
+the redirection is done.
+
+cat file | grep free
+cat file | grep cd
+
+echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' "\n" | sort | uniq -c | sort -nr | head -n 5
+
+exit builtin
+exit | ls  status 0, does not exit nor print
+ls | exit status 0, does not exit nor print
+ls | exit 12 keeps status 12 does not exit nor print exit to stdout
+ls | exit 12 asd failure status 1 does not exit, stdout exit: too many arguments
+ls | exit 1a failure status 255 does not exit, stdout exit: numeric arguments requiered
+exit 1a
+exit 1 1
+exit -255
+exit +266
+
+signal
+interactive mode ctrl-c reads new line
+interactive mode ctrl-d stdout "exit\n" and exits minishell
+interactive mode ctrl-\ no actions, ignored
+non-interactive mode ctrl-c reads new line
+non-interactive mode ctrl-d stdout "exit\n" and exits minishell
+non-interactive mode ctrl-\ core dumped unclean exit.
+
+signals inside a heredoc
+ctrl-C line in interactive mode, sig handler handles the STDOUT
+ctrl-D in case middle of a line is ignored, beginning of a line errors
+bash: warning: here-document at line 13 delimited by end-of-file (wanted `EOF')
+
+export builtin tests:
+export a=   creates an env
+export a =1 error
+export a.=1 error
+export HOMe=1 new env
+export "a=1" works
+export "a= 1" updates value
+export "a =1" does not work
+
+cd builtin tests:
+cd abs path
+cd rel path
+cd ~, cd ~/ cd ~/., cd ~./..
+cd $HOME, cd $PWD
+cd "New Folder"
+cd New\ Folder - not functional
+cd ///home
+
+ecco 2> file not functional
+
+Heredoc
+sort << EOF | grep apple > t1
+bash << EOF ls -l EOF
+echo << cat > t1
+cat << echo > t1 - bash works on this one.
+cat << cat > t1 - bash cat should work here.
+<< EOF - does not have any practical meaning
+<< EOF > t1 creates an empty file, does not have any practical meaning
+cat << EOF | grep asd
+cat <<EOF >t4
+
+Redirection in
+grep void < t1
+grep void < t1 | grep list > t2
+grep void < t1 | grep list >> t2
+grep void < t1 | grep list >> t2 | grep lex > t3
+
+
+Redirection out append mode
+echo a1 >> f1 a2 >> f2 a3 >> f3 creates all 3 files and 
+ALL have a1 a2 a3\n in it.
+cat main.c >> t1
+cat main.c | grep void | grep list >> t1
+
+Redirection out
+cat main.c > t1
+cat main.c | grep void | grep list > t1
+
+echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
+the last one has a1 a2 a3\n in it, other files  empty.
+Has an edge case in case one of the files exists.
+
+Quotes tests
+
+"a"  a  "a" goes into one node
+"a" < "a" goes into 3 nodes
+'a' a one space between
+'a'b space in the end loose char
+b' a a 'b
+a' a a'a char and one or more preceding spaces
+<a'a'a> preceding chars 
+|<|'a'|>| preceding pipes and redirs 
+< a'a'a > one space
+<  a'a'a  > several spaces
+a'<'
+a'a'
+a '<'
+'a'a' 
+a"a"|aaaa 
+"ads"a| loosing | !!!!!! single quote the same thing
+"asd"a|a loosint a
+"asd"|a loosint a
+
+CMD and file name with ""
+"ls"
+"main.c"
+
+cat test_line | grep ‘<’ type arg token <
+cat test_line | grep asd"asd” type arg token1 asdasd  ???
+cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
+cat test_line | grep “asd1””asd2 undefined/error 
+cat test_line | grep “"asd1asd2"" type arg token asd1asd2
+cat test_line | grep “"""a"sd1asd2" type arg token asd1asd2
+cat test_line | grep “asd1’<” | grep “k"type arg token1 asd1'< token2 '
+cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
+cat test_line | grep "a""s""d" type 31 token "a""s""d"
+“123 567” 10 asd <<>><>|test_line
+
+//***Dollar sign***///
+echo "$USER" token should expand look for the value of var like echo $USER
+echo '$USER' token $USER
+echo "'$USER'" token expands to 'mabbadi'
+echo "asd'$USER'asd" expands to asd'mabbadi'asd
+
+Variable expansion to values
+bash AAA=1000
+bash echo $AAA
+1000
+
+Error management
+cat test_line | grep "a"s"d" Error message Minishell: asd: command not found
+
+
