@@ -49,7 +49,7 @@ t_token_node	*create_node(char *tokenized_str,
 	{
 		token_node = malloc(sizeof(t_token_node));
 		if (!token_node)
-			return (ft_print_error_null("Error: malloc failed\n"));
+			return (ft_print_error_null("Error: create_node malloc failed\n"));
 		token_node->type = 0;
 		token_node->prev = NULL;
 	}

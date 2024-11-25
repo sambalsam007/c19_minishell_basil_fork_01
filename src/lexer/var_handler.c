@@ -22,8 +22,10 @@ char	*ft_get_key(char *prompt)
 	i = 0;
 	if (!prompt[i])
 		return (NULL);
+	if (prompt[i] && prompt[i] == '$')
+			i++;
 	while (prompt[i] && !ft_iswhitespace(prompt[i]) && prompt[i] != '"'
-		&& prompt[i] != '$')
+		&& prompt[i] != '$' && prompt[i] != '|')
 		i++;
 	key = ft_substr(prompt, 0, i);
 	return (key);
@@ -38,8 +40,8 @@ static int	handle_envvars(char *key,
 	size_t		k;
 
 	k = 0;
-	if (!key)
-		return (1);
+	/* if (!key) */
+	/* 	return (1); */
 	value = ft_get_value(key, envvar);
 	while (value && value[k])
 		token_string[(*j)++] = value[k++];
@@ -56,7 +58,7 @@ int			fill_token_expd_vars(char *prmpt,
 
 	i = 0;
 	j = 0;
-	while (prmpt[i] && prmpt[i] != '"')
+	while (i < ft_strlen(prmpt) && prmpt[i] && prmpt[i] != '"')
 	{
 		if (prmpt[i] == '$')
 		{
@@ -122,7 +124,7 @@ int	no_quotes_arg(char *prompt, size_t *index, char ***envvar, char **token)
 			return (*index += ft_strlen(key) + 1, free(key), 2);
 		}
 		else
-			*token = NULL;
+			*token = ft_strdup("");
 		*index += ft_strlen(key) + 1;
 		free(key);
 	}

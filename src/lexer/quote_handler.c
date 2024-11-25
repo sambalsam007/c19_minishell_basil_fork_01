@@ -12,10 +12,10 @@
 
 #include "../../minishell.h"
 
-static int	count_key(char **key, 
-							char *prompt,
-							int *i,
-							int *j)
+int	count_key(char **key, 
+						char *prompt,
+						int *i,
+						int *j)
 {
 	*key = ft_get_key(&prompt[*i + 1]);
 	*j += ft_strlen(*key) + 1;
@@ -43,8 +43,8 @@ static int	count_value(char *key,
 
 }
 
-static int	count_total_strlen(char *prompt,
-								char ***envvar,
+int	count_total_strlen(char *prompt,
+								t_var_data *var_data,
 								char *key,
 								int *len_expanded_var)
 {
@@ -66,12 +66,12 @@ static int	count_total_strlen(char *prompt,
 					break;
 				if (!key)
 					return (-1);
-				count_value(key, len_expanded_var, envvar);
+				count_value(key, len_expanded_var, var_data->envvar);
 			}
 		}
 	}
-	if (!prompt[i])
-		return (-1);
+	if (!prompt[i] && prompt[i-1] != '"')
+		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
 	return (i - j);
 }
 
@@ -114,7 +114,7 @@ static int	count_total_strlen(char *prompt,
 /**/
 int	double_quotes(char *prompt,
 					size_t *index,
-					char ***envvar,
+					t_var_data *var_data,
 					char **token_str)
 {
 	char	*key;
@@ -128,14 +128,14 @@ int	double_quotes(char *prompt,
 	if (!prompt[i])
 		return (1);
 	key = NULL;
-	i = count_total_strlen(&prompt[i], envvar, key, &len_expanded_var);
+	i = count_total_strlen(&prompt[i], var_data, key, &len_expanded_var);
 	if (i == -1)
 		return (free(key), ft_printf("Error: parentheses not closed\n"), -1);
 	*token_str = malloc((sizeof(char) * (i - *index)) + len_expanded_var + 1);
 	if (!token_str)
 		return (ft_print_error("Error: malloc failed\n"));
 	(*index)++;
-	flow = fill_token_expd_vars(&prompt[*index], *token_str, key, envvar);
+	flow = fill_token_expd_vars(&prompt[*index], *token_str, key, var_data->envvar);
 	if (flow == -1)
 		return (ft_print_error("Error: malloc failed\n"));
 	*index += flow + 1;
@@ -164,7 +164,7 @@ int	single_quotes(char *prompt,
 	if (!*tokenized_string)
 		return (ft_print_error("Error: malloc failed\n"));
 	i = *index + 1;
-	while (prompt[i] != 39 && prompt[i])
+	while (prompt[i] != 39 && prompt[i] && prompt[i] != '|')
 		(*tokenized_string)[j++] = prompt[i++];
 	*index = i + 1;
 	(*tokenized_string)[j] = '\0';

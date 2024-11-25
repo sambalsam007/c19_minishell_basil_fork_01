@@ -117,7 +117,7 @@ int				ms_command_line_inteface(t_var_data *var_data);
 t_token_node	*tokenizer(char *prompt, t_var_data *var_data, t_token_node *first_nd, int flow_check); 
 char			*redirect_handler(char *prompt, size_t *index, t_var_data *var_data);
 int				single_quotes(char *prompt, size_t *index, char **tokenized_string);
-int				double_quotes(char *prompt, size_t *index, char ***envvar, char **token_str);
+int				double_quotes(char *prompt, size_t *index, t_var_data *var_data, char **token_str);
 char			*ft_get_key(char *prompt);
 int				ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i);
 t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node, t_token_node *current_node);
@@ -126,21 +126,24 @@ int				whitespace_exception(char *prompt, size_t *index, t_var_data *var_data, c
 int				no_quotes_arg(char *prompt, size_t *index, char ***envvar, char **token);
 int				fill_token_expd_vars(char *prompt, char *token_string, char *key, char ***envvar);
 int				check_single_dollar(char *prompt, size_t *index, char **token);
+int				count_total_strlen(char *prompt, t_var_data *var_data, char *key, int *len_expanded_var);
+int				count_key(char **key, char *prompt, int *i, int *j);
+/* int				count_key(char *key, char *prompt, int *i, int *j); */
 
 /* ************************************************************************** */
 /*                                      parser                                */
 /* ************************************************************************** */
 
 int				parser(t_ast_node **first_ast_node, t_token_node *first_token_node, t_var_data *var_data);
-t_ast_redir		*add_redirect(t_token_node **curr_token_node, t_ast_redir *first_redir_node);
-t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_token_node);
+t_ast_redir 	*add_redirect(t_token_node **curr_token_node, t_ast_redir *curr_redir_node, t_ast_redir *first_redir_node, t_var_data *var_data);
+t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_token_node,	t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      executor                              */
 /* ************************************************************************** */
 
 /* ************************************************************************** */
-/*                                      sighandler                            */
+/*                                      sighandler                           */
 /* ************************************************************************** */
 
 #endif

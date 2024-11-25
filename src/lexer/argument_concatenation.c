@@ -37,7 +37,7 @@ size_t	check_if_join_args(t_var_data *var_data, char *prompt, char *tmp_str,
 	i = 0;
 	if (!tmp_str)
 		return (1);
-	while (!ft_iswhitespace(prompt[i]) && !ft_strchr("><", prompt[i]))
+	while (!ft_iswhitespace(prompt[i]) && !ft_strchr("|><", prompt[i]))
 	{
 		check = ft_strtok(&prompt[i], var_data, &tmp_extension, &i);
 		if (check == 1)

@@ -39,16 +39,41 @@ int	ms_lex_and_parse(t_var_data *var_data,
 	return (0);
 }
 
-int	ms_command_line_inteface(t_var_data *var_data)
+void	test_print_parser(t_var_data *var_data)
 {
 	int				i;
-	char			*prompt;
-	int				flow_check;
 	t_ast_node		*tmp;
 	t_ast_redir		*tmp_redir;
 
-	prompt = NULL;
 	i = 0;
+	tmp = var_data->first_node_ast;
+	while (tmp)
+	{
+		ft_printf("command: %s\n", tmp->command);
+		while (tmp->arguments && tmp->arguments[i])
+		{
+			ft_printf("arguments: %s\n", tmp->arguments[i]);
+			i++;	
+		}
+		i = 0;
+		tmp_redir = tmp->redirect;
+		while (tmp_redir)
+		{
+			ft_printf("redirects: type = %d, file = %s\n", 
+					tmp_redir->type, tmp_redir->file);
+			tmp_redir = tmp_redir->next_redir;
+		}
+		tmp = tmp->pipe;
+		ft_printf("+++++\n");
+	}
+}
+
+int	ms_command_line_inteface(t_var_data *var_data)
+{
+	char			*prompt;
+	int				flow_check;
+
+	prompt = NULL;
 	while (true)
 	{
 		big_free(var_data, prompt);
@@ -64,28 +89,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			continue ;
 		else if (flow_check == 1)
 			return (1);
-		/* begin test: */
-		tmp = var_data->first_node_ast;
-		while (tmp)
-		{
-			ft_printf("command: %s\n", tmp->command);
-			while (tmp->arguments && tmp->arguments[i])
-			{
-				ft_printf("arguments: %s\n", tmp->arguments[i]);
-				i++;	
-			}
-			i = 0;
-			tmp_redir = tmp->redirect;
-			while (tmp_redir)
-			{
-				ft_printf("redirects: type = %d, file = %s\n", 
-						tmp_redir->type, tmp_redir->file);
-				tmp_redir = tmp_redir->next_redir;
-			}
-			tmp = tmp->pipe;
-			ft_printf("+++++\n");
-			/* end test */
-		}
+		test_print_parser(var_data); //TEST
 	}
 	return (free(prompt), 0);
 }

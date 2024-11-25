@@ -30,7 +30,7 @@ static void free_args_and_redirs(t_ast_node *tmp)
 	while (curr_redir)
 	{
 		tmp_redir = curr_redir->next_redir;
-		free(curr_redir->file);
+	free(curr_redir->file);
 		free(curr_redir);
 		curr_redir = tmp_redir;
 	}
