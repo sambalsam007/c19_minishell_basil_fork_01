@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 15:18:48 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/07 19:07:15 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/28 14:23:34 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	init_error_data(t_error_checks *error_checks)
 {
 	error_checks->lexer_level_syntax_error = false;
 	error_checks->parser_level_syntax_error = false;
+	error_checks->executor_level_syntax_error = false;
 }
 
 t_var_data	*init_var_data(char **envp)
@@ -54,5 +55,6 @@ t_var_data	*init_var_data(char **envp)
 	var_data->error_checks = error_checks;
 	var_data->first_node_lexer = NULL;
 	var_data->first_node_ast = NULL;
+	var_data->no_var_envvar = NULL;
 	return (var_data);
 }

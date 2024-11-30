@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/18 19:02:36 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:01:33 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <linux/limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -71,11 +73,13 @@ typedef struct s_error_checks
 {
 	bool				lexer_level_syntax_error;
 	bool				parser_level_syntax_error;
+	bool				executor_level_syntax_error;
 }	t_error_checks;
 
 typedef struct s_var_data
 {
 	char 			***envvar;
+	char 			***no_var_envvar;
 	t_token_node	*first_node_lexer;
 	t_ast_node		*first_node_ast;
 	t_error_checks  *error_checks;
@@ -141,6 +145,14 @@ t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_tok
 /* ************************************************************************** */
 /*                                      executor                              */
 /* ************************************************************************** */
+
+int				check_if_builtin(t_var_data *var_data, t_ast_node *ast_node, int fd);
+int				ms_echo(t_var_data *var_data, t_ast_node *ast_node, int fd);
+int				ms_env(t_var_data *var_data, t_ast_node *ast_node, int fd);
+int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
+int				ms_export(t_var_data *var_data, t_ast_node *ast_node, int fd);
+void			ms_pwd(t_var_data *var_data, int fd);
+int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
 
 /* ************************************************************************** */
 /*                                      sighandler                           */

@@ -6,22 +6,23 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:27:35 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/07 17:39:54 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/29 16:37:05 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-/* CHECK IF THIS FCT LEAKS, en algemeen testen gwn  */
-
-static char	***ft_entry(int i_entry, char ***new_dict, char ***dict)
+char	***ft_entry(int i_entry, char ***new_dict, char ***dict)
 {
-	new_dict[i_entry][0] = ft_strdup(dict[i_entry][0]);
-	new_dict[i_entry][1] = ft_strdup(dict[i_entry][1]);
-	new_dict[i_entry][2] = NULL;
 	new_dict[i_entry] = malloc(sizeof(char *) * 3);
 	if (!new_dict[i_entry])
 		return (NULL);
+	new_dict[i_entry][0] = ft_strdup(dict[i_entry][0]);
+	if (dict[i_entry][1])
+		new_dict[i_entry][1] = ft_strdup(dict[i_entry][1]);
+	else 
+		new_dict[i_entry][1] = ft_strdup(" ");
+	new_dict[i_entry][2] = NULL;
 	return (new_dict);
 }
 

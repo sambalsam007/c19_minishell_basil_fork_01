@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_get_value.c                                     :+:      :+:    :+:   */
+/*   ft_update_dict.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/06 14:08:55 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 12:59:11 by bclaeys          ###   ########.fr       */
+/*   Created: 2024/11/30 12:43:43 by bclaeys           #+#    #+#             */
+/*   Updated: 2024/11/30 13:11:58 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
-char	*ft_get_value(char *key, char ***dict)
+void	ft_update_dict(char *key, char *new_value, char ***dict)
 {
-	int	i_entry;
-	int	longest_len;
+	int		i_entry;
+	int		longest_len;
+	char 	*str_to_change;
 
 	i_entry = 0;
 	longest_len = 0;
+	str_to_change = NULL;
 	if (!dict)
-		return (NULL);
+		return ;
 	while (dict[i_entry])
 	{
 		if (ft_strlen(key) >= ft_strlen(dict[i_entry][0]))
@@ -28,8 +31,13 @@ char	*ft_get_value(char *key, char ***dict)
 		if (ft_strlen(key) < ft_strlen(dict[i_entry][0]))
 			longest_len = ft_strlen(dict[i_entry][0]);
 		if (!ft_strncmp(dict[i_entry][0], key, longest_len))
-			return (dict[i_entry][1]);
+			break;
 		i_entry++;
 	}
-	return (NULL);
+	str_to_change = dict[i_entry][1];
+	if (!str_to_change)
+		ft_addto_dict(key, new_value, dict);
+	else
+		dict[i_entry][1] = new_value; 
+	free(str_to_change);
 }

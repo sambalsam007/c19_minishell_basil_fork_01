@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:24:49 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/07 17:40:00 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/30 12:47:01 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,13 @@ void	ft_set_to_zero(int *i, int *j, int *k);
 /******************************************************************************/
 
 int		ft_iswhitespace(int c);
-char	***ft_addto_dic(char *key, char *value, char ***dict);
-void	ft_print_dict(char ***dict, char *separator);
+char	***ft_addto_dict(char *key, char *value, char ***dict);
+void	ft_print_dict(char ***dict, char *separator, int fd);
 char	***ft_delete_from_dict(char *key, char ***dict);
 char	*ft_get_value(char *key, char ***dict);
 void	ft_delete_dict(char ***dict);
 char	***ft_create_dict(char **list, char separator);
+char	***ft_entry(int i_entry, char ***new_dict, char ***dict);
+void	ft_update_dict(char *key, char *new_value, char ***dict);
 
 #endif

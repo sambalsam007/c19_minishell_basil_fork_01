@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:35:17 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/14 19:13:42 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/28 13:11:27 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	*free_var_data(t_var_data *var_data)
 {
 	if (var_data->envvar)
 		ft_delete_dict(var_data->envvar);
+	if (var_data->no_var_envvar)
+		ft_delete_dict(var_data->no_var_envvar);
 	if (var_data->first_node_lexer)
 		free_lexer(var_data->first_node_lexer);
 	if (var_data->first_node_ast)

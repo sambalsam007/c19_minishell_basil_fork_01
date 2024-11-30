@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 17:14:52 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/07 19:10:11 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/30 13:08:46 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ char	***ft_create_dict(char **list, char separator)
 	while (list[i])
 	{
 		dict[i] = ft_split(list[i], separator);
-		if (dict[i][2])
+		if (!dict[i])
+			return (ft_delete_dict(dict), NULL);
+		if (dict[i][1] && dict[i][2])
 			if (multiple_separators(dict[i]))
 				return (NULL);
 		i++;

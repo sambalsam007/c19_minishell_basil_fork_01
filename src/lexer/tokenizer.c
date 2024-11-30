@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/18 16:56:03 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:28:43 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ int	whitespace_exception(char *prompt,
 	return (check);
 }
 
+/* NOG FIXEN */
+/* Not interpret unclosed quotes or special characters which are not required by the */
+/* subject such as \ (backslash) or ; (semicolon). */
 int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 {
 	size_t	index;
@@ -60,8 +63,6 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 	if (prompt[index] == '"' || ft_strchr("'><$", prompt[index]))
 		return (tmp_index = whitespace_exception(prompt, &index, 
 					var_data, token), *i += index, tmp_index);
-	/* *i += index; */
-	// waarom was dit nodig?
 	tmp_index = index;
 	while (!ft_iswhitespace(prompt[tmp_index]) && prompt[tmp_index])
 		tmp_index++;

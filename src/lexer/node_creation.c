@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 15:55:55 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/15 16:55:48 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/25 13:02:01 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ static int	type_giver(char *prompt, t_token_node *prev_node)
 		return (-1);
 	if (prompt[i] == '|')
 		return (PIPE);
-	if (prompt[i] == '-' && prompt[i + 1] == 'n')
-		return (FLAG);
+	/* if (prompt[i] == '-' && prompt[i + 1] == 'n') */
+	/* 	return (FLAG); */
 	if (prompt[i] == '<' || prompt[i] == '>')
 		return (REDIRECT);
 	if ((prev_node && prev_node->type == EXEC) || prompt[i] == 39
