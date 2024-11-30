@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/29 18:01:33 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/30 15:28:44 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <linux/limits.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -112,7 +115,7 @@ void			big_free(t_var_data *var_data, char *prompt);
 /*                                      cli                                   */
 /* ************************************************************************** */
 
-int				ms_command_line_inteface(t_var_data *var_data);
+int				ms_command_line_inteface(t_var_data *var_data, char **envp);
 
 /* ************************************************************************** */
 /*                                      lexer                                 */
@@ -153,6 +156,8 @@ int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_export(t_var_data *var_data, t_ast_node *ast_node, int fd);
 void			ms_pwd(t_var_data *var_data, int fd);
 int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
+int				check_if_redir(t_var_data *var_data, t_ast_node *curr_node, int *fd);
+int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node, int fd, char **envp);
 
 /* ************************************************************************** */
 /*                                      sighandler                           */

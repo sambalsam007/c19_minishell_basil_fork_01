@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:58:16 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 13:12:00 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/11/30 13:42:50 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ms_pwd(t_var_data *var_data, int fd)
 	write(1, "\n", fd);
 }
 
-/* getcwd(NULL, 0) will not work on other OSes probably  */
+/* getcwd(NULL, 0) will only work on GNU systems, see man  */
 int		ms_cd(t_var_data *var_data, t_ast_node *ast_node)
 {
 	if (ast_node->arguments[1])

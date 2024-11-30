@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_main.c                                   :+:      :+:    :+:   */
+/*   ft_free_split.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/24 11:48:11 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 14:16:37 by bclaeys          ###   ########.fr       */
+/*   Created: 2024/11/30 15:13:07 by bclaeys           #+#    #+#             */
+/*   Updated: 2024/11/30 15:14:34 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "libft.h"
 
-int	main(int ac, char **av, char **envp)
+void ft_free_split(char **split_arg)
 {
-	t_var_data	*var_data;
+	int	i;
 
-	(void)av;
-	if (ac != 1)
-		return (1);
-	var_data = init_var_data(envp);
-	if (!var_data)
-		return (1);
-	// sighandler
-	if (ms_command_line_inteface(var_data, envp))
-		return (free_var_data(var_data), 1);
-	free_var_data(var_data);
-	return (0);
+	i = 0;
+	while (split_arg[i])	
+	{
+		free(split_arg[i]);
+		i++;
+	}
+	free(split_arg);
 }

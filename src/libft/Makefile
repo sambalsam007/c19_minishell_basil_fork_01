@@ -6,7 +6,7 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/22 11:15:35 by bclaeys           #+#    #+#              #
-#    Updated: 2024/11/30 12:53:45 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/11/30 15:14:10 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ CFILES=ft_format.c ft_printf.c ftpr_putchar.c ftpr_puthex.c ftpr_putint.c \
 	   ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c \
 	   ft_iswhitespace.c ft_addto_dict.c ft_get_value.c \
 	   ft_print_dict.c ft_deletefrom_dict.c ft_delete_dict.c ft_create_dict.c \
-	   ft_update_dict.c
+	   ft_update_dict.c ft_free_split.c
 
 OPT=-O0
 CC=clang
