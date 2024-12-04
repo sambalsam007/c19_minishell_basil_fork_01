@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 15:18:48 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/28 14:23:34 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/04 16:39:53 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,14 @@ t_var_data	*init_var_data(char **envp)
 		free_var_data(var_data);
 		return (ft_print_error_null("Error: malloc failedbla\n"));
 	}
+	ft_update_dict("SHLVL", ft_itoa(ft_atoi(ft_get_value("SHLVL", 
+						var_data->envvar)) + 1), var_data->envvar);
 	var_data->error_checks = error_checks;
 	var_data->first_node_lexer = NULL;
 	var_data->first_node_ast = NULL;
 	var_data->no_var_envvar = NULL;
+	var_data->open_input_file_fd = -1;
+	var_data->open_output_file_fd = -1;
+	var_data->pipe_check = false;
 	return (var_data);
 }

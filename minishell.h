@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 15:28:44 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:44:03 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -86,6 +88,11 @@ typedef struct s_var_data
 	t_token_node	*first_node_lexer;
 	t_ast_node		*first_node_ast;
 	t_error_checks  *error_checks;
+	int				open_output_file_fd;
+	int				open_input_file_fd;
+	int				std_output_fd_backup;
+	int				std_input_fd_backup;
+	bool			pipe_check;
 } 	t_var_data;
 
 
@@ -115,7 +122,7 @@ void			big_free(t_var_data *var_data, char *prompt);
 /*                                      cli                                   */
 /* ************************************************************************** */
 
-int				ms_command_line_inteface(t_var_data *var_data, char **envp);
+int				ms_command_line_inteface(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      lexer                                 */
@@ -149,15 +156,17 @@ t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_tok
 /*                                      executor                              */
 /* ************************************************************************** */
 
-int				check_if_builtin(t_var_data *var_data, t_ast_node *ast_node, int fd);
-int				ms_echo(t_var_data *var_data, t_ast_node *ast_node, int fd);
-int				ms_env(t_var_data *var_data, t_ast_node *ast_node, int fd);
+int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node);
+int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect);
+int				check_if_builtin(t_var_data *var_data, t_ast_node *ast_node);
+int				ms_echo(t_var_data *var_data, t_ast_node *ast_node);
+int				ms_env(t_var_data *var_data, t_ast_node *ast_node);
+int				ms_export(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
-int				ms_export(t_var_data *var_data, t_ast_node *ast_node, int fd);
-void			ms_pwd(t_var_data *var_data, int fd);
+void			ms_pwd(t_var_data *var_data);
 int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
-int				check_if_redir(t_var_data *var_data, t_ast_node *curr_node, int *fd);
-int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node, int fd, char **envp);
+int				restore_fds(t_var_data *var_data);
+int				check_if_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe);
 
 /* ************************************************************************** */
 /*                                      sighandler                           */

@@ -6,7 +6,7 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/24 11:58:53 by bclaeys           #+#    #+#              #
-#    Updated: 2024/11/30 15:33:17 by bclaeys          ###   ########.fr        #
+#    Updated: 2024/12/04 16:54:56 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME=minishell
 
 MAIN_SRCS= minishell_main.c init_data.c
 CLI_SRCS = command_line_inteface.c
-EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c
+EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c
 LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c argument_concatenation.c node_creation.c var_handler.c
 PARSER_SRCS = parser.c abstract_syntax_tree_creation_fcts.c redir_fcts.c environment_functions.c
 SIGHANDLER_SRCS =

@@ -12,7 +12,7 @@
 
 #include "../../../minishell.h"
 
-int	ms_echo(t_var_data *var_data, t_ast_node *ast_node, int fd)
+int	ms_echo(t_var_data *var_data, t_ast_node *ast_node)
 {
 	int		i;
 	bool	flag_check;
@@ -20,19 +20,18 @@ int	ms_echo(t_var_data *var_data, t_ast_node *ast_node, int fd)
 	i = 0;
 	flag_check = false;
 	if (!ast_node->arguments)
-		ft_putstr_fd("\n", fd);
+		ft_putstr_fd("\n", 1);
 	while (ast_node->arguments[i])		
 	{
-		/* printf("%s", ast_node->arguments[i]); */
 		if (!ft_strncmp(ast_node->arguments[i], "-n", 3))
 			flag_check = true;
 		else
-			ft_putstr_fd(ast_node->arguments[i], fd);
+			ft_putstr_fd(ast_node->arguments[i], 1);
 		i++;
-		write(fd, " ", 1);
+		write(1, " ", 1);
 	}
 	if (flag_check != true)
-		write(fd, "\n", 1);
+		write(1, "\n", 1);
 	(void)var_data;
 	return (0);
 }

@@ -13,8 +13,7 @@
 #include "../../../minishell.h"
 
 static int	export_exceptions(t_var_data *var_data, 
-								t_ast_node *ast_node,
-								int	fd)
+								t_ast_node *ast_node)
 {
 	int i;
 	char **split;
@@ -22,8 +21,8 @@ static int	export_exceptions(t_var_data *var_data,
 	i = 0;
 	if (!ast_node->arguments[0])
 	{
-		ft_print_dict(var_data->envvar, "=", fd);
-		ft_print_dict(var_data->no_var_envvar, "=", fd);
+		ft_print_dict(var_data->envvar, "=", 1);
+		ft_print_dict(var_data->no_var_envvar, "=", 1);
 		return (1);
 	}
 	while (ast_node->arguments[i])
@@ -88,8 +87,7 @@ int	ms_export_multiple_separators(char **arg, int *j)
 }
 
 int	ms_export(t_var_data *var_data, 
-				t_ast_node *ast_node, 
-				int fd)
+				t_ast_node *ast_node)
 {
 	char **arg;
 	int	i;
@@ -97,7 +95,7 @@ int	ms_export(t_var_data *var_data,
 
 	i = 0;
 	j = 2;
-	if (export_exceptions(var_data, ast_node, fd))
+	if (export_exceptions(var_data, ast_node))
 		return (1);
 	while(ast_node->arguments[i])
 	{

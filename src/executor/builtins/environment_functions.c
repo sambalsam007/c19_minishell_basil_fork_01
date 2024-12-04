@@ -12,7 +12,7 @@
 
 #include "../../../minishell.h"
 
-int	ms_env(t_var_data *var_data, t_ast_node *ast_node, int fd)
+int	ms_env(t_var_data *var_data, t_ast_node *ast_node)
 {
 	if (ast_node->arguments[0])
 	{
@@ -20,7 +20,7 @@ int	ms_env(t_var_data *var_data, t_ast_node *ast_node, int fd)
 		ft_printf("Error: arguments\n", 2);
 		return (1);
 	}
-	ft_print_dict(var_data->envvar, "=", fd);
+	ft_print_dict(var_data->envvar, "=", 1);
 	return (0);
 }
 

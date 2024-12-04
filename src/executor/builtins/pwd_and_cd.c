@@ -6,22 +6,24 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:58:16 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 13:42:50 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:01:18 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 #include <unistd.h>
 
-void	ms_pwd(t_var_data *var_data, int fd)
+void	ms_pwd(t_var_data *var_data)
 {
-	ft_putstr_fd(ft_get_value("PWD", var_data->envvar), fd);
-	write(1, "\n", fd);
+	ft_putstr_fd(ft_get_value("PWD", var_data->envvar), 1);
+	write(1, "\n", 1);
 }
 
 /* getcwd(NULL, 0) will only work on GNU systems, see man  */
 int		ms_cd(t_var_data *var_data, t_ast_node *ast_node)
 {
+	if (!ast_node->arguments || !ast_node->arguments[0])
+		return (0);	
 	if (ast_node->arguments[1])
 	{
 		var_data->error_checks->parser_level_syntax_error = true;	

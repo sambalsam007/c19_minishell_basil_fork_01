@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 16:55:32 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/25 17:26:09 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:31:28 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ static int fill_all_values_except_command(t_token_node **curr_token_node,
 	{
 		if ((*curr_token_node)->type == REDIRECT)
 		{
-
-			ft_printf("%s\n", (*curr_token_node)->token);
 			tmp_redir_node = add_redirect(curr_token_node, 
 				tmp_redir_node, new_ast_node->redirect, var_data);
 			if (!new_ast_node->redirect)
@@ -77,7 +75,6 @@ static int fill_all_values_except_command(t_token_node **curr_token_node,
 		}
 		else if ((*curr_token_node)->type == FLAG)
 			new_ast_node->flag = (*curr_token_node)->token;
-		/* else  */
 		*curr_token_node = (*curr_token_node)->next;
 	}
 	return (0);
