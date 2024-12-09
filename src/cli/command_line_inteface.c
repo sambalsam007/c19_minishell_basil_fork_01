@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/04 17:49:56 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/05 10:47:28 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,16 @@ static int	execute_logic(t_var_data *var_data)
 
 	tmp_node = var_data->first_node_ast;
 	error_check = 0;
+	if (pipe(var_data->pipe_fd) == -1)
+		return (1);
 	while (tmp_node)
 	{
-		/* test_print_parser(var_data); */
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_printf("Error: no command\n"), 1);
+		/* if (check_pipe(var_data, tmp_node->pipe)) */
+		/* 	return (1); */
 		if (check_if_redir(var_data, tmp_node->redirect))
-			return (1);
-		if (check_if_pipe(var_data, tmp_node->pipe))
 			return (1);
 		error_check = check_if_builtin(var_data, tmp_node);
 		if (error_check == 1)
@@ -92,7 +93,11 @@ static int	execute_logic(t_var_data *var_data)
 		if (error_check == -1 && check_if_binary(var_data, tmp_node))
 			return (1);
 		tmp_node = tmp_node->pipe;		
-	}
+	} 
+	close(var_data->pipe_fd[0]);
+	close(var_data->pipe_fd[1]);
+	while (wait(NULL) > 0)
+		write (var_data->std_output_fd_backup, "wait\n", 6);//TEST
 	return (0);
 }
 
@@ -123,6 +128,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	{
 		big_free(var_data, prompt);
 		init_error_data(var_data->error_checks);
+		/* sighandler */
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		add_history(prompt);
 		if (!prompt)

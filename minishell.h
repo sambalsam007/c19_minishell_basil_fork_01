@@ -90,6 +90,7 @@ typedef struct s_var_data
 	t_error_checks  *error_checks;
 	int				open_output_file_fd;
 	int				open_input_file_fd;
+	int				pipe_fd[2];
 	int				std_output_fd_backup;
 	int				std_input_fd_backup;
 	bool			pipe_check;
@@ -166,10 +167,12 @@ int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
 void			ms_pwd(t_var_data *var_data);
 int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
 int				restore_fds(t_var_data *var_data);
-int				check_if_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe);
+int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe);
 
 /* ************************************************************************** */
 /*                                      sighandler                           */
 /* ************************************************************************** */
+
+int				sighandler(t_var_data *var_data);
 
 #endif

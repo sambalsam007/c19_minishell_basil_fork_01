@@ -12,6 +12,7 @@
 
 #include "../../../minishell.h"
 #include <dirent.h>
+#include <readline/readline.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -76,6 +77,9 @@ static char *check_and_create_path(t_var_data *var_data,
 	}
 	ft_free_split(split_PATH);
 	if (!file_found)
+		/* return (ft_printf("Error: %s not a command\n", command),  */
+		/* 		var_data->error_checks->executor_level_syntax_error = true,  */
+		/* 		NULL); */
 		return (ft_printf("Error: %s not a command\n", command), 
 				var_data->error_checks->executor_level_syntax_error = true, 
 				binary_path);
@@ -159,6 +163,7 @@ static char	**add_cmd_to_argarray(char **args, char *command)
 	return (new_array);	
 }
 
+/* multiple pipes werkt niet: cat | grep | grep */
 int	check_if_binary(t_var_data *var_data, 
 						t_ast_node *ast_node)
 {
@@ -180,6 +185,8 @@ int	check_if_binary(t_var_data *var_data,
 	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
 	if (!tmp_array)
 		return (free(path_bin), ft_printf("Error: malloc\n"), 1);
+	if (!tmp_array[0])
+		return (free(path_bin), 0);
 	envvar_array = envvardict_to_envvararray(var_data->envvar);
 	pid = fork();
 	if (pid == -1)
@@ -187,16 +194,14 @@ int	check_if_binary(t_var_data *var_data,
 				free(path_bin), ft_printf("Error: couldn't fork\n"), 1);
 	if (pid == 0)
 	{
+		check_pipe(var_data, ast_node);
 		if (execve(path_bin, tmp_array, envvar_array) == -1)
-			return (var_data->error_checks->executor_level_syntax_error = true,
-					free(path_bin), ft_free_split(tmp_array),
-					ft_free_split(tmp_array), ft_printf("Error: execve\n"), 1);
+				return (var_data->error_checks->executor_level_syntax_error = true,
+						free(path_bin), ft_free_split(tmp_array), 
+						ft_printf("Error: execve\n"), 1);
 	}
 	else
-		if (waitpid(pid, NULL, 0) == -1)
-			return (var_data->error_checks->executor_level_syntax_error = true,
-					free(path_bin), ft_printf("Error closing child\n"), 
-					ft_free_split(tmp_array), ft_free_split(envvar_array), 1);
-	return (free(path_bin), ft_free_split(envvar_array), 
-			ft_free_split(tmp_array), 0);
+		return (free(path_bin), ft_free_split(envvar_array), 
+				ft_free_split(tmp_array), 0);
+	return (1);
 }
