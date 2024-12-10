@@ -99,7 +99,10 @@ t_ast_node *create_ast_node(t_ast_node *prev_ast_node,
 	if (fill_all_values_except_command(curr_token_node, new_ast_node, var_data))
 		return (NULL);
 	if (prev_ast_node)
+	{
+		var_data->amount_of_pipes++;	
 		prev_ast_node->pipe = new_ast_node;
+	}
 	new_ast_node->pipe = NULL;
 	return (new_ast_node);
 }

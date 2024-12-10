@@ -76,8 +76,8 @@ static int	execute_logic(t_var_data *var_data)
 
 	tmp_node = var_data->first_node_ast;
 	error_check = 0;
-	if (pipe(var_data->pipe_fd) == -1)
-		return (1);
+	if (pipe(var_data->tmp_pipe) == -1)
+		return (ft_printf("Error: pipe failed\n"), 1);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
@@ -94,10 +94,8 @@ static int	execute_logic(t_var_data *var_data)
 			return (1);
 		tmp_node = tmp_node->pipe;		
 	} 
-	close(var_data->pipe_fd[0]);
-	close(var_data->pipe_fd[1]);
 	while (wait(NULL) > 0)
-		write (var_data->std_output_fd_backup, "wait\n", 6);//TEST
+		write (var_data->std_output_fd_backup, "wait\n", 5);//TEST
 	return (0);
 }
 
@@ -111,8 +109,8 @@ int	ms_execute(t_var_data *var_data)
 		return (ft_printf("Error: dup failed\n"), 1);
 	if (execute_logic(var_data))
 		return (1);
-	if (restore_fds(var_data))
-		return (1);
+	/* if (restore_fds(var_data)) */
+	/* 	return (1); */
 	return (0);
 }
 

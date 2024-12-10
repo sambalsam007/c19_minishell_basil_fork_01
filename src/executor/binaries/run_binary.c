@@ -171,7 +171,11 @@ int	check_if_binary(t_var_data *var_data,
 	char 	*path_bin;
 	char 	**tmp_array;
 	char 	**envvar_array;
+	int		pipe_fd[2];
 
+	if (pipe(pipe_fd) == -1)
+		return (ft_printf("Error: pipe failed\n"), 1);
+	var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
@@ -194,14 +198,14 @@ int	check_if_binary(t_var_data *var_data,
 				free(path_bin), ft_printf("Error: couldn't fork\n"), 1);
 	if (pid == 0)
 	{
-		check_pipe(var_data, ast_node);
+		check_pipe(var_data, ast_node, pipe_fd);
 		if (execve(path_bin, tmp_array, envvar_array) == -1)
 				return (var_data->error_checks->executor_level_syntax_error = true,
 						free(path_bin), ft_free_split(tmp_array), 
 						ft_printf("Error: execve\n"), 1);
 	}
 	else
-		return (free(path_bin), ft_free_split(envvar_array), 
-				ft_free_split(tmp_array), 0);
+		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]),
+				ft_free_split(envvar_array), ft_free_split(tmp_array), 0);
 	return (1);
 }

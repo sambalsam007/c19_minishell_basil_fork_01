@@ -61,6 +61,5 @@ t_var_data	*init_var_data(char **envp)
 	var_data->open_input_file_fd = -1;
 	var_data->open_output_file_fd = -1;
 	var_data->pipe_check = false;
-	var_data->amount_of_supbrocesses = 0;
 	return (var_data);
 }
