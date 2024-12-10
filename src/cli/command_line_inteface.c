@@ -69,6 +69,7 @@ void	test_print_parser(t_var_data *var_data)
 	}
 }
 
+/* redirects kapotgemaakt */
 static int	execute_logic(t_var_data *var_data)
 {
 	t_ast_node *tmp_node;
@@ -76,8 +77,9 @@ static int	execute_logic(t_var_data *var_data)
 
 	tmp_node = var_data->first_node_ast;
 	error_check = 0;
-	if (pipe(var_data->tmp_pipe) == -1)
-		return (ft_printf("Error: pipe failed\n"), 1);
+	if (var_data->first_node_ast->pipe)
+		if (pipe(var_data->tmp_pipe) == -1)
+			return (ft_printf("Error: pipe failed\n"), 1);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
