@@ -205,7 +205,7 @@ int	check_if_binary(t_var_data *var_data,
 						ft_printf("Error: execve\n"), 1);
 	}
 	else
-		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]),
+		return (free(path_bin),  var_data->tmp_pipe[0] = dup(pipe_fd[0]), close(pipe_fd[1]), 
 				ft_free_split(envvar_array), ft_free_split(tmp_array), 0);
 	return (1);
 }
