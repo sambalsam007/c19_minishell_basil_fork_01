@@ -18,21 +18,21 @@
 #include <termios.h>
 #include <readline/readline.h>
 
-/* int	homemade_getpid(void) */
-/* { */
-/* 	int		fd; */
-/* 	char 	*pid; */
-/* 	int		pid_int; */
-/**/
-/* 	pid = malloc(sizeof(char) * 8); */
-/* 	fd = open("/proc/self/stat", O_RDONLY); */
-/* 	read(fd, pid, 7); */
-/* 	pid[7] = 0; */
-/* 	pid_int = ft_atoi(pid); */
-/* 	free(pid);	 */
-/* 	close(fd); */
-/* 	return (pid_int); */
-/* } */
+int	homemade_getpid(void)
+{
+	int		fd;
+	char 	*pid;
+	int		pid_int;
+
+	pid = malloc(sizeof(char) * 8);
+	fd = open("/proc/self/stat", O_RDONLY);
+	read(fd, pid, 7);
+	pid[7] = 0;
+	pid_int = ft_atoi(pid);
+	free(pid);	
+	close(fd);
+	return (pid_int);
+}
 
 void	handle_signal_child(int sig, siginfo_t *info, void *context)
 {
@@ -60,6 +60,8 @@ int	handle_signals_through_termios(t_var_data *var_data)
 {
 	struct termios termios_p;
 
+	if ((var_data->termios_backup_check)) 
+		return (0);
 	if (tcgetattr(STDIN_FILENO, &var_data->original_termios) == -1)
 		return (write(2, "Error: tcgetattr\n", 17), 1);
 	termios_p = var_data->original_termios;
@@ -71,14 +73,12 @@ int	handle_signals_through_termios(t_var_data *var_data)
 }
 
 void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
-	/* work in progress */
 {
 	if (info->si_code != SI_USER)
 		return;
+	/* WATTTEFOOOOK */
 	if (sig == SIGINT)
-	{
 		return;
-	}
 	if (sig == SIGQUIT)
 		return;
 	(void)context;
@@ -105,13 +105,14 @@ int	sighandler(t_var_data *var_data, int mode)
 {
 	struct sigaction	signal_struct;
 
+	(void)var_data;
 	signal_struct.sa_flags = SA_RESTART;
 	signal_struct.sa_flags = SA_SIGINFO;
 	if (mode == CHILD)
 		signal_struct.sa_sigaction = handle_signal_child;
 	else if (mode == HERE_DOC)
 		signal_struct.sa_sigaction = handle_signal_heredoc;
-	else if (mode == PARENT)
+	else
 	{ 
 		if (handle_signals_through_termios(var_data) == 1)
 			return (1);

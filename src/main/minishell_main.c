@@ -39,3 +39,4 @@ int	main(int ac, char **av, char **envp)
 /* env -i en dan cd en dan ls */
 /* errors naar STDERRROR */
 /* heredoc signals */
+/* ls -a exporteren wordt behandeld als 'ls -a' = command */

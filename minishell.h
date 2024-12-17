@@ -99,6 +99,7 @@ typedef struct s_var_data
 	int				std_input_fd_backup;
 	bool			pipe_check;
 	struct termios	original_termios;
+	bool			termios_backup_check;
 	int				wstatus;
 } 	t_var_data;
 
