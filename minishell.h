@@ -24,11 +24,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <termios.h>
 #include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 # define ERROR_NULL NULL
+#define CHILD 1
+#define PARENT 3
 
 typedef enum {
 	EXEC = 1,
@@ -95,6 +98,8 @@ typedef struct s_var_data
 	int				std_output_fd_backup;
 	int				std_input_fd_backup;
 	bool			pipe_check;
+	struct termios	original_termios;
+	int				wstatus;
 } 	t_var_data;
 
 
@@ -174,6 +179,7 @@ int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe, int *pipe_fd
 /*                                      sighandler                           */
 /* ************************************************************************** */
 
-int				sighandler(t_var_data *var_data);
+int				sighandler(t_var_data *var_data, int mode);
+int				restore_tty(t_var_data *var_data);
 
 #endif

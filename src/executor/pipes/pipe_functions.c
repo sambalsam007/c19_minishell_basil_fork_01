@@ -69,6 +69,8 @@ int	check_pipe(t_var_data *var_data,
 	struct stat info_pipefd_0;
 	struct stat info_pipefd_1;
 
+	if (!var_data->first_node_ast->pipe)
+		return (0);
 	if (curr_node_pipe == var_data->first_node_ast && curr_node_pipe->pipe) 
 	{
 		if (first_pipe(var_data, pipe_fd))

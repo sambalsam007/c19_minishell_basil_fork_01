@@ -22,9 +22,20 @@ int	main(int ac, char **av, char **envp)
 	var_data = init_var_data(envp);
 	if (!var_data)
 		return (1);
-	// sighandler
+	sighandler(var_data, PARENT);
 	if (ms_command_line_inteface(var_data))
 		return (free_var_data(var_data), 1);
+	restore_tty(var_data);
 	free_var_data(var_data);
 	return (0);
 }
+/* TESTEN */
+/* sowieso alles in valgrind testen op uninit values enzovoort */
+/* jjjjjj > jej schrijft 'Error: not a command' in jej */
+/* .$T */
+/* t>a3' .$T */
+/* /n */
+/* .. */
+/* env -i en dan cd en dan ls */
+/* errors naar STDERRROR */
+/* heredoc signals */

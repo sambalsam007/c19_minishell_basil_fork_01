@@ -62,7 +62,7 @@ static int	handle_append_redir(char *filename,
 	return (0);
 }
 
-static int handle_here_doc(char *filename)
+static int handle_here_doc(t_var_data *var_data, char *filename)
 {
 	int redir_pipe_fd[2];
 	char *prompt;
@@ -70,7 +70,8 @@ static int handle_here_doc(char *filename)
 	if (pipe(redir_pipe_fd) == -1)
 		return (1);
 	prompt = readline("\033[33m> \033[0m");
-	while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1))
+	sighandler(var_data, HERE_DOC);
+	while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1)) 
 	{
 		write(redir_pipe_fd[1], prompt, ft_strlen(prompt));
 		write(redir_pipe_fd[1], "\n", 1);
@@ -95,7 +96,7 @@ int	check_if_redir(t_var_data *var_data, t_ast_redir *redirect)
 	while (tmp && error_check != 1)
 	{
 		if (tmp->type == HERE_DOC)
-			error_check = handle_here_doc(tmp->file);
+			error_check = handle_here_doc(var_data, tmp->file);
 		tmp = tmp->next_redir;
 	}
 	tmp = redirect;

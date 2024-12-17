@@ -77,45 +77,40 @@ static char *check_and_create_path(t_var_data *var_data,
 	}
 	ft_free_split(split_PATH);
 	if (!file_found)
-		/* return (ft_printf("Error: %s not a command\n", command),  */
-		/* 		var_data->error_checks->executor_level_syntax_error = true,  */
-		/* 		NULL); */
 		return (ft_printf("Error: %s not a command\n", command), 
 				var_data->error_checks->executor_level_syntax_error = true, 
-				binary_path);
-	/* dit hierboven sluit alles af, mag niet  */
+				ft_strdup(""));
 	return (binary_path);
 }
 
-
-void	test_print_parser2(t_var_data *var_data)
-{
-	int				i;
-	t_ast_node		*tmp;
-	t_ast_redir		*tmp_redir;
-
-	i = 0;
-	tmp = var_data->first_node_ast;
-	while (tmp)
-	{
-		ft_printf("command: %s\n", tmp->command);
-		while (tmp->arguments && tmp->arguments[i])
-		{
-			ft_printf("arguments: %s\n", tmp->arguments[i]);
-			i++;	
-		}
-		i = 0;
-		tmp_redir = tmp->redirect;
-		while (tmp_redir)
-		{
-			ft_printf("redirects: type = %d, file = %s\n", 
-					tmp_redir->type, tmp_redir->file);
-			tmp_redir = tmp_redir->next_redir;
-		}
-		tmp = tmp->pipe;
-		ft_printf("+++++\n");
-	}
-}
+/* void	test_print_parser2(t_var_data *var_data) */
+/* { */
+/* 	int				i; */
+/* 	t_ast_node		*tmp; */
+/* 	t_ast_redir		*tmp_redir; */
+/**/
+/* 	i = 0; */
+/* 	tmp = var_data->first_node_ast; */
+/* 	while (tmp) */
+/* 	{ */
+/* 		ft_printf("command: %s\n", tmp->command); */
+/* 		while (tmp->arguments && tmp->arguments[i]) */
+/* 		{ */
+/* 			ft_printf("arguments: %s\n", tmp->arguments[i]); */
+/* 			i++;	 */
+/* 		} */
+/* 		i = 0; */
+/* 		tmp_redir = tmp->redirect; */
+/* 		while (tmp_redir) */
+/* 		{ */
+/* 			ft_printf("redirects: type = %d, file = %s\n",  */
+/* 					tmp_redir->type, tmp_redir->file); */
+/* 			tmp_redir = tmp_redir->next_redir; */
+/* 		} */
+/* 		tmp = tmp->pipe; */
+/* 		ft_printf("+++++\n"); */
+/* 	} */
+/* } */
 
 
 static char	**envvardict_to_envvararray(char ***envvar)
@@ -163,7 +158,6 @@ static char	**add_cmd_to_argarray(char **args, char *command)
 	return (new_array);	
 }
 
-/* multiple pipes werkt niet: cat | grep | grep */
 int	check_if_binary(t_var_data *var_data, 
 						t_ast_node *ast_node)
 {
@@ -173,14 +167,19 @@ int	check_if_binary(t_var_data *var_data,
 	char 	**envvar_array;
 	int		pipe_fd[2];
 
-	if (pipe(pipe_fd) == -1)
+	pipe_fd[0] = 0;
+	pipe_fd[1] = 1;
+	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
 		return (ft_printf("Error: pipe failed\n"), 1);
-	var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
+	if (var_data->first_node_ast->pipe)
+		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
 		if (!path_bin)
 			return (1);
+		if (!path_bin[0])
+			return (free(path_bin), 0);
 	}
 	else 
 		path_bin = ft_strdup(ast_node->command);
@@ -198,14 +197,16 @@ int	check_if_binary(t_var_data *var_data,
 				free(path_bin), ft_printf("Error: couldn't fork\n"), 1);
 	if (pid == 0)
 	{
-		check_pipe(var_data, ast_node, pipe_fd);
-		if (execve(path_bin, tmp_array, envvar_array) == -1)
+		if (check_pipe(var_data, ast_node, pipe_fd)
+					|| (sighandler(var_data, CHILD))
+					|| (execve(path_bin, tmp_array, envvar_array) == -1))
 				return (var_data->error_checks->executor_level_syntax_error = true,
 						free(path_bin), ft_free_split(tmp_array), 
-						ft_printf("Error: execve\n"), 1);
+						ft_printf("Error: executor\n"), 1);
 	}
 	else
-		return (free(path_bin),  var_data->tmp_pipe[0] = dup(pipe_fd[0]), close(pipe_fd[1]), 
-				ft_free_split(envvar_array), ft_free_split(tmp_array), 0);
+		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
+				close(pipe_fd[1]), ft_free_split(envvar_array), 
+				ft_free_split(tmp_array), 0);
 	return (1);
 }

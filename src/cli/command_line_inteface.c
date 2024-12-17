@@ -69,24 +69,22 @@ void	test_print_parser(t_var_data *var_data)
 	}
 }
 
-/* redirects kapotgemaakt */
 static int	execute_logic(t_var_data *var_data)
 {
 	t_ast_node *tmp_node;
 	int			error_check;
+	int			status;
 
 	tmp_node = var_data->first_node_ast;
 	error_check = 0;
 	if (var_data->first_node_ast->pipe)
 		if (pipe(var_data->tmp_pipe) == -1)
-			return (ft_printf("Error: pipe failed\n"), 1);
+			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
-					ft_printf("Error: no command\n"), 1);
-		/* if (check_pipe(var_data, tmp_node->pipe)) */
-		/* 	return (1); */
+					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
 		if (check_if_redir(var_data, tmp_node->redirect))
 			return (1);
 		error_check = check_if_builtin(var_data, tmp_node);
@@ -96,8 +94,10 @@ static int	execute_logic(t_var_data *var_data)
 			return (1);
 		tmp_node = tmp_node->pipe;		
 	} 
-	while (wait(NULL) > 0)
-		write (var_data->std_output_fd_backup, "wait\n", 5);//TEST
+	while (wait(&status) > 0)
+		;
+	if (WIFEXITED(var_data->wstatus))
+		var_data->wstatus = status;
 	return (0);
 }
 
@@ -105,21 +105,19 @@ int	ms_execute(t_var_data *var_data)
 {
 	var_data->std_input_fd_backup = dup(STDIN_FILENO);
 	if (var_data->std_input_fd_backup == -1)
-		return (ft_printf("Error: dup failed\n"), 1);
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
 	var_data->std_output_fd_backup = dup(STDOUT_FILENO);
 	if (var_data->std_output_fd_backup == -1)
-		return (ft_printf("Error: dup failed\n"), 1);
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
 	if (execute_logic(var_data))
 		return (1);
-	/* if (restore_fds(var_data)) */
-	/* 	return (1); */
+	if (restore_fds(var_data))
+		return (1);
 	return (0);
 }
 
 int	ms_command_line_inteface(t_var_data *var_data)
 {
-	/* nog testen: een command dat niet bestaat heeft uninit value */
-	/* env\ als command lekt */
 	char			*prompt;
 	int				flow_check;
 
@@ -128,7 +126,6 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	{
 		big_free(var_data, prompt);
 		init_error_data(var_data->error_checks);
-		/* sighandler */
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		add_history(prompt);
 		if (!prompt)
@@ -140,7 +137,6 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			continue ;
 		else if (flow_check == 1)
 			return (1);
-		/* test_print_parser(var_data); //TEST */
 		if (ms_execute(var_data))
 			return (1);
 	}
