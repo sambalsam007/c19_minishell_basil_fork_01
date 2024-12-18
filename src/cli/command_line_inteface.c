@@ -85,8 +85,11 @@ static int	execute_logic(t_var_data *var_data)
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
-		if (check_if_redir(var_data, tmp_node->redirect))
+		error_check = check_if_redir(var_data, tmp_node->redirect);
+		if (error_check)
 			return (1);
+		if (error_check == -1)
+			 break;
 		error_check = check_if_builtin(var_data, tmp_node);
 		if (error_check == 1)
 			return (1);

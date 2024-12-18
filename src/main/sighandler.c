@@ -76,9 +76,12 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 {
 	if (info->si_code != SI_USER)
 		return;
-	/* WATTTEFOOOOK */
 	if (sig == SIGINT)
+	{
+		rl_replace_line("", 1);
+		write(STDIN_FILENO, "\0", 1);	
 		return;
+	}
 	if (sig == SIGQUIT)
 		return;
 	(void)context;
@@ -105,7 +108,6 @@ int	sighandler(t_var_data *var_data, int mode)
 {
 	struct sigaction	signal_struct;
 
-	(void)var_data;
 	signal_struct.sa_flags = SA_RESTART;
 	signal_struct.sa_flags = SA_SIGINFO;
 	if (mode == CHILD)

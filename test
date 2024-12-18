@@ -1,2 +1,0 @@
-$(NAME): $(OBJECTS) 
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o $(NAME) $(OBJECTS) $(INCFLAGS)
