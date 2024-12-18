@@ -46,9 +46,13 @@ static char *check_and_create_path(t_var_data *var_data,
 	struct dirent	*file_found;
 	
 	i = 0;
+	if (!ft_get_value("PATH", var_data->envvar))
+		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
+				var_data->error_checks->executor_level_syntax_error = true, 
+				ft_strdup(""));
 	split_PATH = ft_split(ft_get_value("PATH", var_data->envvar), ':');
 	if (!split_PATH)
-		return (ft_printf("Error: malloc failed\n"), NULL);
+		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
 	while (split_PATH[i])
 	{
 		directory = opendir(split_PATH[i]);
@@ -111,7 +115,6 @@ static char *check_and_create_path(t_var_data *var_data,
 /* 		ft_printf("+++++\n"); */
 /* 	} */
 /* } */
-
 
 static char	**envvardict_to_envvararray(char ***envvar)
 {
@@ -198,7 +201,7 @@ int	check_if_binary(t_var_data *var_data,
 	if (pid == 0)
 	{
 		if (check_pipe(var_data, ast_node, pipe_fd)
-					|| (sighandler(var_data, CHILD))
+					|| (sighandler(var_data, EXECUTOR))
 					|| (execve(path_bin, tmp_array, envvar_array) == -1))
 				return (var_data->error_checks->executor_level_syntax_error = true,
 						free(path_bin), ft_free_split(tmp_array), 

@@ -34,21 +34,6 @@ int	homemade_getpid(void)
 	return (pid_int);
 }
 
-void	handle_signal_child(int sig, siginfo_t *info, void *context)
-{
-	if (info->si_code != SI_USER)
-		return;
-	if (sig == SIGINT)
-	{
-		exit(0);
-		write(STDIN_FILENO, "\n", 1);	
-		return;
-	}
-	if (sig == SIGQUIT)
-		return;
-	(void)context;
-}
-
 int	restore_tty(t_var_data *var_data)
 {
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &var_data->original_termios) == -1)
@@ -78,12 +63,9 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 		return;
 	if (sig == SIGINT)
 	{
-		rl_replace_line("", 1);
-		write(STDIN_FILENO, "\0", 1);	
+		kill(homemade_getpid(), SIGTERM);
 		return;
 	}
-	if (sig == SIGQUIT)
-		return;
 	(void)context;
 }
 
@@ -99,10 +81,22 @@ void	handle_signal_parent(int sig, siginfo_t *info, void *context)
 		rl_redisplay();
 		return;
 	}
-	if (sig == SIGQUIT)
-		return;
 	(void)context;
 }
+
+void	handle_signal_child(int sig, siginfo_t *info, void *context)
+{
+	if (info->si_code != SI_USER)
+		return;
+	if (sig == SIGINT)
+	{
+		exit(0);
+		write(STDIN_FILENO, "\n", 1);	
+		return;
+	}
+	(void)context;
+}
+
 
 int	sighandler(t_var_data *var_data, int mode)
 {
@@ -110,11 +104,11 @@ int	sighandler(t_var_data *var_data, int mode)
 
 	signal_struct.sa_flags = SA_RESTART;
 	signal_struct.sa_flags = SA_SIGINFO;
-	if (mode == CHILD)
+	if (mode == EXECUTOR)
 		signal_struct.sa_sigaction = handle_signal_child;
 	else if (mode == HERE_DOC)
 		signal_struct.sa_sigaction = handle_signal_heredoc;
-	else
+	else if (mode == MAIN_PROCESS)
 	{ 
 		if (handle_signals_through_termios(var_data) == 1)
 			return (1);

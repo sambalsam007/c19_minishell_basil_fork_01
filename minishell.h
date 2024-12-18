@@ -30,8 +30,8 @@
 #include <readline/history.h>
 
 # define ERROR_NULL NULL
-#define CHILD 1
-#define PARENT 3
+#define EXECUTOR 1
+#define MAIN_PROCESS 3
 
 typedef enum {
 	EXEC = 1,

@@ -22,7 +22,7 @@ int	main(int ac, char **av, char **envp)
 	var_data = init_var_data(envp);
 	if (!var_data)
 		return (1);
-	sighandler(var_data, PARENT);
+	sighandler(var_data, MAIN_PROCESS);
 	if (ms_command_line_inteface(var_data))
 		return (free_var_data(var_data), 1);
 	restore_tty(var_data);
@@ -36,7 +36,5 @@ int	main(int ac, char **av, char **envp)
 /* t>a3' .$T */
 /* /n */
 /* .. */
-/* env -i en dan cd en dan ls */
 /* errors naar STDERRROR */
-/* heredoc signals */
 /* ls -a exporteren wordt behandeld als 'ls -a' = command */
