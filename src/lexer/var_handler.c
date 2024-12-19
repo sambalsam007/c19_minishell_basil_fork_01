@@ -40,8 +40,8 @@ static int	handle_envvars(char *key,
 	size_t		k;
 
 	k = 0;
-	/* if (!key) */
-	/* 	return (1); */
+	if (!key)
+		return (1);
 	value = ft_get_value(key, envvar);
 	while (value && value[k])
 		token_string[(*j)++] = value[k++];
@@ -62,12 +62,12 @@ int			fill_token_expd_vars(char *prmpt,
 	{
 		if (prmpt[i] == '$')
 		{
-				if ((prmpt[i+1] && prmpt[i+1] == '?') || !prmpt[i+1] 
+				if ((prmpt[i + 1] && prmpt[i + 1] == '?') || !prmpt[i + 1] 
 						|| ft_iswhitespace(prmpt[i+1]) || (prmpt[i+1]) == '"')
 					token_string[j++] = prmpt[i++];
 				else
 				{
-					key = ft_get_key(&prmpt[i+1]);
+					key = ft_get_key(&prmpt[i + 1]);
 					if (handle_envvars(key, &j, token_string, envvar))
 						return (-1);
 					i += ft_strlen(key) + 1;

@@ -167,9 +167,9 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		if (error_flow == ERROR_CONTINUE)
 			continue ;
 		else if (error_flow == ERROR_STOP)
-			return (ERROR_STOP);
+			return (big_free(var_data, prompt), ERROR_STOP);
 		if (ms_execute(var_data))
-			return (ERROR_STOP);
+			return (big_free(var_data, prompt), ERROR_STOP);
 	}
 	return (free(prompt), 0);
 }
