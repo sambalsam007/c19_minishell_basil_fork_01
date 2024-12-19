@@ -78,6 +78,7 @@ static int	execute_logic(t_var_data *var_data)
 	int			error_flow;
 	int			status;
 
+	ft_printf("execute_logic\n");
 	tmp_node = var_data->first_node_ast;
 	error_flow = 0;
 	if (var_data->first_node_ast->pipe)
@@ -85,6 +86,7 @@ static int	execute_logic(t_var_data *var_data)
 			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
 	while (tmp_node)
 	{
+		ft_printf("while tmp_node\n");
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
@@ -109,12 +111,24 @@ static int	execute_logic(t_var_data *var_data)
 
 int	ms_execute(t_var_data *var_data)
 {
+	ft_printf("ms_execute\n");
+
 	var_data->std_input_fd_backup = dup(STDIN_FILENO);
 	if (var_data->std_input_fd_backup == ERROR_CONTINUE)
 		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
+
+	ft_printf("STDIN_FILENO\t%d\n", STDIN_FILENO);
+	ft_printf("input fd backup\t%d\n", var_data->std_input_fd_backup);
+	ft_printf("\n");
+
 	var_data->std_output_fd_backup = dup(STDOUT_FILENO);
 	if (var_data->std_output_fd_backup == ERROR_CONTINUE)
 		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
+
+	ft_printf("STDOUT_FILENO\t%d\n", STDOUT_FILENO);
+	ft_printf("outpu fd backup\t%d\n", var_data->std_output_fd_backup);
+	ft_printf("\n");
+
 	if (execute_logic(var_data))
 		return (ERROR_STOP);
 	if (restore_fds(var_data))
@@ -175,7 +189,9 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		else if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
 		if (ms_execute(var_data))
+		{
 			return (ERROR_STOP);
+		}
 	}
 	return (free(prompt), 0);
 }
