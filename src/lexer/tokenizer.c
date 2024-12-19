@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/29 18:28:43 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/19 12:39:21 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,35 +46,35 @@ int	whitespace_exception(char *prompt,
 }
 
 /* NOG FIXEN */
-/* Not interpret unclosed quotes or special characters which are not required by the */
+/* dont interpret unclosed quotes or special characters which are not required by the */
 /* subject such as \ (backslash) or ; (semicolon). */
 int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 {
-	size_t	index;
+	size_t	local_index;
 	size_t	tmp_index;
 
-	index = 0;
-	while (ft_iswhitespace(prompt[index]) && prompt[index])
-		index++;
-	if (!prompt[index])
-		return ((*i += index), index);
-	if (prompt[index] && prompt[index] == '|')
+	local_index = 0;
+	while (ft_iswhitespace(prompt[local_index]) && prompt[local_index])
+		local_index++;
+	if (!prompt[local_index])
+		return ((*i += local_index), local_index);
+	if (prompt[local_index] && prompt[local_index] == '|')
 		return(*i += 1, *token = ft_strdup("|"), 0);
-	if (prompt[index] == '"' || ft_strchr("'><$", prompt[index]))
-		return (tmp_index = whitespace_exception(prompt, &index, 
-					var_data, token), *i += index, tmp_index);
-	tmp_index = index;
+	if (prompt[local_index] == '"' || ft_strchr("'><$", prompt[local_index]))
+		return (tmp_index = whitespace_exception(prompt, &local_index, 
+					var_data, token), *i += local_index, tmp_index);
+	tmp_index = local_index;
 	while (!ft_iswhitespace(prompt[tmp_index]) && prompt[tmp_index])
 		tmp_index++;
-	*token = malloc((sizeof(char) * (tmp_index - index)) + 1);
+	*token = malloc((sizeof(char) * (tmp_index - local_index)) + 1);
 	if (!(*token))
 		return (ft_print_error("Error: strtok malloc failed\n"));
 	tmp_index = 0;
-	while (prompt[index] && !ft_iswhitespace(prompt[index])
-		&& (prompt[index] != '"' && !ft_strchr("|'><$", prompt[index])))
-		(*token)[tmp_index++] = prompt[index++];
+	while (prompt[local_index] && !ft_iswhitespace(prompt[local_index])
+		&& (prompt[local_index] != '"' && !ft_strchr("|'><$", prompt[local_index])))
+		(*token)[tmp_index++] = prompt[local_index++];
 	(*token)[tmp_index] = '\0';
-	*i += index;
+	*i += local_index;
 	return (0);
 }
 

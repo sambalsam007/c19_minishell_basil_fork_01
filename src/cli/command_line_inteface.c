@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 15:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/05 10:47:28 by bclaeys          ###   ########.fr       */
+/*   Created: 2024/12/19 12:23:04 by bclaeys           #+#    #+#             */
+/*   Updated: 2024/12/19 12:39:22 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
+
+#define ERROR_CONTINUE -1
+#define ERROR_STOP 1
 
 int	ms_lex_and_parse(t_var_data *var_data,
 						t_error_checks *error_checks,
@@ -26,17 +29,17 @@ int	ms_lex_and_parse(t_var_data *var_data,
 	while (prompt[i] && ft_iswhitespace(prompt[i]))
 		i++;
 	if (!prompt[0] || !prompt[i])
-		return (-1);
+		return (ERROR_CONTINUE);
 	var_data->first_node_lexer = tokenizer(prompt, var_data,
 			var_data->first_node_lexer, 0);
 	if (error_checks->lexer_level_syntax_error == true)
-		return (-1);
+		return (ERROR_CONTINUE);
 	if (!var_data->first_node_lexer)
-		return (free(prompt), 1);
+		return (free(prompt), ERROR_STOP);
 	if (parser(&var_data->first_node_ast, var_data->first_node_lexer, var_data))
-		return (1);
+		return (ERROR_STOP);
 	if (error_checks->parser_level_syntax_error == true)
-		return (-1);
+		return (ERROR_CONTINUE);
 	return (0);
 }
 
@@ -78,8 +81,8 @@ static int	execute_logic(t_var_data *var_data)
 	tmp_node = var_data->first_node_ast;
 	error_check = 0;
 	if (var_data->first_node_ast->pipe)
-		if (pipe(var_data->tmp_pipe) == -1)
-			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
+		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
+			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
@@ -87,14 +90,14 @@ static int	execute_logic(t_var_data *var_data)
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
 		error_check = check_if_redir(var_data, tmp_node->redirect);
 		if (error_check)
-			return (1);
-		if (error_check == -1)
+			return (ERROR_STOP);
+		if (error_check == ERROR_CONTINUE)
 			 break;
 		error_check = check_if_builtin(var_data, tmp_node);
-		if (error_check == 1)
-			return (1);
-		if (error_check == -1 && check_if_binary(var_data, tmp_node))
-			return (1);
+		if (error_check == ERROR_STOP)
+			return (ERROR_STOP);
+		if (error_check == ERROR_CONTINUE && check_if_binary(var_data, tmp_node))
+			return (ERROR_STOP);
 		tmp_node = tmp_node->pipe;		
 	} 
 	while (wait(&status) > 0)
@@ -107,15 +110,15 @@ static int	execute_logic(t_var_data *var_data)
 int	ms_execute(t_var_data *var_data)
 {
 	var_data->std_input_fd_backup = dup(STDIN_FILENO);
-	if (var_data->std_input_fd_backup == -1)
-		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
+	if (var_data->std_input_fd_backup == ERROR_CONTINUE)
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
 	var_data->std_output_fd_backup = dup(STDOUT_FILENO);
-	if (var_data->std_output_fd_backup == -1)
-		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
+	if (var_data->std_output_fd_backup == ERROR_CONTINUE)
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
 	if (execute_logic(var_data))
-		return (1);
+		return (ERROR_STOP);
 	if (restore_fds(var_data))
-		return (1);
+		return (ERROR_STOP);
 	return (0);
 }
 
@@ -136,12 +139,12 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
 		flow_check = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
-		if (flow_check == -1)
+		if (flow_check == ERROR_CONTINUE)
 			continue ;
-		else if (flow_check == 1)
-			return (1);
+		else if (flow_check == ERROR_STOP)
+			return (ERROR_STOP);
 		if (ms_execute(var_data))
-			return (1);
+			return (ERROR_STOP);
 	}
 	return (free(prompt), 0);
 }
