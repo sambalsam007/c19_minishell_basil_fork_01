@@ -1,2 +1,6 @@
 [
+<<<<<<< HEAD
 { "directory": "/home/samd-hoo/files/c19_minishell_basil_fork_01.gg", "file": "src/cli/command_line_inteface.c", "output": "obj/command_line_inteface.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/cli/command_line_inteface.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/command_line_inteface.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
+=======
+{ "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/main/init_data.c", "output": "obj/init_data.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/main/init_data.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/init_data.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
+>>>>>>> upstream/master

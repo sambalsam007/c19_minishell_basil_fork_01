@@ -14,11 +14,14 @@
 
 int createnode_freetmps(char **tmp_str, 
 		char *tmp_extension, 
-		char *tmp_ptrstorage, 
-		t_token_node *curr_node)
+		t_token_node *curr_node,
+		t_var_data *var_data)
 {
+	char	*tmp_ptrstorage;
+
+	tmp_ptrstorage = *tmp_str;
 	*tmp_str = ft_strjoin(*tmp_str, tmp_extension);
-	curr_node = create_node(*tmp_str, curr_node, curr_node);
+	curr_node = create_node(*tmp_str, curr_node, curr_node, var_data);
 	if (!curr_node)
 		return (1);
 	free(tmp_extension);
@@ -30,7 +33,6 @@ size_t	check_if_join_args(t_var_data *var_data, char *prompt, char *tmp_str,
 		t_token_node *curr_node)
 {
 	char	*tmp_extension;
-	char	*tmp_ptrstorage;
 	size_t	i;
 	int		check;
 
@@ -46,9 +48,7 @@ size_t	check_if_join_args(t_var_data *var_data, char *prompt, char *tmp_str,
 			return (var_data->error_checks->lexer_level_syntax_error = true, 1);
 		if (!tmp_extension)
 			continue;
-		tmp_ptrstorage = tmp_str;
-		if (createnode_freetmps(&tmp_str, tmp_extension, 
-					tmp_ptrstorage, curr_node) == -1)
+		if (createnode_freetmps(&tmp_str, tmp_extension, curr_node, var_data))
 			return (-1);
 		if (!*tmp_str)
 			return (i);

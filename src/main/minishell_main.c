@@ -31,7 +31,6 @@ int	main(int ac, char **av, char **envp)
 }
 /* TESTEN */
 /* sowieso alles in valgrind testen op uninit values enzovoort */
-/* jjjjjj > jej schrijft 'Error: not a command' in jej */
 /* .$T */
 /* t>a3' .$T */
 /* /n */

@@ -43,34 +43,34 @@ int	ms_lex_and_parse(t_var_data *var_data,
 	return (0);
 }
 
-void	test_print_parser(t_var_data *var_data)
-{
-	int				i;
-	t_ast_node		*tmp;
-	t_ast_redir		*tmp_redir;
-
-	i = 0;
-	tmp = var_data->first_node_ast;
-	while (tmp)
-	{
-		ft_printf("command: %s\n", tmp->command);
-		while (tmp->arguments && tmp->arguments[i])
-		{
-			ft_printf("arguments: %s\n", tmp->arguments[i]);
-			i++;	
-		}
-		i = 0;
-		tmp_redir = tmp->redirect;
-		while (tmp_redir)
-		{
-			ft_printf("redirects: type = %d, file = %s\n", 
-					tmp_redir->type, tmp_redir->file);
-			tmp_redir = tmp_redir->next_redir;
-		}
-		tmp = tmp->pipe;
-		ft_printf("+++++\n");
-	}
-}
+/* void	test_print_parser(t_var_data *var_data) */
+/* { */
+/* 	int				i; */
+/* 	t_ast_node		*tmp; */
+/* 	t_ast_redir		*tmp_redir; */
+/**/
+/* 	i = 0; */
+/* 	tmp = var_data->first_node_ast; */
+/* 	while (tmp) */
+/* 	{ */
+/* 		ft_printf("command: %s\n", tmp->command); */
+/* 		while (tmp->arguments && tmp->arguments[i]) */
+/* 		{ */
+/* 			ft_printf("arguments: %s\n", tmp->arguments[i]); */
+/* 			i++;	 */
+/* 		} */
+/* 		i = 0; */
+/* 		tmp_redir = tmp->redirect; */
+/* 		while (tmp_redir) */
+/* 		{ */
+/* 			ft_printf("redirects: type = %d, file = %s\n",  */
+/* 					tmp_redir->type, tmp_redir->file); */
+/* 			tmp_redir = tmp_redir->next_redir; */
+/* 		} */
+/* 		tmp = tmp->pipe; */
+/* 		ft_printf("+++++\n"); */
+/* 	} */
+/* } */
 
 static int	execute_logic(t_var_data *var_data)
 {
@@ -111,24 +111,6 @@ static int	execute_logic(t_var_data *var_data)
 
 int	ms_execute(t_var_data *var_data)
 {
-	ft_printf("ms_execute\n");
-
-	var_data->std_input_fd_backup = dup(STDIN_FILENO);
-	if (var_data->std_input_fd_backup == ERROR_CONTINUE)
-		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
-
-	ft_printf("STDIN_FILENO\t%d\n", STDIN_FILENO);
-	ft_printf("input fd backup\t%d\n", var_data->std_input_fd_backup);
-	ft_printf("\n");
-
-	var_data->std_output_fd_backup = dup(STDOUT_FILENO);
-	if (var_data->std_output_fd_backup == ERROR_CONTINUE)
-		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), ERROR_STOP);
-
-	ft_printf("STDOUT_FILENO\t%d\n", STDOUT_FILENO);
-	ft_printf("outpu fd backup\t%d\n", var_data->std_output_fd_backup);
-	ft_printf("\n");
-
 	if (execute_logic(var_data))
 		return (ERROR_STOP);
 	if (restore_fds(var_data))

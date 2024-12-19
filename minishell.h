@@ -29,7 +29,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-# define ERROR_NULL NULL
+#define ERROR_NULL NULL
 #define EXECUTOR 1
 #define MAIN_PROCESS 3
 
@@ -97,10 +97,11 @@ typedef struct s_var_data
 	int				tmp_pipe[2];
 	int				std_output_fd_backup;
 	int				std_input_fd_backup;
-	bool			pipe_check;
-	struct termios	original_termios;
-	bool			termios_backup_check;
 	int				wstatus;
+	bool			pipe_check;
+	bool			is_redirect;
+	bool			termios_backup_check;
+	struct termios	original_termios;
 } 	t_var_data;
 
 
@@ -142,9 +143,9 @@ int				single_quotes(char *prompt, size_t *index, char **tokenized_string);
 int				double_quotes(char *prompt, size_t *index, t_var_data *var_data, char **token_str);
 char			*ft_get_key(char *prompt);
 int				ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i);
-t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node, t_token_node *current_node);
+t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node, t_token_node *current_node, t_var_data *var_data);
 size_t			check_if_join_args(t_var_data *var_data, char *prompt, char *tmp_str, t_token_node *current_node);
-int				whitespace_exception(char *prompt, size_t *index, t_var_data *var_data, char **token);
+int				exception(char *prompt, size_t *index, t_var_data *var_data, char **token);
 int				no_quotes_arg(char *prompt, size_t *index, char ***envvar, char **token);
 int				fill_token_expd_vars(char *prompt, char *token_string, char *key, char ***envvar);
 int				check_single_dollar(char *prompt, size_t *index, char **token);

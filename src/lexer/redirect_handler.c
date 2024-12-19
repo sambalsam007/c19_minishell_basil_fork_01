@@ -93,7 +93,7 @@ static int	fill_redirect_token(char *prompt,
 				break;
 		tmpindex++;
 	}
-	return (token[tmpindex] = '\0', 0);
+	return (token[tmpindex] = '\0', var_data->is_redirect = true, 0);
 }
 
 static int	filename_length_count_logic(char *prompt,

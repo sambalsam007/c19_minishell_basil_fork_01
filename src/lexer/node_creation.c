@@ -12,7 +12,9 @@
 
 #include "../../minishell.h"
 
-static int	type_giver(char *prompt, t_token_node *prev_node)
+static int	type_giver(char *prompt, 
+						t_token_node *prev_node, 
+						t_var_data *var_data)
 {
 	int				i;
 	t_token_node	*tmp_node;
@@ -23,10 +25,9 @@ static int	type_giver(char *prompt, t_token_node *prev_node)
 		return (-1);
 	if (prompt[i] == '|')
 		return (PIPE);
-	/* if (prompt[i] == '-' && prompt[i + 1] == 'n') */
-	/* 	return (FLAG); */
-	if (prompt[i] == '<' || prompt[i] == '>')
-		return (REDIRECT);
+	/* if (prompt[i] == '<' || prompt[i] == '>') */
+	if (var_data->is_redirect)
+		return (var_data->is_redirect = false, REDIRECT);
 	if ((prev_node && prev_node->type == EXEC) || prompt[i] == 39
 		|| prompt[i] == 34)
 		return (ARGUMENT);
@@ -41,7 +42,8 @@ static int	type_giver(char *prompt, t_token_node *prev_node)
 
 t_token_node	*create_node(char *tokenized_str,
 							t_token_node *prev_node,
-							t_token_node *current_node)
+							t_token_node *current_node,
+							t_var_data *var_data)
 {
 	t_token_node	*token_node;
 
@@ -57,7 +59,7 @@ t_token_node	*create_node(char *tokenized_str,
 		token_node = current_node;
 	token_node->token = tokenized_str;
 	if (token_node->type == 0)
-		token_node->type = type_giver(tokenized_str, prev_node);
+		token_node->type = type_giver(tokenized_str, prev_node, var_data);
 	token_node->argument_check = true;
 	if (prev_node && prev_node != current_node)
 	{
