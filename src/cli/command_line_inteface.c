@@ -19,6 +19,10 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
+int	T_command_line_inteface = 0;
+int	T_lex_and_parse = 0;
+int	T_init_error_data = 0;
+
 int	ms_lex_and_parse(t_var_data *var_data,
 						t_error_checks *error_checks,
 						char *prompt)
@@ -27,9 +31,16 @@ int	ms_lex_and_parse(t_var_data *var_data,
 
 	i = 0;
 	while (prompt[i] && ft_iswhitespace(prompt[i]))
+	{
+		(T_lex_and_parse) ? ft_printf("\tskip whitespace\n"):0;
 		i++;
+	}
 	if (!prompt[0] || !prompt[i])
+	{
+		(T_lex_and_parse) ? ft_printf("\tno prompt\n"):0;
+		(T_lex_and_parse) ? ft_printf("\tERROR_CONTINUE\n"):0;
 		return (ERROR_CONTINUE);
+	}
 	var_data->first_node_lexer = tokenizer(prompt, var_data,
 			var_data->first_node_lexer, 0);
 	if (error_checks->lexer_level_syntax_error == true)
@@ -78,12 +89,12 @@ static int	execute_logic(t_var_data *var_data)
 	int			error_flow;
 	int			status;
 
-	ft_printf("execute_logic\n");
 	tmp_node = var_data->first_node_ast;
 	error_flow = 0;
 	if (var_data->first_node_ast->pipe)
 		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
 			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
+	ft_printf("execute_logic________start loop over AST\n");
 	while (tmp_node)
 	{
 		ft_printf("while tmp_node\n");
@@ -97,11 +108,18 @@ static int	execute_logic(t_var_data *var_data)
 			 break;
 		error_flow = check_if_builtin(var_data, tmp_node);
 		if (error_flow == ERROR_STOP)
+		{
+			ft_printf("error stop\n");
 			return (ERROR_STOP);
+		}
 		if (error_flow == ERROR_CONTINUE && check_if_binary(var_data, tmp_node))
+		{
+			ft_printf("error continue\n");
 			return (ERROR_STOP);
+		}
 		tmp_node = tmp_node->pipe;		
 	} 
+	ft_printf("execute_logic________end   loop over AST\n");
 	while (wait(&status) > 0)
 		;
 	if (WIFEXITED(var_data->wstatus))
@@ -152,23 +170,50 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	char			*prompt;
 	int				error_flow;
 
+	ft_printf("ms_command_line_inteface=======\n");
 	prompt = NULL;
+	ft_printf("prompt:%s\n", prompt);
+
+	T_command_line_inteface = 1;
+	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____start while loop\n"):0;
 	while (true)
 	{
+		ft_printf("prompt:%s\n", prompt);
 		big_free(var_data, prompt);
+
+		T_init_error_data = 0;
+		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
 		init_error_data(var_data->error_checks);
+		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
+
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
+		(T_command_line_inteface) ? ft_printf("prompt:%s\n", prompt):0;
 		add_history(prompt);
 		if (!prompt)
+		{
+			// safety,
+			// voor als readline failed?
+			// of bij afsluiten van minishell?
+			(T_command_line_inteface) ? ft_printf("!prompt\n"):0;
 			return (ft_printf("exit\n"), 0);
+		}
+		// ft_printf("----ms_command_line_inteface // clean_prompt\n");
 		if (clean_prompt(&prompt))	
 			return (ft_printf("Error: malloc\n"), 1);
+		// ft_printf("----ms_command_line_inteface // clean_prompt\n");
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
+
+		T_lex_and_parse = 0;
+		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
-		ft_printf("error_flow; %d\n", error_flow);
+		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
 		if (error_flow == ERROR_CONTINUE)
+		{
+			(T_command_line_inteface) ? ft_printf("because error_flow == ERROR_CONTINUE\n"):0;
+			(T_command_line_inteface) ? ft_printf("continue ;\n"):0;
 			continue ;
+		}
 		else if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
 		if (ms_execute(var_data))
@@ -176,5 +221,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			return (ERROR_STOP);
 		}
 	}
+	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____end while loop\n"):0;
+	(T_command_line_inteface) ? ft_printf("free(prompt)\n"):0;
 	return (free(prompt), 0);
 }
