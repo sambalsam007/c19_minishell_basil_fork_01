@@ -18,7 +18,8 @@ int	count_key(char **key,
 						int *j)
 {
 	*key = ft_get_key(&prompt[*i + 1]);
-	*j += ft_strlen(*key) + 1;
+	/* *j += ft_strlen(*key) + 1; */
+	*j += ft_strlen(*key);
 	*i += ft_strlen(*key);
 	if (!prompt[*i])
 	{
@@ -57,7 +58,7 @@ int	count_total_strlen(char *prompt,
 	{
 		if (prompt[i] == '$')
 		{
-			if ((prompt[i+1] && prompt[i+1] == '?') || !prompt[i + 1] 
+			if ((prompt[i + 1] && prompt[i + 1] == '?') || !prompt[i + 1] 
 					|| ft_iswhitespace(prompt[i + 1]))
 				;
 			else
