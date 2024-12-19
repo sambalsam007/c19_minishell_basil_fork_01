@@ -51,9 +51,11 @@ static int filename_fill_logic(char *prompt,
 
 	i = 0;
 	key = NULL;
+	if (ft_strchr("<>", prompt[i]) && *temp_index > 2)
+		return (0);
 	if (ft_strchr("'\"", prompt[i]))
 	{
-		fill_token_expd_vars(&prompt[i+1], &tokenized_string[*temp_index], 
+		fill_token_expd_vars(&prompt[i + 1], &tokenized_string[*temp_index], 
 				key, var_data->envvar);
 		i += count_total_strlen(&prompt[i], var_data, key, temp_index);
 		*temp_index += ft_strlen(&tokenized_string[*temp_index]);
@@ -66,7 +68,7 @@ static int filename_fill_logic(char *prompt,
 
 static int	fill_redirect_token(char *prompt, 
 								char *token,
-								int white_space_counter,
+								int space_counter,
 								t_var_data *var_data)
 {
 	int	tmpindex;
@@ -76,11 +78,10 @@ static int	fill_redirect_token(char *prompt,
 	i = 0;
 	while ((size_t)i < ft_strlen(prompt) && prompt[i] && prompt[i] != '|')
 	{
-
 		if (ft_iswhitespace(prompt[i]))
 		{
-			white_space_counter++;
-			if (white_space_counter == 2)
+			space_counter++;
+			if (space_counter == 2)
 				break ;
 			while (prompt[i] && ft_iswhitespace(prompt[i]) && token[tmpindex])
 				token[tmpindex++] = prompt[i++];
@@ -88,10 +89,11 @@ static int	fill_redirect_token(char *prompt,
 				return (var_data->error_checks->lexer_level_syntax_error = true, -1);
 		}
 		i += filename_fill_logic(&prompt[i], &tmpindex, token, var_data);
-		if ((ft_strchr("<>|", prompt[i++]) && white_space_counter >= 1) 
-				|| (i > 2 && ft_iswhitespace(prompt[i]) && token[tmpindex++]))
+		if (((ft_strchr("<>|", prompt[i]) && (space_counter >= 1 || i > 3)) 
+				|| (i > 2 && ft_iswhitespace(prompt[i]) && token[tmpindex++])))
 				break;
 		tmpindex++;
+		i++;
 	}
 	return (token[tmpindex] = '\0', var_data->is_redirect = true, 0);
 }
@@ -144,13 +146,14 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	if (len_expanded_var == -1 
 			|| var_data->error_checks->lexer_level_syntax_error == true)
 		return (ft_printf("Error: redirection syntax error\n"),  ERROR_NULL);	
-	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 1))); // work in progress;
+	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 10)));
 	if (!token_string)
 		return (ft_print_error_null("Error: redirect_handler malloc failed\n"));
 	fill_redirect_token(&prompt[*index], token_string, 0, var_data);
 	check_valid_redir_syntax(token_string, var_data);
 	*index += (size_t)i;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf("Error: redirection syntax error\n"), free(token_string), ERROR_NULL);	
+		return (ft_printf("Error: redirection syntax error\n"), 
+				free(token_string), ERROR_NULL);	
 	return (token_string);
 }
