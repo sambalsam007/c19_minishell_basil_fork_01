@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/19 12:39:21 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/19 13:07:02 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ int	whitespace_exception(char *prompt,
 							t_var_data *var_data,
 							char **token)
 {
-	int	check;
+	int	error_flow;
 
-	check = 0;
+	error_flow = 0;
 	if (ft_strchr("><", prompt[*index]))
 	{
 		*token = redirect_handler(prompt, index, var_data);
@@ -31,23 +31,21 @@ int	whitespace_exception(char *prompt,
 			return (-1);
 	}
 	else if (ft_strchr("'", prompt[*index]))
-		check = single_quotes(prompt, index, token);
+		error_flow = single_quotes(prompt, index, token);
 	else if (ft_strchr("$", prompt[*index]))
-		while (prompt[*index] && ft_strchr("$", prompt[*index]) && check != 2
-			&& check != 1)
-			check = no_quotes_arg(prompt, index, var_data->envvar, token);
+		while (prompt[*index] && ft_strchr("$", prompt[*index]) 
+				&& error_flow != 2
+			&& error_flow != 1)
+			error_flow = no_quotes_arg(prompt, index, var_data->envvar, token);
 	else if (prompt[*index] == '"')
-		check = double_quotes(prompt, index, var_data, token);
+		error_flow = double_quotes(prompt, index, var_data, token);
 	else
 		*token = NULL;
-	if (check == 2)
-		check = 0;
-	return (check);
+	if (error_flow == 2)
+		error_flow = 0;
+	return (error_flow);
 }
 
-/* NOG FIXEN */
-/* dont interpret unclosed quotes or special characters which are not required by the */
-/* subject such as \ (backslash) or ; (semicolon). */
 int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 {
 	size_t	local_index;
@@ -84,16 +82,16 @@ static int	init_tokenizer(t_token_node **first_node,
 							char *prompt)
 {
 	size_t	i;
-	int		flow;
+	int		error_flow;
 
 	i = 0;
-	flow = ft_strtok(prompt, var_data, tmp_str, &i);
-	if (flow == 1)
+	error_flow = ft_strtok(prompt, var_data, tmp_str, &i);
+	if (error_flow == 1)
 		return (0);
-	if (flow == -1)
+	if (error_flow == -1)
 		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
-	if (flow != 0)
-		return (flow);
+	if (error_flow != 0)
+		return (error_flow);
 	if (!*tmp_str)
 		*tmp_str = ft_strdup("");
 	*first_node = create_node(*tmp_str, NULL, NULL);
@@ -106,7 +104,7 @@ int	make_token(t_token_node *first_node,
 				char *prompt)
 {
 	size_t	i;
-	int		check;
+	int		error_flow;
 
 	i = 0;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
@@ -115,25 +113,25 @@ int	make_token(t_token_node *first_node,
 		i++;
 	if (!prompt[i])
 		return (-3);
-	check = ft_strtok(&prompt[i], var_data, tmp_str, &i);
-	if (check == 1)
-		check = -2;
+	error_flow = ft_strtok(&prompt[i], var_data, tmp_str, &i);
+	if (error_flow == 1)
+		error_flow = -2;
 	if (!tmp_str && !first_node->token)
 	{
 		first_node = NULL;
-		check = -2;
+		error_flow = -2;
 	}
-	if (check == -1)
+	if (error_flow == -1)
 		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
-	if (check < 0)
-		return (check);
+	if (error_flow < 0)
+		return (error_flow);
 	return (i);
 }
 
 t_token_node	*tokenizer(char *prompt,
 						t_var_data *var_data,
 						t_token_node *first_nd,
-						int flow)
+						int error_flow)
 {
 	t_token_node	*current;
 	char			*tmp_str;
@@ -143,22 +141,22 @@ t_token_node	*tokenizer(char *prompt,
 	if (i == 0)
 		return (ERROR_NULL);
 	current = first_nd;
-	while (ft_strlen(prompt) > i && prompt[i] && flow >= 0 && current)
+	while (ft_strlen(prompt) > i && prompt[i] && error_flow >= 0 && current)
 	{ 
-		if (prompt[i-1] != '|')
+		if (prompt[i - 1] != '|')
 			i += check_if_join_args(var_data, &prompt[i], tmp_str, current);
 		if (!tmp_str)
 			return (ft_print_error_null("Error: tokenizer malloc failed\n"));
-		flow = make_token(first_nd, var_data, &tmp_str, &prompt[i]);
-		if (flow < 0 || var_data->error_checks->lexer_level_syntax_error == true)
+		error_flow = make_token(first_nd, var_data, &tmp_str, &prompt[i]);
+		if (error_flow < 0 || var_data->error_checks->lexer_level_syntax_error == true)
 			break ;
-		i += flow;
+		i += error_flow;
 		current->next = create_node(tmp_str, current, NULL);
 		current = current->next;
 	}
 	if (var_data->error_checks->lexer_level_syntax_error == true)
 		return (first_nd);
-	if (flow == -2 || !current)
+	if (error_flow == -2 || !current)
 		return (NULL);
 	return (first_nd);
 }

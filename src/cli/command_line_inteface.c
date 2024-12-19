@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 12:23:04 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/19 12:39:22 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/19 13:07:03 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ void	test_print_parser(t_var_data *var_data)
 static int	execute_logic(t_var_data *var_data)
 {
 	t_ast_node *tmp_node;
-	int			error_check;
+	int			error_flow;
 	int			status;
 
 	tmp_node = var_data->first_node_ast;
-	error_check = 0;
+	error_flow = 0;
 	if (var_data->first_node_ast->pipe)
 		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
 			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
@@ -88,15 +88,15 @@ static int	execute_logic(t_var_data *var_data)
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
-		error_check = check_if_redir(var_data, tmp_node->redirect);
-		if (error_check)
+		error_flow = check_if_redir(var_data, tmp_node->redirect);
+		if (error_flow)
 			return (ERROR_STOP);
-		if (error_check == ERROR_CONTINUE)
+		if (error_flow == ERROR_CONTINUE)
 			 break;
-		error_check = check_if_builtin(var_data, tmp_node);
-		if (error_check == ERROR_STOP)
+		error_flow = check_if_builtin(var_data, tmp_node);
+		if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
-		if (error_check == ERROR_CONTINUE && check_if_binary(var_data, tmp_node))
+		if (error_flow == ERROR_CONTINUE && check_if_binary(var_data, tmp_node))
 			return (ERROR_STOP);
 		tmp_node = tmp_node->pipe;		
 	} 
@@ -122,10 +122,39 @@ int	ms_execute(t_var_data *var_data)
 	return (0);
 }
 
+static int	clean_prompt(char **prompt)
+{
+	int	i;
+	int	j;
+	char *new_prompt;
+
+	i = 0;
+	j = 0;
+	while ((*prompt)[i])
+	{
+		if ((*prompt)[i] == '\\' || (*prompt)[i] == ';')	
+			j++;
+		i++;
+	}
+	new_prompt = malloc(sizeof(char) * (i - j + 1));
+	if (!new_prompt)
+		return (1);
+	i = 0;
+	j = 0;
+	while ((*prompt)[i])
+	{
+		if ((*prompt)[i] == '\\' || (*prompt)[i] == ';')	
+			i++;
+		else
+			new_prompt[j++] = (*prompt)[i++];
+	}
+	return (new_prompt[j] = 0, free(*prompt), *prompt = new_prompt, 0);
+}
+
 int	ms_command_line_inteface(t_var_data *var_data)
 {
 	char			*prompt;
-	int				flow_check;
+	int				error_flow;
 
 	prompt = NULL;
 	while (true)
@@ -136,12 +165,14 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		add_history(prompt);
 		if (!prompt)
 			return (ft_printf("exit\n"), 0);
+		if (clean_prompt(&prompt))	
+			return (ft_printf("Error: malloc\n"), 1);
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
-		flow_check = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
-		if (flow_check == ERROR_CONTINUE)
+		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
+		if (error_flow == ERROR_CONTINUE)
 			continue ;
-		else if (flow_check == ERROR_STOP)
+		else if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
 		if (ms_execute(var_data))
 			return (ERROR_STOP);
