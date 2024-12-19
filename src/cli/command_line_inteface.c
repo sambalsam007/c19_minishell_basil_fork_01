@@ -19,7 +19,7 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
-int	T_command_line_inteface = 0;
+int	T_command_line_inteface = 1;
 int	T_lex_and_parse = 0;
 int	T_init_error_data = 0;
 
@@ -174,14 +174,12 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	prompt = NULL;
 	ft_printf("prompt:%s\n", prompt);
 
-	T_command_line_inteface = 1;
 	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____start while loop\n"):0;
 	while (true)
 	{
 		ft_printf("prompt:%s\n", prompt);
 		big_free(var_data, prompt);
 
-		T_init_error_data = 0;
 		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
 		init_error_data(var_data->error_checks);
 		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
@@ -191,9 +189,8 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		add_history(prompt);
 		if (!prompt)
 		{
-			// safety,
-			// voor als readline failed?
-			// of bij afsluiten van minishell?
+			// ctrl+D	-> !prompt
+			// exit		-> ---
 			(T_command_line_inteface) ? ft_printf("!prompt\n"):0;
 			return (ft_printf("exit\n"), 0);
 		}
@@ -204,7 +201,6 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
 
-		T_lex_and_parse = 0;
 		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
 		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
