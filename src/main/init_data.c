@@ -38,6 +38,17 @@ void	init_error_data(t_error_checks *error_checks)
 	error_checks->executor_level_syntax_error = false;
 }
 
+int	backup_fds(t_var_data *var_data)
+{
+	var_data->std_input_fd_backup = dup(STDIN_FILENO);
+	if (var_data->std_input_fd_backup == -1)
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
+	var_data->std_output_fd_backup = dup(STDOUT_FILENO);
+	if (var_data->std_output_fd_backup == -1)
+		return (ft_putstr_fd("Error: dup failed\n", STDERR_FILENO), 1);
+	return (0);
+}
+
 t_var_data	*init_var_data(char **envp)
 {
 	t_var_data		*var_data;
@@ -52,6 +63,8 @@ t_var_data	*init_var_data(char **envp)
 		free_var_data(var_data);
 		return (ft_print_error_null("Error: malloc failedbla\n"));
 	}
+	if (backup_fds(var_data))
+		return (free_var_data(var_data), NULL);
 	ft_update_dict("SHLVL", ft_itoa(ft_atoi(ft_get_value("SHLVL", 
 						var_data->envvar)) + 1), var_data->envvar);
 	var_data->error_checks = error_checks;
@@ -62,6 +75,7 @@ t_var_data	*init_var_data(char **envp)
 	var_data->open_output_file_fd = -1;
 	var_data->pipe_check = false;
 	var_data->termios_backup_check = false;
+	var_data->is_redirect = false;
 	var_data->wstatus = 0;
 	return (var_data);
 }

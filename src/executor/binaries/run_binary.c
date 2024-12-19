@@ -13,6 +13,7 @@
 #include "../../../minishell.h"
 #include <dirent.h>
 #include <readline/readline.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -72,16 +73,18 @@ static char *check_and_create_path(t_var_data *var_data,
 		{
 			binary_path = create_path_or_envp(split_PATH[i], command, "/");
 			if (closedir(directory))
-				return (ft_printf("Error: couldn't close dir\n"), NULL);
+				return (ft_putstr_fd("Error: couldn't close dir\n", 
+							STDERR_FILENO), NULL);
 			break;
 		}
 		if (closedir(directory))
-			return (ft_printf("Error: couldn't close dir\n"), NULL);
+				return (ft_putstr_fd("Error: couldn't close dir\n", 
+							STDERR_FILENO), NULL);
 		i++;
 	}
 	ft_free_split(split_PATH);
 	if (!file_found)
-		return (ft_printf("Error: %s not a command\n", command), 
+		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO), 
 				var_data->error_checks->executor_level_syntax_error = true, 
 				ft_strdup(""));
 	return (binary_path);
@@ -132,7 +135,8 @@ static char	**envvardict_to_envvararray(char ***envvar)
 	{
 		new_array[i] = create_path_or_envp(envvar[i][0], envvar[i][1], "=");
 		if (!new_array[i])
-			return (ft_free_split(new_array), write(2, "Error: mall", 9), NULL);
+			return (ft_free_split(new_array), write(STDERR_FILENO, 
+						"Error: malloc", 9), NULL);
 		i++;
 	}	
 	new_array[i] = 0;
@@ -173,7 +177,7 @@ int	check_if_binary(t_var_data *var_data,
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
-		return (ft_printf("Error: pipe failed\n"), 1);
+		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	if (var_data->first_node_ast->pipe)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 	if (!ft_strchr("/~.", ast_node->command[0]))
@@ -190,14 +194,16 @@ int	check_if_binary(t_var_data *var_data,
 		return (0);
 	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
 	if (!tmp_array)
-		return (free(path_bin), ft_printf("Error: malloc\n"), 1);
+		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
 	if (!tmp_array[0])
 		return (free(path_bin), 0);
 	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	// hier aparte fct van maken
 	pid = fork();
 	if (pid == -1)
-		return (ft_free_split(envvar_array), ft_free_split(tmp_array),
-				free(path_bin), ft_printf("Error: couldn't fork\n"), 1);
+		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
+				ft_free_split(envvar_array), ft_free_split(tmp_array),
+				free(path_bin), 1);
 	if (pid == 0)
 	{
 		if (check_pipe(var_data, ast_node, pipe_fd)
@@ -205,11 +211,12 @@ int	check_if_binary(t_var_data *var_data,
 					|| (execve(path_bin, tmp_array, envvar_array) == -1))
 				return (var_data->error_checks->executor_level_syntax_error = true,
 						free(path_bin), ft_free_split(tmp_array), 
-						ft_printf("Error: executor\n"), 1);
+						ft_putstr_fd("Error: executor\n", STDERR_FILENO), 1);
 	}
 	else
 		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
 				close(pipe_fd[1]), ft_free_split(envvar_array), 
 				ft_free_split(tmp_array), 0);
+	// tot hier 
 	return (1);
 }

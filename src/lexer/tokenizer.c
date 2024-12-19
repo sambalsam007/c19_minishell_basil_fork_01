@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <time.h>
 
-int	whitespace_exception(char *prompt,
+int	exceptions(char *prompt,
 							size_t *index,
 							t_var_data *var_data,
 							char **token)
@@ -58,8 +58,8 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 		return ((*i += local_index), local_index);
 	if (prompt[local_index] && prompt[local_index] == '|')
 		return(*i += 1, *token = ft_strdup("|"), 0);
-	if (prompt[local_index] == '"' || ft_strchr("'><$", prompt[local_index]))
-		return (tmp_index = whitespace_exception(prompt, &local_index, 
+	if (ft_strchr("'><$\"", prompt[local_index]))
+		return (tmp_index = exceptions(prompt, &local_index, 
 					var_data, token), *i += local_index, tmp_index);
 	tmp_index = local_index;
 	while (!ft_iswhitespace(prompt[tmp_index]) && prompt[tmp_index])
@@ -94,7 +94,7 @@ static int	init_tokenizer(t_token_node **first_node,
 		return (error_flow);
 	if (!*tmp_str)
 		*tmp_str = ft_strdup("");
-	*first_node = create_node(*tmp_str, NULL, NULL);
+	*first_node = create_node(*tmp_str, NULL, NULL, var_data);
 	return (i);
 }
 
@@ -151,7 +151,7 @@ t_token_node	*tokenizer(char *prompt,
 		if (error_flow < 0 || var_data->error_checks->lexer_level_syntax_error == true)
 			break ;
 		i += error_flow;
-		current->next = create_node(tmp_str, current, NULL);
+		current->next = create_node(tmp_str, current, NULL, var_data);
 		current = current->next;
 	}
 	if (var_data->error_checks->lexer_level_syntax_error == true)

@@ -156,7 +156,7 @@ int	single_quotes(char *prompt,
 	if (!prompt[i])
 		return (1);
 	i++;
-	while (prompt[i] && prompt[i] != 39)
+	while (prompt[i] && prompt[i] != '\'')
 		i++;
 	if (!prompt[i])
 		return (ft_printf("Error: parentheses not closed\n"), -1);
@@ -164,7 +164,7 @@ int	single_quotes(char *prompt,
 	if (!*tokenized_string)
 		return (ft_print_error("Error: malloc failed\n"));
 	i = *index + 1;
-	while (prompt[i] != 39 && prompt[i] && prompt[i] != '|')
+	while (prompt[i] != '\'' && prompt[i] && prompt[i] != '|')
 		(*tokenized_string)[j++] = prompt[i++];
 	*index = i + 1;
 	(*tokenized_string)[j] = '\0';

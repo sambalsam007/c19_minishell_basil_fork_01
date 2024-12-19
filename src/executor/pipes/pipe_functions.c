@@ -18,9 +18,9 @@
 int	restore_fds(t_var_data *var_data)
 {
 	if (dup2(var_data->std_input_fd_backup, STDIN_FILENO) == -1) 
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	if (dup2(var_data->std_output_fd_backup, STDOUT_FILENO) == -1)
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	return (var_data->pipe_check = false, 0);
 }
 
@@ -31,7 +31,7 @@ static int	first_pipe(t_var_data *var_data,
 	close(pipe_fd[0]);
 	close(var_data->tmp_pipe[0]);
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1) 
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	return (0);
 }
 
@@ -41,9 +41,9 @@ static int	middle_pipes(t_var_data *var_data, int *pipe_fd)
 	close(STDOUT_FILENO);
 	close(pipe_fd[0]);
 	if (dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1) 
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1) 
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	return (0);
 }
 
@@ -54,7 +54,7 @@ static int	last_pipe(t_var_data *var_data, int *pipe_fd)
 	close(pipe_fd[1]);
 	close(var_data->tmp_pipe[1]);
 	if (dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1) 
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	return (0);
 }
 
@@ -76,7 +76,7 @@ static int	last_pipe(t_var_data *var_data, int *pipe_fd)
 /* 		dprintf(var_data->std_output_fd_backup, "pipfd1: inode %lu, size %lu\n", info_pipefd_1.st_ino, info_pipefd_0.st_size);//TEST */
 /* 	write (var_data->std_output_fd_backup, "++++\n", 6);//TEST */
 /* } */
-/**/
+
 
 int	check_pipe(t_var_data *var_data, 
 					t_ast_node *curr_node_pipe, 
@@ -102,6 +102,5 @@ int	check_pipe(t_var_data *var_data,
 		var_data->pipe_check = true;
 	}
 	var_data->pipe_check = true;
-	/* test_pipes(var_data, pipe_fd); */
 	return (0);
 }
