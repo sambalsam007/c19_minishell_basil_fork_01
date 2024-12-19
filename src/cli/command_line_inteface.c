@@ -166,6 +166,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
+		ft_printf("error_flow; %d\n", error_flow);
 		if (error_flow == ERROR_CONTINUE)
 			continue ;
 		else if (error_flow == ERROR_STOP)
