@@ -19,7 +19,7 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
-int	T_command_line_inteface = 1;
+int	T_command_line_inteface = 0;
 int	T_lex_and_parse = 0;
 int	T_init_error_data = 0;
 
