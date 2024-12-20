@@ -16,6 +16,8 @@ int	check_if_builtin(t_var_data *var_data, t_ast_node *ast_node)
 {
 	size_t	cmd_len;
 
+	(T_check_if_builtin) ? ft_printf("\t\t>>> ms_CLI // ms_execute // check_if_builtin\n"):0;
+	(T_check_if_builtin) ? ft_printf("\t\t\tast_node: %s\n", ast_node->command):0;
 	if (!ast_node->command)
 		return (1);
 	cmd_len = ft_strlen(ast_node->command);

@@ -19,14 +19,6 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
-int	T_command_line_inteface = 0;
-int	T_init_error_data 		= 0;
-int	T_lex_and_parse 		= 1;
-
-int	T_execute_logic 		= 1;
-int	T_execute 				= 1;
-int	T_check_if_builtin 		= 1;
-
 int	ms_lex_and_parse(t_var_data *var_data,
 						t_error_checks *error_checks,
 						char *prompt)
@@ -122,9 +114,7 @@ static int	execute_logic(t_var_data *var_data)
 			return (ERROR_STOP);
 		if (error_flow == ERROR_CONTINUE)
 			 break;
-		(T_check_if_builtin) ? ft_printf("\t\t>>> ms_CLI // ms_execute // check_if_builtin\n"):0;
 		error_flow = check_if_builtin(var_data, tmp_node);
-		(T_check_if_builtin) ? ft_printf("\t\t>>> ms_CLI // ms_execute // check_if_builtin\n"):0;
 		if (error_flow == ERROR_STOP)
 		{
 			ft_printf("error stop\n");

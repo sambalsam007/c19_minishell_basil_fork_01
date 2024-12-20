@@ -40,10 +40,10 @@ lets_cleanup()
 	exit
 }
 while true; do
-	for FILE in $SRCS; do
-		NEW_MOD=$(stat -c %Y $FILE)
-		if [[ "$NEW_MOD" > "$OLD_MOD" ]];then 
-			OLD_MOD=$NEW_MOD
+	# for FILE in $SRCS; do
+		# NEW_MOD=$(stat -c %Y $FILE)
+		# if [[ "$NEW_MOD" > "$OLD_MOD" ]];then 
+		# 	OLD_MOD=$NEW_MOD
 			clear
 			lets_compile
 			if [[ "$?" == 0 ]]; then
@@ -57,7 +57,7 @@ while true; do
 					yes_leak
 				fi
 			fi
-		fi
-	done
-	read -t 2 CLEAN && [[ "$CLEAN" ]] && lets_cleanup 
+		# fi
+	# done
+	# read -t 2 CLEAN && [[ "$CLEAN" ]] && lets_cleanup 
 done

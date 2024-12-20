@@ -46,6 +46,7 @@ static char *check_and_create_path(t_var_data *var_data,
 	DIR 			*directory;
 	struct dirent	*file_found;
 	
+	(T_check_if_binary) ? ft_printf("\t\t\t--- check_and_create_path\n"):0;
 	i = 0;
 	if (!ft_get_value("PATH", var_data->envvar))
 		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
@@ -56,6 +57,7 @@ static char *check_and_create_path(t_var_data *var_data,
 		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
 	while (split_PATH[i])
 	{
+		(T_check_if_binary) ? ft_printf("\t\t\t\tsplit_PATH: %s\n", split_PATH[i]):0;
 		directory = opendir(split_PATH[i]);
 		if (!directory)
 		{
@@ -72,6 +74,7 @@ static char *check_and_create_path(t_var_data *var_data,
 		if (file_found)
 		{
 			binary_path = create_path_or_envp(split_PATH[i], command, "/");
+			(T_check_if_binary) ? ft_printf("\t\t\t\tbinary_path: %s\n", binary_path):0;
 			if (closedir(directory))
 				return (ft_putstr_fd("Error: couldn't close dir\n", 
 							STDERR_FILENO), NULL);
@@ -174,6 +177,7 @@ int	check_if_binary(t_var_data *var_data,
 	char 	**envvar_array;
 	int		pipe_fd[2];
 
+	(T_check_if_binary) ? ft_printf("\t\t=== ms_CLI // ms_execute // check_if_binary\n"):0;
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
@@ -190,6 +194,8 @@ int	check_if_binary(t_var_data *var_data,
 	}
 	else 
 		path_bin = ft_strdup(ast_node->command);
+	(T_check_if_binary) ? ft_printf("\t\t\tpath_bin: %s\n",path_bin):0;
+	pipe_fd[0] = 0;
 	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
 		return (0);
 	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
