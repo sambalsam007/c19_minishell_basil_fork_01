@@ -6,11 +6,15 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 15:18:48 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/04 16:39:53 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/20 17:25:05 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+#define LEXER_ERROR 999
+#define PARSER_ERROR 998
+#define EXECUTOR_ERROR 997
 
 char	***init_envvar_noenvp(void)
 {
@@ -31,8 +35,14 @@ char	***init_envvar_list(char **envp)
 	return (ft_create_dict(envp, '='));
 }
 
-void	init_error_data(t_error_checks *error_checks)
+void	init_error_data(t_var_data *var_data, t_error_checks *error_checks)
 {
+	if (error_checks->lexer_level_syntax_error == true)
+		var_data->last_error_code = LEXER_ERROR;
+	if (error_checks->parser_level_syntax_error == true)
+		var_data->last_error_code = PARSER_ERROR;
+	if (error_checks->executor_level_syntax_error == true)
+		var_data->last_error_code = EXECUTOR_ERROR;
 	error_checks->lexer_level_syntax_error = false;
 	error_checks->parser_level_syntax_error = false;
 	error_checks->executor_level_syntax_error = false;
@@ -57,25 +67,25 @@ t_var_data	*init_var_data(char **envp)
 	var_data = malloc(sizeof(t_var_data));
 	error_checks = malloc(sizeof(t_error_checks));
 	if (!var_data)
-		return (ft_print_error_null("Error: malloc failed\n"));
+		return (ft_putstr_fd("Error: malloc failed\n", 3), NULL);
 	if (!(var_data->envvar = init_envvar_list(envp)))
-	{
-		free_var_data(var_data);
-		return (ft_print_error_null("Error: malloc failedbla\n"));
-	}
+		return (free_var_data(var_data), ft_putstr_fd("Error:mall\n", 3), NULL);
 	if (backup_fds(var_data))
 		return (free_var_data(var_data), NULL);
 	ft_update_dict("SHLVL", ft_itoa(ft_atoi(ft_get_value("SHLVL", 
 						var_data->envvar)) + 1), var_data->envvar);
 	var_data->error_checks = error_checks;
+	error_checks->lexer_level_syntax_error = false;
+	error_checks->parser_level_syntax_error = false;
+	error_checks->executor_level_syntax_error = false;
 	var_data->first_node_lexer = NULL;
 	var_data->first_node_ast = NULL;
 	var_data->no_var_envvar = NULL;
 	var_data->open_input_file_fd = -1;
 	var_data->open_output_file_fd = -1;
+	var_data->last_error_code = 0;
 	var_data->pipe_check = false;
 	var_data->termios_backup_check = false;
 	var_data->is_redirect = false;
-	var_data->wstatus = 0;
 	return (var_data);
 }

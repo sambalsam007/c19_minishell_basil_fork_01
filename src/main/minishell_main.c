@@ -34,3 +34,5 @@ int	main(int ac, char **av, char **envp)
 /* t>a3' .$T */
 /* errors naar STDERRROR */
 /* ls -a exporteren wordt behandeld als 'ls -a' = command */
+/* werkt echo -n? */
+

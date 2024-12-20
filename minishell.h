@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/04 17:44:03 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/20 17:06:52 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,9 @@ typedef struct s_error_checks
 
 typedef struct s_var_data
 {
+	bool			pipe_check;
+	bool			is_redirect;
+	bool			termios_backup_check;
 	char 			***envvar;
 	char 			***no_var_envvar;
 	t_token_node	*first_node_lexer;
@@ -107,10 +110,7 @@ typedef struct s_var_data
 	int				tmp_pipe[2];
 	int				std_output_fd_backup;
 	int				std_input_fd_backup;
-	int				wstatus;
-	bool			pipe_check;
-	bool			is_redirect;
-	bool			termios_backup_check;
+	int				last_error_code;
 	struct termios	original_termios;
 } 	t_var_data;
 
@@ -125,7 +125,7 @@ t_var_data		*init_var_data(char **envp);
 void			*free_var_data(t_var_data *var_data);
 void			free_envvar(char **envvar);
 char 			***init_envvar_noenvp();
-void			init_error_data(t_error_checks *error_checks);
+void			init_error_data(t_var_data *var_data, t_error_checks *error_checks);
 
 /* ************************************************************************** */
 /*                                      error_and_free                        */
@@ -161,7 +161,8 @@ int				fill_token_expd_vars(char *prompt, char *token_string, char *key, char **
 int				check_single_dollar(char *prompt, size_t *index, char **token);
 int				count_total_strlen(char *prompt, t_var_data *var_data, char *key, int *len_expanded_var);
 int				count_key(char **key, char *prompt, int *i, int *j);
-/* int				count_key(char *key, char *prompt, int *i, int *j); */
+char			*expand_error_code_variable(char *argument, char *error_code, int i, int j);
+int				expand_error_codes(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      parser                                */
