@@ -1,7 +1,4 @@
 [
-<<<<<<< HEAD
-{ "directory": "/home/samd-hoo/files/c19_minishell_basil_fork_01.gg", "file": "src/executor/binaries/run_binary.c", "output": "obj/run_binary.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/executor/binaries/run_binary.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/run_binary.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
-=======
 { "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/main/minishell_main.c", "output": "obj/minishell_main.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/main/minishell_main.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/minishell_main.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
 { "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/main/init_data.c", "output": "obj/init_data.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/main/init_data.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/init_data.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
 { "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/main/sighandler.c", "output": "obj/sighandler.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/main/sighandler.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/sighandler.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
@@ -90,4 +87,3 @@
 { "directory": "/home/bclaeys/github_kantog/minishell/src/libft", "file": "ft_putnbr_fd.c", "output": "obj/ft_putnbr_fd.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "ft_putnbr_fd.c", "-Wall", "-Wextra", "-Werror", "-g", "-c", "-o", "obj/ft_putnbr_fd.o", "--target=x86_64-pc-linux-gnu"]},
 { "directory": "/home/bclaeys/github_kantog/minishell/src/libft", "file": "ft_free_split.c", "output": "obj/ft_free_split.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "ft_free_split.c", "-Wall", "-Wextra", "-Werror", "-g", "-c", "-o", "obj/ft_free_split.o", "--target=x86_64-pc-linux-gnu"]}
 ]
->>>>>>> upstream/master
