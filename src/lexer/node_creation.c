@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 15:55:55 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/25 13:02:01 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/20 17:19:55 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static int	type_giver(char *prompt,
 		return (-1);
 	if (prompt[i] == '|')
 		return (PIPE);
-	/* if (prompt[i] == '<' || prompt[i] == '>') */
-	if (var_data->is_redirect)
+	if (var_data->is_redirect == true)
 		return (var_data->is_redirect = false, REDIRECT);
 	if ((prev_node && prev_node->type == EXEC) || prompt[i] == 39
 		|| prompt[i] == 34)

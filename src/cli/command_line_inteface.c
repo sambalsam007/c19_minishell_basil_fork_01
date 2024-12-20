@@ -6,13 +6,14 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 12:23:04 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/19 13:07:03 by bclaeys          ###   ########.fr       */
+/*   Updated: 2024/12/20 17:25:42 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 #include <readline/history.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -40,6 +41,9 @@ int	ms_lex_and_parse(t_var_data *var_data,
 		return (ERROR_STOP);
 	if (error_checks->parser_level_syntax_error == true)
 		return (ERROR_CONTINUE);
+	/* werkt nog niet: */
+	if (expand_error_codes(var_data))
+		return (ERROR_STOP);
 	return (0);
 }
 
@@ -101,9 +105,12 @@ static int	execute_logic(t_var_data *var_data)
 		tmp_node = tmp_node->pipe;		
 	} 
 	while (wait(&status) > 0)
-		;
-	if (WIFEXITED(var_data->wstatus))
-		var_data->wstatus = status;
+	{
+		if (WIFEXITED(status))
+			var_data->last_error_code = WEXITSTATUS(status);
+		else 
+			var_data->last_error_code = 0;
+	}
 	return (0);
 }
 
@@ -154,7 +161,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	while (true)
 	{
 		big_free(var_data, prompt);
-		init_error_data(var_data->error_checks);
+		init_error_data(var_data, var_data->error_checks);
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		add_history(prompt);
 		if (!prompt)
