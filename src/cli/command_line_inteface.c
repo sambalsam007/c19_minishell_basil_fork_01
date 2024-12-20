@@ -19,11 +19,13 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
-int	T_command_line_inteface = 1;
-int	T_init_error_data = 0;
-int	T_lex_and_parse = 1;
-int	T_execute_logic = 0;
-int	T_execute = 0;
+int	T_command_line_inteface = 0;
+int	T_init_error_data 		= 0;
+int	T_lex_and_parse 		= 1;
+
+int	T_execute_logic 		= 1;
+int	T_execute 				= 1;
+int	T_check_if_builtin 		= 1;
 
 int	ms_lex_and_parse(t_var_data *var_data,
 						t_error_checks *error_checks,
@@ -44,10 +46,10 @@ int	ms_lex_and_parse(t_var_data *var_data,
 		return (ERROR_CONTINUE);
 	}
 
-	(T_lex_and_parse) ? ft_printf("\t::::tokenizer\n"):0;
+	(T_lex_and_parse) ? ft_printf("\t::::tokenizer ::: 1stNode lexer %p\n", var_data->first_node_lexer):0;
 	var_data->first_node_lexer = tokenizer(prompt, var_data,
 			var_data->first_node_lexer, 0);
-	(T_lex_and_parse) ? ft_printf("\t::::tokenizer\n"):0;
+	(T_lex_and_parse) ? ft_printf("\t::::tokenizer ::: 1stNode lexer %p\n", var_data->first_node_lexer):0;
 
 	if (error_checks->lexer_level_syntax_error == true)
 		return (ERROR_CONTINUE);
@@ -100,10 +102,18 @@ static int	execute_logic(t_var_data *var_data)
 	if (var_data->first_node_ast->pipe)
 		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
 			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
-	(T_execute_logic) ? ft_printf("\texecute_logic________start loop over AST\n"):0;
+	(T_execute_logic) ? ft_printf("\t\texecute_logic________start loop over AST\n"):0;
 	while (tmp_node)
 	{
-		(T_execute_logic) ? ft_printf("\twhile tmp_node\n"):0;
+		(T_execute_logic) ? ft_printf("\t\twhile tmp_node\n"):0;
+		(T_execute_logic) ? ft_printf("\t\t  ast: cmd: %s\n", tmp_node->command):0;
+		(T_execute_logic) ? ft_printf("\t\t       flg: %s\n", tmp_node->flag):0;
+		int ii = 0;
+		while (tmp_node->arguments[ii])
+		{
+			(T_execute_logic) ? ft_printf("\t\t       arg: %s\n", tmp_node->arguments[ii]):0;
+			ii++;
+		}
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
@@ -112,7 +122,9 @@ static int	execute_logic(t_var_data *var_data)
 			return (ERROR_STOP);
 		if (error_flow == ERROR_CONTINUE)
 			 break;
+		(T_check_if_builtin) ? ft_printf("\t\t>>> ms_CLI // ms_execute // check_if_builtin\n"):0;
 		error_flow = check_if_builtin(var_data, tmp_node);
+		(T_check_if_builtin) ? ft_printf("\t\t>>> ms_CLI // ms_execute // check_if_builtin\n"):0;
 		if (error_flow == ERROR_STOP)
 		{
 			ft_printf("error stop\n");
@@ -125,7 +137,7 @@ static int	execute_logic(t_var_data *var_data)
 		}
 		tmp_node = tmp_node->pipe;		
 	} 
-	(T_execute_logic) ? ft_printf("\texecute_logic________end   loop over AST\n"):0;
+	(T_execute_logic) ? ft_printf("\t\texecute_logic________end   loop over AST\n"):0;
 	while (wait(&status) > 0)
 		;
 	if (WIFEXITED(var_data->wstatus))
@@ -135,8 +147,10 @@ static int	execute_logic(t_var_data *var_data)
 
 int	ms_execute(t_var_data *var_data)
 {
+	(T_execute_logic) ? ft_printf("\t---execute_logic \n"):0;
 	if (execute_logic(var_data))
 		return (ERROR_STOP);
+	(T_execute_logic) ? ft_printf("\t---execute_logic \n"):0;
 	if (restore_fds(var_data))
 		return (ERROR_STOP);
 	return (0);

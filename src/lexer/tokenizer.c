@@ -16,7 +16,8 @@
 #include <stdio.h>
 #include <time.h>
 
-int	T_tokenizer = 1;
+int	T_tokenizer 		= 0;
+int	T_init_tokenizer 	= 0;
 
 int	exceptions(char *prompt,
 							size_t *index,
@@ -87,16 +88,28 @@ static int	init_tokenizer(t_token_node **first_node,
 	int		error_flow;
 
 	i = 0;
-	error_flow = ft_strtok(prompt, var_data, tmp_str, &i);
-	if (error_flow == 1)
+	error_flow = ft_strtok(prompt, var_data, tmp_str, &i); if (error_flow == 1) 
+	{
+		(T_init_tokenizer) ? ft_printf("\t\terror_flow = 1\n"):0;
 		return (0);
+	}
 	if (error_flow == -1)
+	{
+		(T_init_tokenizer) ? ft_printf("\t\terror_flow = -1\n"):0;
 		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
+	}
 	if (error_flow != 0)
+	{
+		(T_init_tokenizer) ? ft_printf("\t\terror_flow != 0\n"):0;
 		return (error_flow);
+	}
 	if (!*tmp_str)
+	{
+		(T_init_tokenizer) ? ft_printf("\t\t!*tmp_str\n"):0;
 		*tmp_str = ft_strdup("");
+	}
 	*first_node = create_node(*tmp_str, NULL, NULL, var_data);
+	(T_init_tokenizer) ? ft_printf("\t\treturn (%d)\n", i):0;
 	return (i);
 }
 
@@ -139,13 +152,13 @@ t_token_node	*tokenizer(char *prompt,
 	char			*tmp_str;
 	size_t			i;
 
-	(T_tokenizer) ? ft_printf("\tprompt: %s\n", prompt):0;
-	(T_tokenizer) ? ft_printf("\terror_flow: %d\n", error_flow):0;
-	(T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
+	// (T_tokenizer) ? ft_printf("\tprompt: %s\n", prompt):0;
+	// (T_tokenizer) ? ft_printf("\terror_flow: %d\n", error_flow):0;
+	// (T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
 
-	(T_tokenizer) ? ft_printf("\t(-) --- init_tokenizer\n"):0;
+	(T_init_tokenizer) ? ft_printf("\t(-) --- init_tokenizer\n"):0;
 	i = init_tokenizer(&first_nd, var_data, &tmp_str, prompt);
-	(T_tokenizer) ? ft_printf("\t(%d) --- init_tokenizer\n", i):0;
+	(T_init_tokenizer) ? ft_printf("\t(%d) --- init_tokenizer\n", i):0;
 
 	if (i == 0)
 		return (ERROR_NULL);
@@ -161,12 +174,14 @@ t_token_node	*tokenizer(char *prompt,
 			break ;
 		i += error_flow;
 		current->next = create_node(tmp_str, current, NULL, var_data);
+		(T_tokenizer) ? ft_printf("\t\ttype: (%d), token: %s\n",current->type, current->token):0;
 		current = current->next;
 	}
+	(T_tokenizer) ? ft_printf("\t\ttype: (%d), token: %s\n",current->type, current->token):0;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
 		return (first_nd);
 	if (error_flow == -2 || !current)
 		return (NULL);
-	(T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
+	// (T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
 	return (first_nd);
 }

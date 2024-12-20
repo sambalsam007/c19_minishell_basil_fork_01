@@ -1,1 +1,15 @@
-
+NAME=minishell
+MAIN_SRCS= minishell_main.c init_data.c sighandler.c
+SIGHANDLER_SRCS =
+ERRORHANDLER_SRCS = error_checks.c big_free.c error_messages.c
+INCLUDES = -I ./libf
+INCFLAGS= -I src/libft -L src/libft -lft -lreadline
+SRCS = $(MAIN_SRCS) $(CLI_SRCS) $(EXECUTOR_SRCS) \
+	$(LEXER_SRCS) $(PARSER_SRCS) $(SIGHANDLER_SRCS) $(ERRORHANDLER_SRCS)
+all: $(LIBFT) obj $(NAME)
+	@(make -q $(NAME) && echo "Everything up to date") || (make  build)
+$(NAME): $(OBJECTS) 
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o $(NAME) $(OBJECTS) $(INCFLAGS)
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -MJ $@.json -c -o $@ $< $(INCLUDES)
+	@rm -rf $(NAME)
+.PHONY: all clean fclean re obj 
