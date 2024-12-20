@@ -19,9 +19,11 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
-int	T_command_line_inteface = 0;
-int	T_lex_and_parse = 0;
+int	T_command_line_inteface = 1;
 int	T_init_error_data = 0;
+int	T_lex_and_parse = 1;
+int	T_execute_logic = 0;
+int	T_execute = 0;
 
 int	ms_lex_and_parse(t_var_data *var_data,
 						t_error_checks *error_checks,
@@ -41,8 +43,12 @@ int	ms_lex_and_parse(t_var_data *var_data,
 		(T_lex_and_parse) ? ft_printf("\tERROR_CONTINUE\n"):0;
 		return (ERROR_CONTINUE);
 	}
+
+	(T_lex_and_parse) ? ft_printf("\t::::tokenizer\n"):0;
 	var_data->first_node_lexer = tokenizer(prompt, var_data,
 			var_data->first_node_lexer, 0);
+	(T_lex_and_parse) ? ft_printf("\t::::tokenizer\n"):0;
+
 	if (error_checks->lexer_level_syntax_error == true)
 		return (ERROR_CONTINUE);
 	if (!var_data->first_node_lexer)
@@ -94,10 +100,10 @@ static int	execute_logic(t_var_data *var_data)
 	if (var_data->first_node_ast->pipe)
 		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
 			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
-	ft_printf("execute_logic________start loop over AST\n");
+	(T_execute_logic) ? ft_printf("\texecute_logic________start loop over AST\n"):0;
 	while (tmp_node)
 	{
-		ft_printf("while tmp_node\n");
+		(T_execute_logic) ? ft_printf("\twhile tmp_node\n"):0;
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true, 
 					ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
@@ -119,7 +125,7 @@ static int	execute_logic(t_var_data *var_data)
 		}
 		tmp_node = tmp_node->pipe;		
 	} 
-	ft_printf("execute_logic________end   loop over AST\n");
+	(T_execute_logic) ? ft_printf("\texecute_logic________end   loop over AST\n"):0;
 	while (wait(&status) > 0)
 		;
 	if (WIFEXITED(var_data->wstatus))
@@ -170,19 +176,17 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	char			*prompt;
 	int				error_flow;
 
-	ft_printf("ms_command_line_inteface=======\n");
 	prompt = NULL;
 	ft_printf("prompt:%s\n", prompt);
 
-	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____start while loop\n"):0;
+	(T_command_line_inteface) ? ft_printf("==== ms_command_line_inteface____start while loop\n"):0;
 	while (true)
 	{
-		ft_printf("prompt:%s\n", prompt);
 		big_free(var_data, prompt);
 
-		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
+		(T_init_error_data) ? ft_printf("----ms_CLI // init_error_data\n"):0;
 		init_error_data(var_data->error_checks);
-		(T_init_error_data) ? ft_printf("----ms_command_line_inteface // init_error_data\n"):0;
+		(T_init_error_data) ? ft_printf("----ms_CLI // init_error_data\n"):0;
 
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		(T_command_line_inteface) ? ft_printf("prompt:%s\n", prompt):0;
@@ -194,28 +198,30 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			(T_command_line_inteface) ? ft_printf("!prompt\n"):0;
 			return (ft_printf("exit\n"), 0);
 		}
-		// ft_printf("----ms_command_line_inteface // clean_prompt\n");
+		// ft_printf("----ms_CLI // clean_prompt\n");
 		if (clean_prompt(&prompt))	
 			return (ft_printf("Error: malloc\n"), 1);
-		// ft_printf("----ms_command_line_inteface // clean_prompt\n");
+		// ft_printf("----ms_CLI // clean_prompt\n");
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
 
-		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
+		(T_lex_and_parse) ? ft_printf("----ms_CLI // ms_lex_and_parse\n"):0;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
-		(T_lex_and_parse) ? ft_printf("----ms_command_line_inteface // ms_lex_and_parse\n"):0;
+		(T_lex_and_parse) ? ft_printf("----ms_CLI // ms_lex_and_parse\n"):0;
 		if (error_flow == ERROR_CONTINUE)
 		{
-			(T_command_line_inteface) ? ft_printf("because error_flow == ERROR_CONTINUE\n"):0;
+			(T_command_line_inteface) ? ft_printf("because error_flow = ERROR_CONTINUE\n"):0;
 			(T_command_line_inteface) ? ft_printf("continue ;\n"):0;
 			continue ;
 		}
 		else if (error_flow == ERROR_STOP)
 			return (big_free(var_data, prompt), ERROR_STOP);
+		(T_execute) ? ft_printf("----ms_CLI // ms_execute\n"):0;
 		if (ms_execute(var_data))
 			return (big_free(var_data, prompt), ERROR_STOP);
+		(T_execute) ? ft_printf("----ms_CLI // ms_execute\n"):0;
 	}
-	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____end while loop\n"):0;
+	(T_command_line_inteface) ? ft_printf("==== ms_command_line_inteface____end while loop\n"):0;
 	(T_command_line_inteface) ? ft_printf("free(prompt)\n"):0;
 	return (free(prompt), 0);
 }

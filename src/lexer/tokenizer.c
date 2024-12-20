@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <time.h>
 
+int	T_tokenizer = 1;
+
 int	exceptions(char *prompt,
 							size_t *index,
 							t_var_data *var_data,
@@ -137,7 +139,14 @@ t_token_node	*tokenizer(char *prompt,
 	char			*tmp_str;
 	size_t			i;
 
+	(T_tokenizer) ? ft_printf("\tprompt: %s\n", prompt):0;
+	(T_tokenizer) ? ft_printf("\terror_flow: %d\n", error_flow):0;
+	(T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
+
+	(T_tokenizer) ? ft_printf("\t(-) --- init_tokenizer\n"):0;
 	i = init_tokenizer(&first_nd, var_data, &tmp_str, prompt);
+	(T_tokenizer) ? ft_printf("\t(%d) --- init_tokenizer\n", i):0;
+
 	if (i == 0)
 		return (ERROR_NULL);
 	current = first_nd;
@@ -158,5 +167,6 @@ t_token_node	*tokenizer(char *prompt,
 		return (first_nd);
 	if (error_flow == -2 || !current)
 		return (NULL);
+	(T_tokenizer) ? ft_printf("\tfirst_nd: %p\n", first_nd):0;
 	return (first_nd);
 }
