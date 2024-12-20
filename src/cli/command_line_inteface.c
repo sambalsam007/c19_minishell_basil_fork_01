@@ -211,11 +211,9 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			continue ;
 		}
 		else if (error_flow == ERROR_STOP)
-			return (ERROR_STOP);
+			return (big_free(var_data, prompt), ERROR_STOP);
 		if (ms_execute(var_data))
-		{
-			return (ERROR_STOP);
-		}
+			return (big_free(var_data, prompt), ERROR_STOP);
 	}
 	(T_command_line_inteface) ? ft_printf("----ms_command_line_inteface____end while loop\n"):0;
 	(T_command_line_inteface) ? ft_printf("free(prompt)\n"):0;

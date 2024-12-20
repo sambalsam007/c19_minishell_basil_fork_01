@@ -209,9 +209,14 @@ int	check_if_binary(t_var_data *var_data,
 		if (check_pipe(var_data, ast_node, pipe_fd)
 					|| (sighandler(var_data, EXECUTOR))
 					|| (execve(path_bin, tmp_array, envvar_array) == -1))
-				return (var_data->error_checks->executor_level_syntax_error = true,
-						free(path_bin), ft_free_split(tmp_array), 
-						ft_putstr_fd("Error: executor\n", STDERR_FILENO), 1);
+		{
+			var_data->error_checks->executor_level_syntax_error = true;	
+			free(path_bin);
+			ft_free_split(tmp_array);
+			ft_free_split(envvar_array);
+			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
+			return (1);
+		}
 	}
 	else
 		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
