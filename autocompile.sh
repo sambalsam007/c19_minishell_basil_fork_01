@@ -59,5 +59,6 @@ while true; do
 			fi
 		# fi
 	# done
+	read -p "Continue.."
 	# read -t 2 CLEAN && [[ "$CLEAN" ]] && lets_cleanup 
 done

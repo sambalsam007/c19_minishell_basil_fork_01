@@ -13,35 +13,36 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "src/libft/libft.h"
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <linux/limits.h>
-#include <dirent.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include "src/libft/libft.h"
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <linux/limits.h>
+# include <dirent.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <sys/stat.h>
+# include <termios.h>
+# include <fcntl.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
-#define ERROR_NULL NULL
-#define EXECUTOR 1
-#define MAIN_PROCESS 3
+# define ERROR_NULL NULL
+# define EXECUTOR 1
+# define MAIN_PROCESS 3
 
-#define	T_command_line_inteface 0
-#define	T_init_error_data 		0
-#define	T_lex_and_parse 		0
+# define	T_command_line_inteface 0
+# define	T_init_error_data 		0
+# define	T_lex_and_parse 		0
 
-#define	T_execute_logic 		0
-#define	T_execute 				0
+# define	T_execute_logic 		1
+# define	T_execute 				1
 
-#define T_check_if_binary 	 	1
-#define	T_check_if_builtin 		0
+# define	T_check_if_binary 	 	1
+# define	T_run_binary	 	 	1
+# define	T_check_if_builtin 		0
 
 typedef enum {
 	EXEC = 1,
