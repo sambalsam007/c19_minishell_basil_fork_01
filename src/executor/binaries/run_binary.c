@@ -211,30 +211,31 @@ int	parent_free_and_continue(t_var_data *var_data, char **envvar_array, \
 
 typedef struct s_fork_env
 {
-	char 	*path_bin;
-	char 	**tmp_array;
-	char 	**envvar_array;
+	char	*path_bin;
+	char	**tmp_array;
+	char	**envvar_array;
 	int		pipe_fd[2];
 	pid_t	pid;
 }	t_fork_env;
 
 int	create_fork(t_fork_env f, t_var_data *var_data, t_ast_node *ast_node)
 {
-
 	f.pid = fork();
 	if (f.pid == -1)
 		return (handle_fork_fail(f.envvar_array, f.tmp_array, f.path_bin));
 	if (f.pid == 0)
 	{
 		if (check_pipe(var_data, ast_node, f.pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(f.path_bin, f.tmp_array, f.envvar_array) == -1))
-			return (child_fail(var_data, f.path_bin, f.tmp_array, f.envvar_array));
+			|| (sighandler(var_data, EXECUTOR))
+			|| (execve(f.path_bin, f.tmp_array, f.envvar_array) == -1))
+			return (child_fail(var_data, f.path_bin, \
+						f.tmp_array, f.envvar_array));
 	}
 	else
 	{
 		free(f.path_bin);
-		return (parent_free_and_continue(var_data, f.envvar_array, f.tmp_array, f.pipe_fd));
+		return (parent_free_and_continue(var_data, f.envvar_array, \
+					f.tmp_array, f.pipe_fd));
 	}
 	return (1);
 }

@@ -1,13 +1,13 @@
-==2062277== Memcheck, a memory error detector
-==2062277== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==2062277== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==2062277== Command: ./minishell
-==2062277== 
-==2062277==Shadow memory range interleaves with an existing memory mapping. ASan cannot proceed correctly. ABORTING.
-==2062277==ASan shadow was supposed to be located in the [0x00007fff7000-0x10007fff7fff] range.
-==2062277==This might be related to ELF_ET_DYN_BASE change in Linux 4.12.
-==2062277==See https://github.com/google/sanitizers/issues/856 for possible workarounds.
-==2062277==Process memory map follows:
+==9347== Memcheck, a memory error detector
+==9347== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==9347== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==9347== Command: ./minishell
+==9347== 
+==9347==Shadow memory range interleaves with an existing memory mapping. ASan cannot proceed correctly. ABORTING.
+==9347==ASan shadow was supposed to be located in the [0x00007fff7000-0x10007fff7fff] range.
+==9347==This might be related to ELF_ET_DYN_BASE change in Linux 4.12.
+==9347==See https://github.com/google/sanitizers/issues/856 for possible workarounds.
+==9347==Process memory map follows:
 	0x000000400000-0x00000041f000	/home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell
 	0x00000041f000-0x0000004fa000	/home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell
 	0x0000004fa000-0x00000052e000	/home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell
@@ -75,37 +75,37 @@
 	0x001008cb4000-0x001008cb6000	
 	0x001008cb6000-0x001008db6000	
 	0x001008db6000-0x001008db8000	
-	0x001008db8000-0x001008db9000	/tmp/vgdb-pipe-shared-mem-vgdb-2062277-by-samd-hoo-on-???
+	0x001008db8000-0x001008db9000	/tmp/vgdb-pipe-shared-mem-vgdb-9347-by-samd-hoo-on-???
 	0x001008db9000-0x00100b487000	
 	0x00100b4a3000-0x00100b5a3000	
 	0x00100bcd6000-0x00100bfd6000	
 	0x00100c0cb000-0x00100c36f000	
 	0x00100c4b4000-0x00100c8b4000	
 	0x001ffeffe000-0x001fff001000	
-	0x7ffca4491000-0x7ffca44b2000	[stack]
-	0x7ffca4515000-0x7ffca4519000	[vvar]
+	0x7fffa76b4000-0x7fffa76d5000	[stack]
+	0x7fffa77da000-0x7fffa77de000	[vvar]
 	0xffffffffff600000-0xffffffffff601000	[vsyscall]
-==2062277==End of process memory map.
-==2062277== 
-==2062277== Process terminating with default action of signal 11 (SIGSEGV)
-==2062277==  General Protection Fault
-==2062277==    at 0x4A65EC2: __pthread_once_slow (pthread_once.c:114)
-==2062277==    by 0x4B348C2: __rpc_thread_variables (rpc_thread.c:59)
-==2062277==    by 0x4B87C0C: free_mem (in /usr/lib/x86_64-linux-gnu/libc.so.6)
-==2062277==    by 0x4B87741: __libc_freeres (in /usr/lib/x86_64-linux-gnu/libc.so.6)
-==2062277==    by 0x483F1B2: _vgnU_freeres (in /usr/libexec/valgrind/vgpreload_core-amd64-linux.so)
-==2062277==    by 0x5E4487: ???
-==2062277==    by 0x4B6BC3: __sanitizer::Die() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
-==2062277==    by 0x4A2A71: __asan::InitializeShadowMemory() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
-==2062277==    by 0x4A1FAC: __asan::AsanInitInternal() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
-==2062277==    by 0x40065BD: _dl_init (dl-init.c:102)
-==2062277==    by 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-==2062277== 
-==2062277== HEAP SUMMARY:
-==2062277==     in use at exit: 0 bytes in 0 blocks
-==2062277==   total heap usage: 32 allocs, 32 frees, 1,129 bytes allocated
-==2062277== 
-==2062277== All heap blocks were freed -- no leaks are possible
-==2062277== 
-==2062277== For lists of detected and suppressed errors, rerun with: -s
-==2062277== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==9347==End of process memory map.
+==9347== 
+==9347== Process terminating with default action of signal 11 (SIGSEGV)
+==9347==  General Protection Fault
+==9347==    at 0x4A65EC2: __pthread_once_slow (pthread_once.c:114)
+==9347==    by 0x4B348C2: __rpc_thread_variables (rpc_thread.c:59)
+==9347==    by 0x4B87C0C: free_mem (in /usr/lib/x86_64-linux-gnu/libc.so.6)
+==9347==    by 0x4B87741: __libc_freeres (in /usr/lib/x86_64-linux-gnu/libc.so.6)
+==9347==    by 0x483F1B2: _vgnU_freeres (in /usr/libexec/valgrind/vgpreload_core-amd64-linux.so)
+==9347==    by 0x5E4487: ???
+==9347==    by 0x4B6BC3: __sanitizer::Die() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
+==9347==    by 0x4A2A71: __asan::InitializeShadowMemory() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
+==9347==    by 0x4A1FAC: __asan::AsanInitInternal() (in /home/samd-hoo/files/c19_minishell_basil_fork_01.gg/minishell)
+==9347==    by 0x40065BD: _dl_init (dl-init.c:102)
+==9347==    by 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+==9347== 
+==9347== HEAP SUMMARY:
+==9347==     in use at exit: 0 bytes in 0 blocks
+==9347==   total heap usage: 32 allocs, 32 frees, 1,129 bytes allocated
+==9347== 
+==9347== All heap blocks were freed -- no leaks are possible
+==9347== 
+==9347== For lists of detected and suppressed errors, rerun with: -s
+==9347== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
