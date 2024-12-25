@@ -33,16 +33,16 @@
 # define EXECUTOR 1
 # define MAIN_PROCESS 3
 
-# define	T_command_line_inteface 0
-# define	T_init_error_data 		0
-# define	T_lex_and_parse 		0
+# define	T_command_line_inteface 1
+# define	T_init_error_data 		1
+# define	T_lex_and_parse 		1
 
-# define	T_execute_logic 		0
-# define	T_execute 				0
+# define	T_execute_logic 		1
+# define	T_execute 				1
 
-# define	T_check_if_binary 	 	0
-# define	T_run_binary	 	 	0
-# define	T_check_if_builtin 		0
+# define	T_check_if_binary 	 	1
+# define	T_run_binary	 	 	1
+# define	T_check_if_builtin 		1
 
 typedef enum {
 	EXEC = 1,

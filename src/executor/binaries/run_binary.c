@@ -19,17 +19,9 @@
 #include <time.h>
 #include <unistd.h>
 
-typedef struct s_fork_env
-{
-	char	*path_bin;
-	char	**tmp_array;
-	char	**envvar_array;
-	int		pipe_fd[2];
-	pid_t	pid;
-}	t_fork_env;
-
 static char	*create_path_or_envp(char *directory_path,
-					char *command, char *separator)
+					char *command,
+					char *separator)
 {
 	char	*binary_path;
 	char	*binary_path_tmp;
@@ -161,7 +153,8 @@ static char	**add_cmd_to_argarray(char **args, char *command)
 	int 	i;
 	
 	i = 0;
-	while (args[i]) i++;
+	while (args[i])
+			i++;
 	new_array = malloc(sizeof(char *) * (i + 2));
 	if (!new_array)
 		return (NULL);
@@ -217,75 +210,126 @@ int	parent_free_and_continue(t_var_data *var_data, char **envvar_array, \
 	return (0);
 }
 
-int	create_fork(t_fork_env f, t_var_data *var_data, t_ast_node *ast_node)
+typedef struct s_fork_env
 {
-	f.pid = fork();
-	if (f.pid == -1)
-		return (handle_fork_fail(f.envvar_array, f.tmp_array, f.path_bin));
-	if (f.pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, f.pipe_fd)
-			|| (sighandler(var_data, EXECUTOR))
-			|| (execve(f.path_bin, f.tmp_array, f.envvar_array) == -1))
-			return (child_fail(var_data, f.path_bin, \
-						f.tmp_array, f.envvar_array));
-	}
-	else
-	{
-		free(f.path_bin);
-		return (parent_free_and_continue(var_data, f.envvar_array, \
-					f.tmp_array, f.pipe_fd));
-	}
-	return (1);
-}
+	char 	*path_bin;
+	char 	**tmp_array;
+	char 	**envvar_array;
+	int		pipe_fd[2];
+	pid_t	pid;
+}	t_fork_env;
 
-/*
-int	handle_pipes(t_fork_env *f, t_var_data *var_data)
+// int	create_fork()
+// {
+//
+// 	int		pipe_fd[2];
+// 	if (pid == -1)
+// 		return (handle_fork_fail(envvar_array, tmp_array, path_bin));
+// 	if (pid == 0)
+// 	{
+// 		if (check_pipe(var_data, ast_node, pipe_fd)
+// 					|| (sighandler(var_data, EXECUTOR))
+// 					|| (execve(path_bin, tmp_array, envvar_array) == -1))
+// 			return (child_fail(var_data, path_bin, tmp_array, envvar_array));
+// 	}
+// 	else
+// 	{
+// 		free(path_bin);
+// 		return (parent_free_and_continue(var_data, envvar_array, tmp_array, pipe_fd));
+// 	}
+// }
+
+int	check_if_binary(t_var_data *var_data, 
+						t_ast_node *ast_node)
 {
-	f->pipe_fd[0] = 0;
-	f->pipe_fd[1] = 1;
-	if (var_data->first_node_ast->pipe && pipe(f->pipe_fd) == -1)
-	{
-		ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO);
-		return (1);
-	}
-	if (var_data->first_node_ast->pipe)
-		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
-	return (0);
-}
- */
+	char 	*path_bin;
+	char 	**tmp_array;
+	char 	**envvar_array;
+	int		pipe_fd[2];
+	pid_t	pid;
 
-int	check_if_binary(t_var_data *var_data, t_ast_node *ast_node)
-{
-	t_fork_env	f;
-
-	/*if (handle_pipes(&f, var_data) == 1)*/
-	/*	return (1);*/
-	f.pipe_fd[0] = 0;
-	f.pipe_fd[1] = 1;
-	if (var_data->first_node_ast->pipe && pipe(f.pipe_fd) == -1)
+	(T_check_if_binary) ? ft_printf("\t\t=== ms_CLI // ms_execute // check_if_binary\n"):0;
+	pipe_fd[0] = 0;
+	pipe_fd[1] = 1;
+	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	if (var_data->first_node_ast->pipe)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
-	/* REMOVE ========
-	 * ==============*/
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
-		f.path_bin = check_and_create_path(var_data, ast_node->command);
-		if (!(f.path_bin) || !(f.path_bin[0])) // xxx aanpassing
-			return (handle_empty_path_bin(f.path_bin));
+		path_bin = check_and_create_path(var_data, ast_node->command);
+		/*if (!(path_bin) || !(path_bin[0])) // xxx aanpassing*/
+		/*	return (handle_empty_path_bin(path_bin));*/
+		if (!path_bin)
+		{
+			(T_check_if_binary) ? ft_printf("\t\t\treturn 1\n"):0;
+			return (1);
+		}
+		if (!path_bin[0])
+		{
+			(T_check_if_binary) ? ft_printf("\t\t\treturn 0\n"):0;
+			return (free(path_bin), 0);
+		}
+		/* REMOVE ===========
+		 * ================== */
+	}
+	else 
+		path_bin = ft_strdup(ast_node->command);
+	(T_check_if_binary) ? ft_printf("\t\t\tpath_bin: %s\n",path_bin):0;
+	pipe_fd[0] = 0;
+	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
+		return (0);
+	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
+	if (!(tmp_array))
+		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
+	if (!(tmp_array[0]))
+		return (free(path_bin), 0);
+	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	// create_fork();
+	// hier aparte fct van maken
+	/* REMOVE ===========
+	pid = fork();
+	if (pid == -1)
+	{
+		return (handle_fork_fail(envvar_array, tmp_array, path_bin));
+	}
+	if (pid == 0)
+	{
+		if (check_pipe(var_data, ast_node, pipe_fd)
+					|| (sighandler(var_data, EXECUTOR))
+					|| (execve(path_bin, tmp_array, envvar_array) == -1))
+			return (child_fail(var_data, path_bin, tmp_array, envvar_array));
 	}
 	else
-		f.path_bin = ft_strdup(ast_node->command);
-	f.pipe_fd[0] = 0;
-	if (f.path_bin && \
-			var_data->error_checks->executor_level_syntax_error == true)
-		return (0);
-	f.tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
-	if (!(f.tmp_array))
-		return (free(f.path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
-	if (!(f.tmp_array[0]))
-		return (free(f.path_bin), 0);
-	f.envvar_array = envvardict_to_envvararray(var_data->envvar);
-	return (create_fork(f, var_data, ast_node)); // xxx aanpassing
+	{
+		free(path_bin);
+		return (parent_free_and_continue(var_data, envvar_array, tmp_array, pipe_fd));
+	}
+	////
+	 * ================== */
+	pid = fork();
+	if (pid == -1)
+		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
+				ft_free_split(envvar_array), ft_free_split(tmp_array),
+				free(path_bin), 1);
+	if (pid == 0)
+	{
+		if (check_pipe(var_data, ast_node, pipe_fd)
+					|| (sighandler(var_data, EXECUTOR))
+					|| (execve(path_bin, tmp_array, envvar_array) == -1))
+		{
+			var_data->error_checks->executor_level_syntax_error = true;	
+			free(path_bin);
+			ft_free_split(tmp_array);
+			ft_free_split(envvar_array);
+			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
+			return (1);
+		}
+	}
+	else
+		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
+				close(pipe_fd[1]), ft_free_split(envvar_array), 
+				ft_free_split(tmp_array), 0);
+	// tot hier 
+	return (1);
 }

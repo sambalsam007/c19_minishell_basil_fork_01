@@ -1,1 +1,14 @@
-Wed Dec 25 05:32:48 PM CET 2024
+		>>> ms_CLI // ms_execute // check_if_builtin
+			ast_node: grep
+		=== ms_CLI // ms_execute // check_if_binary
+			--- check_and_create_path
+				split_path: /home/samuel/.local/bin
+				split_path: /home/samuel/.local/bin
+				split_path: /usr/local/sbin
+				split_path: /usr/local/bin
+				split_path: /usr/sbin
+				split_path: /usr/bin
+				binary_path: /usr/bin/grep
+			path_bin: /usr/bin/grep
+		execute_logic________end   loop over AST
+	---execute_logic 
