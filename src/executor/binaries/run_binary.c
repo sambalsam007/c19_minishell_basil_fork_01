@@ -19,9 +19,17 @@
 #include <time.h>
 #include <unistd.h>
 
+typedef struct s_fork_env
+{
+	char	*path_bin;
+	char	**tmp_array;
+	char	**envvar_array;
+	int		pipe_fd[2];
+	pid_t	pid;
+}	t_fork_env;
+
 static char	*create_path_or_envp(char *directory_path,
-					char *command,
-					char *separator)
+					char *command, char *separator)
 {
 	char	*binary_path;
 	char	*binary_path_tmp;
@@ -209,15 +217,6 @@ int	parent_free_and_continue(t_var_data *var_data, char **envvar_array, \
 	return (0);
 }
 
-typedef struct s_fork_env
-{
-	char	*path_bin;
-	char	**tmp_array;
-	char	**envvar_array;
-	int		pipe_fd[2];
-	pid_t	pid;
-}	t_fork_env;
-
 int	create_fork(t_fork_env f, t_var_data *var_data, t_ast_node *ast_node)
 {
 	f.pid = fork();
@@ -240,49 +239,47 @@ int	create_fork(t_fork_env f, t_var_data *var_data, t_ast_node *ast_node)
 	return (1);
 }
 
-int	check_if_binary(t_var_data *var_data, 
-						t_ast_node *ast_node)
+/*
+int	handle_pipes(t_fork_env *f, t_var_data *var_data)
 {
-	/* REMOVE ===========
-	char 	*path_bin;
-	char 	**tmp_array;
-	char 	**envvar_array;
-	int		pipe_fd[2];
-	pid_t	pid;
-	 * ================== */
+	f->pipe_fd[0] = 0;
+	f->pipe_fd[1] = 1;
+	if (var_data->first_node_ast->pipe && pipe(f->pipe_fd) == -1)
+	{
+		ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO);
+		return (1);
+	}
+	if (var_data->first_node_ast->pipe)
+		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
+	return (0);
+}
+ */
 
+int	check_if_binary(t_var_data *var_data, t_ast_node *ast_node)
+{
 	t_fork_env	f;
 
-	(T_check_if_binary) ? ft_printf("\t\t=== ms_CLI // ms_execute // check_if_binary\n"):0;
+	/*if (handle_pipes(&f, var_data) == 1)*/
+	/*	return (1);*/
 	f.pipe_fd[0] = 0;
 	f.pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && pipe(f.pipe_fd) == -1)
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	if (var_data->first_node_ast->pipe)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
+	/* REMOVE ========
+	 * ==============*/
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		f.path_bin = check_and_create_path(var_data, ast_node->command);
 		if (!(f.path_bin) || !(f.path_bin[0])) // xxx aanpassing
 			return (handle_empty_path_bin(f.path_bin));
-		/* REMOVE ===========
-		if (!f.path_bin)
-		{
-			(T_check_if_binary) ? ft_printf("\t\t\treturn 1\n"):0;
-			return (1);
-		}
-		if (!f.path_bin[0])
-		{
-			(T_check_if_binary) ? ft_printf("\t\t\treturn 0\n"):0;
-			return (free(f.path_bin), 0);
-		}
-		 * ================== */
 	}
-	else 
+	else
 		f.path_bin = ft_strdup(ast_node->command);
-	(T_check_if_binary) ? ft_printf("\t\t\tf.path_bin: %s\n",f.path_bin):0;
 	f.pipe_fd[0] = 0;
-	if (f.path_bin && var_data->error_checks->executor_level_syntax_error == true)
+	if (f.path_bin && \
+			var_data->error_checks->executor_level_syntax_error == true)
 		return (0);
 	f.tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
 	if (!(f.tmp_array))
@@ -290,50 +287,5 @@ int	check_if_binary(t_var_data *var_data,
 	if (!(f.tmp_array[0]))
 		return (free(f.path_bin), 0);
 	f.envvar_array = envvardict_to_envvararray(var_data->envvar);
-	return (create_fork(f, var_data, ast_node));
-	// hier aparte fct van maken
-	/* REMOVE ===========
-	f.pid = fork();
-	if (f.pid == -1)
-	{
-		return (handle_fork_fail(f.envvar_array, f.tmp_array, f.path_bin));
-	}
-	if (f.pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, f.pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(f.path_bin, f.tmp_array, f.envvar_array) == -1))
-			return (child_fail(var_data, f.path_bin, f.tmp_array, f.envvar_array));
-	}
-	else
-	{
-		free(f.path_bin);
-		return (parent_free_and_continue(var_data, f.envvar_array, f.tmp_array, f.pipe_fd));
-	}
-	////
-	if (f.pid == -1)
-		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				ft_free_split(f.envvar_array), ft_free_split(f.tmp_array),
-				free(f.path_bin), 1);
-	if (f.pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, f.pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(f.path_bin, f.tmp_array, f.envvar_array) == -1))
-		{
-			var_data.error_checks->executor_level_syntax_error = true;	
-			free(f.path_bin);
-			ft_free_split(f.tmp_array);
-			ft_free_split(f.envvar_array);
-			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
-			return (1);
-		}
-	}
-	else
-		return (free(f.path_bin), var_data->tmp_pipe[0] = dup(f.pipe_fd[0]), 
-				close(f.pipe_fd[1]), ft_free_split(f.envvar_array), 
-				ft_free_split(f->tmp_array), 0);
-	 * ================== */
-	// tot hier 
-	return (1);
+	return (create_fork(f, var_data, ast_node)); // xxx aanpassing
 }
