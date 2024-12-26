@@ -19,14 +19,14 @@
 #include <time.h>
 #include <unistd.h>
 
-static char *create_path_or_envp(char *directory_path, 
+static char	*create_path_or_envp(char *directory_path,
 					char *command,
-					char *separator) 
+					char *separator)
 {
-	char *binary_path;
-	char *binary_path_tmp;
+	char	*binary_path;
+	char	*binary_path_tmp;
 
-	binary_path = ft_strjoin(directory_path, separator); 
+	binary_path = ft_strjoin(directory_path, separator);
 	if (!binary_path)
 		return (ft_printf("malloc fail"), NULL);
 	binary_path_tmp = binary_path;
@@ -37,56 +37,60 @@ static char *create_path_or_envp(char *directory_path,
 	return (binary_path);
 }
 
-static char *check_and_create_path(t_var_data *var_data, 
-								char *command) 
+static char	*check_and_create_path(t_var_data *var_data,
+								char *command)
 {
-	int 			i;
-	char 			**split_PATH;
-	char 			*binary_path;
-	DIR 			*directory;
+	int				i;
+	char			**split_path;
+	char			*binary_path;
+	DIR				*directory;
 	struct dirent	*file_found;
-	
+
+	(T_check_if_binary) ? ft_printf("\t\t\t--- check_and_create_path\n"):0;
 	i = 0;
 	if (!ft_get_value("PATH", var_data->envvar))
-		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	split_PATH = ft_split(ft_get_value("PATH", var_data->envvar), ':');
-	if (!split_PATH)
+		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO),
+			var_data->error_checks->executor_level_syntax_error = true,
+			ft_strdup(""));
+	split_path = ft_split(ft_get_value("PATH", var_data->envvar), ':');
+	if (!split_path)
 		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
-	while (split_PATH[i])
+	while (split_path[i])
 	{
-		directory = opendir(split_PATH[i]);
+		(T_check_if_binary) ? ft_printf("\t\t\t\tsplit_path: %s\n", split_path[i]):0;
+		directory = opendir(split_path[i]);
 		if (!directory)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		file_found = readdir(directory);
 		while (file_found)
 		{
-			if (!ft_strncmp(file_found->d_name, command, ft_strlen(command) + 1))
-					break;
+			if (!ft_strncmp(file_found->d_name, command, \
+						ft_strlen(command) + 1))
+				break ;
 			file_found = readdir(directory);
 		}
 		if (file_found)
 		{
-			binary_path = create_path_or_envp(split_PATH[i], command, "/");
+			binary_path = create_path_or_envp(split_path[i], command, "/");
+			(T_check_if_binary) ? ft_printf("\t\t\t\tbinary_path: %s\n", binary_path):0;
 			if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-			break;
+				return (ft_putstr_fd("Error: couldn't close dir\n",
+						STDERR_FILENO), NULL);
+			break ;
 		}
 		if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
+				return (ft_putstr_fd("Error: couldn't close dir\n",
+						STDERR_FILENO), NULL);
 		i++;
 	}
-	ft_free_split(split_PATH);
+	ft_free_split(split_path);
 	if (!file_found)
-		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
+		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO),
+			var_data->error_checks->executor_level_syntax_error = true,
+			ft_strdup(""));
 	return (binary_path);
 }
 
@@ -165,16 +169,6 @@ static char	**add_cmd_to_argarray(char **args, char *command)
 	return (new_array);	
 }
 
-typedef struct	s_binary_env
-{
-	pid_t	pid;
-	char 	*path_bin;
-	char 	**tmp_array;
-	char 	**envvar_array;
-	int		pipe_fd[2];
-
-}	t_binary_env;
-
 int	handle_empty_path_bin(char *path_bin) // xxx new function
 {
 	if (!path_bin)
@@ -216,89 +210,126 @@ int	parent_free_and_continue(t_var_data *var_data, char **envvar_array, \
 	return (0);
 }
 
-int	check_if_binary(t_var_data *var_data, 
-						t_ast_node *ast_node)
+typedef struct s_fork_env
 {
-	/* REMOVE ========
-	pid_t	pid;
 	char 	*path_bin;
 	char 	**tmp_array;
 	char 	**envvar_array;
 	int		pipe_fd[2];
-	 * ==============*/
-	t_binary_env	b;
+	pid_t	pid;
+}	t_fork_env;
 
-	b.pipe_fd[0] = 0;
-	b.pipe_fd[1] = 1;
-	if (var_data->first_node_ast->pipe && pipe(b.pipe_fd) == -1)
+// int	create_fork()
+// {
+//
+// 	int		pipe_fd[2];
+// 	if (pid == -1)
+// 		return (handle_fork_fail(envvar_array, tmp_array, path_bin));
+// 	if (pid == 0)
+// 	{
+// 		if (check_pipe(var_data, ast_node, pipe_fd)
+// 					|| (sighandler(var_data, EXECUTOR))
+// 					|| (execve(path_bin, tmp_array, envvar_array) == -1))
+// 			return (child_fail(var_data, path_bin, tmp_array, envvar_array));
+// 	}
+// 	else
+// 	{
+// 		free(path_bin);
+// 		return (parent_free_and_continue(var_data, envvar_array, tmp_array, pipe_fd));
+// 	}
+// }
+
+int	check_if_binary(t_var_data *var_data, 
+						t_ast_node *ast_node)
+{
+	char 	*path_bin;
+	char 	**tmp_array;
+	char 	**envvar_array;
+	int		pipe_fd[2];
+	pid_t	pid;
+
+	(T_check_if_binary) ? ft_printf("\t\t=== ms_CLI // ms_execute // check_if_binary\n"):0;
+	pipe_fd[0] = 0;
+	pipe_fd[1] = 1;
+	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	if (var_data->first_node_ast->pipe)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
-		b.path_bin = check_and_create_path(var_data, ast_node->command);
-		if (!(b.path_bin) || !(b.path_bin[0])) // xxx aanpassing
-			return (handle_empty_path_bin(b.path_bin));
-		/* REMOVE ========
-		if (!b.path_bin)
+		path_bin = check_and_create_path(var_data, ast_node->command);
+		/*if (!(path_bin) || !(path_bin[0])) // xxx aanpassing*/
+		/*	return (handle_empty_path_bin(path_bin));*/
+		if (!path_bin)
+		{
+			(T_check_if_binary) ? ft_printf("\t\t\treturn 1\n"):0;
 			return (1);
-		if (!b.path_bin[0])
-			return (free(b.path_bin), 0);
-		 * ==============*/
+		}
+		if (!path_bin[0])
+		{
+			(T_check_if_binary) ? ft_printf("\t\t\treturn 0\n"):0;
+			return (free(path_bin), 0);
+		}
+		/* REMOVE ===========
+		 * ================== */
 	}
 	else 
-		b.path_bin = ft_strdup(ast_node->command);
-	if (b.path_bin && var_data->error_checks->executor_level_syntax_error == true)
+		path_bin = ft_strdup(ast_node->command);
+	(T_check_if_binary) ? ft_printf("\t\t\tpath_bin: %s\n",path_bin):0;
+	pipe_fd[0] = 0;
+	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
 		return (0);
-	b.tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
-	if (!b.tmp_array)
-		return (free(b.path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
-	if (!b.tmp_array[0])
-		return (free(b.path_bin), 0);
-	b.envvar_array = envvardict_to_envvararray(var_data->envvar);
+	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
+	if (!(tmp_array))
+		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
+	if (!(tmp_array[0]))
+		return (free(path_bin), 0);
+	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	// create_fork();
 	// hier aparte fct van maken
-	b.pid = fork();
-	if (b.pid == -1)
+	/* REMOVE ===========
+	pid = fork();
+	if (pid == -1)
 	{
-		return (handle_fork_fail(b.envvar_array, b.tmp_array, b.path_bin));
+		return (handle_fork_fail(envvar_array, tmp_array, path_bin));
 	}
-	if (b.pid == 0)
+	if (pid == 0)
 	{
-		if (check_pipe(var_data, ast_node, b.pipe_fd)
+		if (check_pipe(var_data, ast_node, pipe_fd)
 					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(b.path_bin, b.tmp_array, b.envvar_array) == -1))
-			return (child_fail(var_data, b.path_bin, b.tmp_array, b.envvar_array));
+					|| (execve(path_bin, tmp_array, envvar_array) == -1))
+			return (child_fail(var_data, path_bin, tmp_array, envvar_array));
 	}
 	else
 	{
-		free(b.path_bin);
-		return (parent_free_and_continue(var_data, b.envvar_array, b.tmp_array, b.pipe_fd));
+		free(path_bin);
+		return (parent_free_and_continue(var_data, envvar_array, tmp_array, pipe_fd));
 	}
-	/* REMOVE ========
-	b.pid = fork();
-	if (b.pid == -1)
+	////
+	 * ================== */
+	pid = fork();
+	if (pid == -1)
 		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				ft_free_split(b.envvar_array), ft_free_split(b.tmp_array),
-				free(b.path_bin), 1);
-	if (b.pid == 0)
+				ft_free_split(envvar_array), ft_free_split(tmp_array),
+				free(path_bin), 1);
+	if (pid == 0)
 	{
-		if (check_pipe(var_data, ast_node, b.pipe_fd)
+		if (check_pipe(var_data, ast_node, pipe_fd)
 					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(b.path_bin, b.tmp_array, b.envvar_array) == -1))
+					|| (execve(path_bin, tmp_array, envvar_array) == -1))
 		{
 			var_data->error_checks->executor_level_syntax_error = true;	
-			free(b.path_bin);
-			ft_free_split(b.tmp_array);
-			ft_free_split(b.envvar_array);
+			free(path_bin);
+			ft_free_split(tmp_array);
+			ft_free_split(envvar_array);
 			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
 			return (1);
 		}
 	}
 	else
-		return (free(b.path_bin), var_data->tmp_pipe[0] = dup(b.pipe_fd[0]), 
-				close(b.pipe_fd[1]), ft_free_split(b.envvar_array), 
-				ft_free_split(b.tmp_array), 0);
+		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
+				close(pipe_fd[1]), ft_free_split(envvar_array), 
+				ft_free_split(tmp_array), 0);
 	// tot hier 
-	 * ==============*/
 	return (1);
 }
