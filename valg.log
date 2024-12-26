@@ -1,0 +1,101 @@
+==5494== Memcheck, a memory error detector
+==5494== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==5494== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==5494== Command: ./minishell
+==5494== 
+==5494==Shadow memory range interleaves with an existing memory mapping. ASan cannot proceed correctly. ABORTING.
+==5494==ASan shadow was supposed to be located in the [0x00007fff7000-0x10007fff7fff] range.
+==5494==This might be related to ELF_ET_DYN_BASE change in Linux 4.12.
+==5494==See https://github.com/google/sanitizers/issues/856 for possible workarounds.
+==5494==Process memory map follows:
+	0x000000108000-0x000000145000	/home/samuel/nzk/c19_minishell_basil_fork_01.gg/minishell
+	0x000000145000-0x000000249000	/home/samuel/nzk/c19_minishell_basil_fork_01.gg/minishell
+	0x000000249000-0x000000284000	/home/samuel/nzk/c19_minishell_basil_fork_01.gg/minishell
+	0x000000284000-0x000000285000	/home/samuel/nzk/c19_minishell_basil_fork_01.gg/minishell
+	0x000000285000-0x000000294000	/home/samuel/nzk/c19_minishell_basil_fork_01.gg/minishell
+	0x000000294000-0x000000be8000	
+	0x000004000000-0x000004001000	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+	0x000004001000-0x00000402c000	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+	0x00000402c000-0x000004036000	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+	0x000004036000-0x000004038000	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+	0x000004038000-0x00000403a000	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+	0x00000403a000-0x00000403b000	
+	0x00000483a000-0x00000483c000	
+	0x00000483c000-0x00000483d000	/usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+	0x00000483d000-0x00000483e000	/usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+	0x00000483e000-0x00000483f000	/usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+	0x00000483f000-0x000004840000	/usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+	0x000004840000-0x000004841000	/usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+	0x000004841000-0x000004846000	/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+	0x000004846000-0x000004855000	/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+	0x000004855000-0x000004858000	/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+	0x000004858000-0x000004859000	/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+	0x000004859000-0x00000485a000	/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+	0x00000485a000-0x000004871000	
+	0x000004871000-0x000004886000	/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+	0x000004886000-0x0000048b4000	/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+	0x0000048b4000-0x0000048bd000	/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+	0x0000048bd000-0x0000048bf000	/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+	0x0000048bf000-0x0000048c5000	/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+	0x0000048c5000-0x0000048c6000	
+	0x0000048c6000-0x0000048d6000	/usr/lib/x86_64-linux-gnu/libm.so.6
+	0x0000048d6000-0x000004955000	/usr/lib/x86_64-linux-gnu/libm.so.6
+	0x000004955000-0x0000049ad000	/usr/lib/x86_64-linux-gnu/libm.so.6
+	0x0000049ad000-0x0000049ae000	/usr/lib/x86_64-linux-gnu/libm.so.6
+	0x0000049ae000-0x0000049af000	/usr/lib/x86_64-linux-gnu/libm.so.6
+	0x0000049af000-0x0000049b2000	/usr/lib/x86_64-linux-gnu/libresolv.so.2
+	0x0000049b2000-0x0000049bc000	/usr/lib/x86_64-linux-gnu/libresolv.so.2
+	0x0000049bc000-0x0000049be000	/usr/lib/x86_64-linux-gnu/libresolv.so.2
+	0x0000049be000-0x0000049bf000	/usr/lib/x86_64-linux-gnu/libresolv.so.2
+	0x0000049bf000-0x0000049c0000	/usr/lib/x86_64-linux-gnu/libresolv.so.2
+	0x0000049c0000-0x0000049c2000	
+	0x0000049c2000-0x0000049c6000	/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+	0x0000049c6000-0x0000049ea000	/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+	0x0000049ea000-0x0000049ee000	/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+	0x0000049ee000-0x0000049ef000	/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+	0x0000049ef000-0x0000049f0000	/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+	0x0000049f0000-0x0000049f2000	
+	0x0000049f2000-0x000004a1a000	/usr/lib/x86_64-linux-gnu/libc.so.6
+	0x000004a1a000-0x000004ba2000	/usr/lib/x86_64-linux-gnu/libc.so.6
+	0x000004ba2000-0x000004bf1000	/usr/lib/x86_64-linux-gnu/libc.so.6
+	0x000004bf1000-0x000004bf5000	/usr/lib/x86_64-linux-gnu/libc.so.6
+	0x000004bf5000-0x000004bf7000	/usr/lib/x86_64-linux-gnu/libc.so.6
+	0x000004bf7000-0x000004c04000	
+	0x000004c04000-0x000004c12000	/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+	0x000004c12000-0x000004c25000	/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+	0x000004c25000-0x000004c33000	/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+	0x000004c33000-0x000004c37000	/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+	0x000004c37000-0x000004c38000	/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+	0x000004c38000-0x000004fc8000	
+	0x000004fc8000-0x0000053c8000	
+	0x0000053c8000-0x0000053d8000	
+	0x000058000000-0x000058001000	/usr/libexec/valgrind/memcheck-amd64-linux
+	0x000058001000-0x0000581e8000	/usr/libexec/valgrind/memcheck-amd64-linux
+	0x0000581e8000-0x000058281000	/usr/libexec/valgrind/memcheck-amd64-linux
+	0x000058281000-0x000058287000	/usr/libexec/valgrind/memcheck-amd64-linux
+	0x000058287000-0x000059c93000	
+	0x001002001000-0x0010091bc000	
+	0x0010091bc000-0x0010091be000	
+	0x0010091be000-0x0010092be000	
+	0x0010092be000-0x0010092c0000	
+	0x0010092c0000-0x0010092c1000	/tmp/vgdb-pipe-shared-mem-vgdb-5494-by-samuel-on-???
+	0x0010092c1000-0x00100b64d000	
+	0x00100b655000-0x00100b68b000	
+	0x00100b83e000-0x00100b93e000	
+	0x00100be1e000-0x00100bf1e000	
+	0x00100c0a4000-0x00100c3a4000	
+	0x00100c499000-0x00100c6f2000	
+	0x001ffeffd000-0x001fff001000	
+	0x7ffcd1333000-0x7ffcd1355000	[stack]
+	0x7ffcd13ab000-0x7ffcd13af000	[vvar]
+	0xffffffffff600000-0xffffffffff601000	[vsyscall]
+==5494==End of process memory map.
+==5494== 
+==5494== HEAP SUMMARY:
+==5494==     in use at exit: 0 bytes in 0 blocks
+==5494==   total heap usage: 86 allocs, 86 frees, 2,909 bytes allocated
+==5494== 
+==5494== All heap blocks were freed -- no leaks are possible
+==5494== 
+==5494== For lists of detected and suppressed errors, rerun with: -s
+==5494== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
