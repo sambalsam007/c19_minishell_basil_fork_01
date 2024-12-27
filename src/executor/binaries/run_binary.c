@@ -206,26 +206,19 @@ int	child_fail(t_var_data *var_data, char *path_bin, char **tmp_array, char **en
 	return (1);
 }
 
-int	parent_free_and_continue(t_var_data *var_data, char **envvar_array, \
-		char **tmp_array, int pipe_fd[]) // xxx new function
+int	parent_free_and_continue(t_var_data *var_data, t_binary_env b) // xxx new function
 {
-	var_data->tmp_pipe[0] = dup(pipe_fd[0]);
-	close(pipe_fd[1]);
-	ft_free_split(envvar_array);
-	ft_free_split(tmp_array);
+	free(b.path_bin);
+	var_data->tmp_pipe[0] = dup(b.pipe_fd[0]);
+	close(b.pipe_fd[1]);
+	ft_free_split(b.envvar_array);
+	ft_free_split(b.tmp_array);
 	return (0);
 }
 
 int	check_if_binary(t_var_data *var_data, 
 						t_ast_node *ast_node)
 {
-	/* REMOVE ========
-	pid_t	pid;
-	char 	*path_bin;
-	char 	**tmp_array;
-	char 	**envvar_array;
-	int		pipe_fd[2];
-	 * ==============*/
 	t_binary_env	b;
 
 	b.pipe_fd[0] = 0;
@@ -239,12 +232,6 @@ int	check_if_binary(t_var_data *var_data,
 		b.path_bin = check_and_create_path(var_data, ast_node->command);
 		if (!(b.path_bin) || !(b.path_bin[0])) // xxx aanpassing
 			return (handle_empty_path_bin(b.path_bin));
-		/* REMOVE ========
-		if (!b.path_bin)
-			return (1);
-		if (!b.path_bin[0])
-			return (free(b.path_bin), 0);
-		 * ==============*/
 	}
 	else 
 		b.path_bin = ft_strdup(ast_node->command);
@@ -267,35 +254,6 @@ int	check_if_binary(t_var_data *var_data,
 			return (child_fail(var_data, b.path_bin, b.tmp_array, b.envvar_array));
 	}
 	else
-	{
-		free(b.path_bin);
-		return (parent_free_and_continue(var_data, b.envvar_array, b.tmp_array, b.pipe_fd));
-	}
-	/* REMOVE ========
-	b.pid = fork();
-	if (b.pid == -1)
-		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				ft_free_split(b.envvar_array), ft_free_split(b.tmp_array),
-				free(b.path_bin), 1);
-	if (b.pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, b.pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(b.path_bin, b.tmp_array, b.envvar_array) == -1))
-		{
-			var_data->error_checks->executor_level_syntax_error = true;	
-			free(b.path_bin);
-			ft_free_split(b.tmp_array);
-			ft_free_split(b.envvar_array);
-			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
-			return (1);
-		}
-	}
-	else
-		return (free(b.path_bin), var_data->tmp_pipe[0] = dup(b.pipe_fd[0]), 
-				close(b.pipe_fd[1]), ft_free_split(b.envvar_array), 
-				ft_free_split(b.tmp_array), 0);
-	// tot hier 
-	 * ==============*/
+		return (parent_free_and_continue(var_data, b));
 	return (1);
 }
