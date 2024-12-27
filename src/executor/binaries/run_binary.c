@@ -222,7 +222,6 @@ void	handle_pipes(t_var_data *var_data)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 }
 
-int	
 
 int	check_if_binary(t_var_data *var_data, 
 						t_ast_node *ast_node)
