@@ -76,6 +76,19 @@ int	ms_lex_and_parse(t_var_data *var_data,
 /* 	} */
 /* } */
 
+static int	handle_pipes(t_var_data *var_data)
+{
+	if (var_data->first_node_ast->pipe)
+	{
+		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
+		{
+			ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO);
+			return (ERROR_STOP);
+		}
+	}
+	return (0);
+}
+
 static int	execute_logic(t_var_data *var_data)
 {
 	t_ast_node *tmp_node;
@@ -84,9 +97,8 @@ static int	execute_logic(t_var_data *var_data)
 
 	tmp_node = var_data->first_node_ast;
 	error_flow = 0;
-	if (var_data->first_node_ast->pipe)
-		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
-			return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), ERROR_STOP);
+	if (handle_pipes(var_data) == ERROR_STOP)
+		return (ERROR_STOP);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
