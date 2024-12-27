@@ -76,7 +76,7 @@ int	ms_lex_and_parse(t_var_data *var_data,
 /* 	} */
 /* } */
 
-static int	handle_pipes(t_var_data *var_data)
+static int	handle_pipes(t_var_data *var_data) // xxx new
 {
 	if (var_data->first_node_ast->pipe)
 	{
@@ -89,16 +89,8 @@ static int	handle_pipes(t_var_data *var_data)
 	return (0);
 }
 
-static int	execute_logic(t_var_data *var_data)
+int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, int error_flow) // xxx new
 {
-	t_ast_node *tmp_node;
-	int			error_flow;
-	int			status;
-
-	tmp_node = var_data->first_node_ast;
-	error_flow = 0;
-	if (handle_pipes(var_data) == ERROR_STOP)
-		return (ERROR_STOP);
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
@@ -108,7 +100,7 @@ static int	execute_logic(t_var_data *var_data)
 		if (error_flow)
 			return (ERROR_STOP);
 		if (error_flow == ERROR_CONTINUE)
-			 break;
+			return (2);
 		error_flow = check_if_builtin(var_data, tmp_node);
 		if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
@@ -116,6 +108,23 @@ static int	execute_logic(t_var_data *var_data)
 			return (ERROR_STOP);
 		tmp_node = tmp_node->pipe;		
 	} 
+	return (2);
+}
+
+static int	execute_logic(t_var_data *var_data)
+{
+	t_ast_node *tmp_node;
+	int			error_flow;
+	int			status;
+	int			traversal_result;
+
+	tmp_node = var_data->first_node_ast;
+	error_flow = 0;
+	if (handle_pipes(var_data) == ERROR_STOP) // xxx
+		return (ERROR_STOP);
+	traversal_result = traverse_ast(tmp_node, var_data, error_flow); // xxx
+	if (traversal_result != 2)
+		return (traversal_result);
 	while (wait(&status) > 0)
 	{
 		if (WIFEXITED(status))
