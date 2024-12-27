@@ -256,12 +256,9 @@ int	check_if_binary(t_var_data *var_data,
 	if (!b.tmp_array[0])
 		return (free(b.path_bin), 0);
 	b.envvar_array = envvardict_to_envvararray(var_data->envvar);
-	// hier aparte fct van maken
 	b.pid = fork();
 	if (b.pid == -1)
-	{
 		return (handle_fork_fail(b.envvar_array, b.tmp_array, b.path_bin));
-	}
 	if (b.pid == 0)
 	{
 		if (check_pipe(var_data, ast_node, b.pipe_fd)
