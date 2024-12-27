@@ -216,6 +216,14 @@ int	parent_free_and_continue(t_var_data *var_data, t_binary_env b) // xxx new fu
 	return (0);
 }
 
+void	handle_pipes(t_var_data *var_data)
+{
+	if (var_data->first_node_ast->pipe)
+		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
+}
+
+int	
+
 int	check_if_binary(t_var_data *var_data, 
 						t_ast_node *ast_node)
 {
@@ -225,8 +233,11 @@ int	check_if_binary(t_var_data *var_data,
 	b.pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && pipe(b.pipe_fd) == -1)
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
+	handle_pipes(var_data); // xxx aanpassing
+	/* REMOVE ========
 	if (var_data->first_node_ast->pipe)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
+	 * ==============*/
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		b.path_bin = check_and_create_path(var_data, ast_node->command);
