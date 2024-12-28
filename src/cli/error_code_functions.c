@@ -12,19 +12,17 @@
 
 #include "../../minishell.h"
 
-char	*expand_error_code_variable(char *argument, 
-									char *error_code, 
-									int i, 
-									int j)
+char	*expand_error_code_variable(char *argument, char *error_code,
+									int i, int j)
 {
-	char 		*new_arg;
+	char	*new_arg;
 
 	while (argument[i])
 	{
 		if (argument[i] == '$')
 			i += ft_strlen(error_code);
 		else
-			i++;	
+			i++;
 	}
 	new_arg = malloc(sizeof(char) * i);
 	if (!new_arg)
@@ -55,18 +53,18 @@ int	expand_error_codes(t_var_data *var_data)
 	{
 		while (tmp_ast_node->arguments[i])
 		{
-			if (ft_strnstr(tmp_ast_node->arguments[i], "$?", 
-						ft_strlen(tmp_ast_node->arguments[i])))
+			if (ft_strnstr(tmp_ast_node->arguments[i], "$?",
+					ft_strlen(tmp_ast_node->arguments[i])))
 			{
 				tmp_ast_node->arguments[i]
 					= expand_error_code_variable(tmp_ast_node->arguments[i],
-							ft_itoa(var_data->last_error_code), 0, 0);
+						ft_itoa(var_data->last_error_code), 0, 0);
 				if (!tmp_ast_node->arguments[i])
 					return (ft_putstr_fd("Error: malloc\n", STDERR_FILENO), 1);
 			}
 			i++;
 		}
-		tmp_ast_node = tmp_ast_node->pipe;	
+		tmp_ast_node = tmp_ast_node->pipe;
 	}
 	return (0);
 }
