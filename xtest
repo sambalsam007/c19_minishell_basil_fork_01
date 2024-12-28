@@ -1,1 +1,2 @@
-Fri Dec 27 11:16:07 PM CET 2024
+.PHONY: all clean fclean re obj 
+.PHONY: all clean fclean re obj 
