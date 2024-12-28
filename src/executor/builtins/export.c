@@ -12,11 +12,10 @@
 
 #include "../../../minishell.h"
 
-static int	export_exceptions(t_var_data *var_data, 
-								t_ast_node *ast_node)
+static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 {
-	int i;
-	char **split;
+	int		i;
+	char	**split;
 
 	i = 0;
 	if (!ast_node->arguments[0])
@@ -30,9 +29,9 @@ static int	export_exceptions(t_var_data *var_data,
 		split = ft_split(ast_node->arguments[i], '=');
 		if (!split)
 			return (ft_printf("Error: malloc failed"), 1);
-		if (!split[1] && !ft_get_value(split[0], var_data->envvar) 
-				&& !ft_get_value(split[0], var_data->no_var_envvar))
-			var_data->no_var_envvar 
+		if (!split[1] && !ft_get_value(split[0], var_data->envvar)
+			&& !ft_get_value(split[0], var_data->no_var_envvar))
+			var_data->no_var_envvar
 				= ft_addto_dict(split[0], " ", var_data->no_var_envvar);
 		ft_free_split(split);
 		i++;
@@ -40,25 +39,23 @@ static int	export_exceptions(t_var_data *var_data,
 	return (0);
 }
 
-static int	ms_export_update_dicts(t_var_data *var_data, 
-									char **arg, 
-									int *j, 
-									int *i)
+static int	ms_export_update_dicts(t_var_data *var_data,
+									char **arg, int *j, int *i)
 {
 	*j = 2;
 	(*i)++;
-	if ((ft_get_value(arg[0], var_data->envvar) && arg[1]) 
-			|| (ft_get_value(arg[0], var_data->no_var_envvar) && arg[1]))
+	if ((ft_get_value(arg[0], var_data->envvar) && arg[1])
+		|| (ft_get_value(arg[0], var_data->no_var_envvar) && arg[1]))
 	{
 		if (ft_get_value(arg[0], var_data->no_var_envvar))
-			var_data->no_var_envvar 
+			var_data->no_var_envvar
 				= ft_delete_from_dict(arg[0], var_data->no_var_envvar);
-		else 
-			var_data->envvar 
+		else
+			var_data->envvar
 				= ft_delete_from_dict(arg[0], var_data->envvar);
 		var_data->envvar = ft_addto_dict(arg[0], arg[1], var_data->envvar);
 	}
-	else 
+	else
 		var_data->envvar = ft_addto_dict(arg[0], arg[1], var_data->envvar);
 	if (!var_data->envvar)
 		return (ft_printf("Error: malloc\n"), ft_free_split(arg), 1);
@@ -68,7 +65,7 @@ static int	ms_export_update_dicts(t_var_data *var_data,
 
 int	ms_export_multiple_separators(char **arg, int *j)
 {
-	char *tmp_arg;
+	char	*tmp_arg;
 
 	while (arg[*j])
 	{
@@ -86,33 +83,41 @@ int	ms_export_multiple_separators(char **arg, int *j)
 	return (0);
 }
 
-int	ms_export(t_var_data *var_data, 
-				t_ast_node *ast_node)
+// xxx new
+int	free_first_arg_if_empty(char *arg, int *i)
 {
-	char **arg;
-	int	i;
-	int	j;
+	if (!arg)
+	{
+		i++;
+		ft_free_split(&arg);
+		return (1);
+	}
+	(void)i;
+	return (0);
+}
+
+int	ms_export(t_var_data *var_data, t_ast_node *ast_node)
+{
+	char	**arg;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 2;
 	if (export_exceptions(var_data, ast_node))
 		return (1);
-	while(ast_node->arguments[i])
+	while (ast_node->arguments[i])
 	{
 		arg = ft_split(ast_node->arguments[i], '=');
 		if (!arg)
 			return (ft_printf("Error: malloc\n"), 1);
-		if (!arg[1])
-		{
-			i++;	
-			ft_free_split(arg);
-			continue;
-		}
+		if (free_first_arg_if_empty(arg[1], &i) == 1) // xxx
+			continue ;
 		if (arg[j])
-			if (ms_export_multiple_separators(arg, &j)) 
+			if (ms_export_multiple_separators(arg, &j))
 				return (ft_printf("Error: malloc\n"), 1);
 		if (ms_export_update_dicts(var_data, arg, &j, &i))
-			return(1);
+			return (1);
 	}
 	return (0);
 }
