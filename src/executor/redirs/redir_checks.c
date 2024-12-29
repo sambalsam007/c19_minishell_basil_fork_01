@@ -68,8 +68,57 @@ typedef struct	s_heredoc_env
 	int	redir_pipe_fd[2];
 	int pid;
 	char *prompt;
+	int	empty_prompt_code;
 }	t_heredoc_env;
 
+// xxx new
+int	first_readline(char **prompt)
+{
+	*prompt = readline("\033[33m> \033[0m");
+	if (!*prompt)
+		return (1);
+	if (*prompt[0] == '\0')
+		return (-1);
+	return (0);
+}
+
+// xxx new
+// i only tested basic pipe 
+// dont know how to test pipe edge cases
+int	reprompt(int redir_pipe_fd[], char **prompt)
+{
+	write(redir_pipe_fd[1], *prompt, ft_strlen(*prompt));
+	write(redir_pipe_fd[1], "\n", 1);
+
+	*prompt = readline("\033[33m> \033[0m");
+	if (*prompt && *prompt[0] == '\0')
+		return (-1);
+	return (0);
+}
+
+// xxx new
+int	redir_and_cleanup(int redir_pipe_fd[])
+{
+	redir_pipe_fd[0] = dup(STDIN_FILENO);
+	if (redir_pipe_fd[0] == -1)
+	{
+		ft_printf("Error: dup2 failed\n");
+		return (1);
+	}
+	close(redir_pipe_fd[0]);
+	close(redir_pipe_fd[1]);
+	exit (0);
+}
+
+/*
+	memory leak
+	with this test
+		echo <<EOF
+		111
+		222
+		EOF
+	normally should be able to add a `333`
+ */
 static int handle_here_doc(t_var_data *var_data, char *filename)
 {
 	t_heredoc_env	h;
@@ -83,27 +132,17 @@ static int handle_here_doc(t_var_data *var_data, char *filename)
 	{
 		signal(SIGINT, SIG_DFL);
 		sighandler(var_data, HERE_DOC);
-		h.prompt = readline("\033[33m> \033[0m");
-		if (!h.prompt)
-			return (1);
-		if (h.prompt[0] == '\0')
-			return (-1);
+		if ((h.empty_prompt_code = first_readline(&h.prompt)) != 0)
+			return (h.empty_prompt_code);
 		while (h.prompt && ft_strncmp(h.prompt, filename, ft_strlen(filename) + 1)
 				&& h.prompt[0] && h.prompt[0] != EOF && h.prompt[0] != '\4') 
 		{
-			write(h.redir_pipe_fd[1], h.prompt, ft_strlen(h.prompt));
-			write(h.redir_pipe_fd[1], "\n", 1);
-			h.prompt = readline("\033[33m> \033[0m");
-			if (h.prompt && h.prompt[0] == '\0')
+			if (reprompt(h.redir_pipe_fd, &h.prompt) == -1) // xxx
 				return (-1);
 		}
 		sighandler(var_data, MAIN_PROCESS);
-		h.redir_pipe_fd[0] = dup(STDIN_FILENO);
-		if (h.redir_pipe_fd[0] == -1)
-			return (ft_printf("Error: dup2 failed\n"), 1);
-		close(h.redir_pipe_fd[0]);
-		close(h.redir_pipe_fd[1]);
-		exit(0);
+		if (redir_and_cleanup(h.redir_pipe_fd) == 1) // xxx
+			return (1);
 	}
 	else
 		wait(0);
