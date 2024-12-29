@@ -63,41 +63,46 @@ static int	handle_append_redir(char *filename,
 	return (0);
 }
 
-static int handle_here_doc(t_var_data *var_data, char *filename)
+typedef struct	s_heredoc_env
 {
-	int redir_pipe_fd[2];
+	int	redir_pipe_fd[2];
 	int pid;
 	char *prompt;
+}	t_heredoc_env;
+
+static int handle_here_doc(t_var_data *var_data, char *filename)
+{
+	t_heredoc_env	h;
 	
-	if (pipe(redir_pipe_fd) == -1)
+	if (pipe(h.redir_pipe_fd) == -1)
 		return (1);
-	pid = fork();
-	if (pid == -1)
+	h.pid = fork();
+	if (h.pid == -1)
 		return (ft_printf("Error: fork\n"), 1);
-	if (pid == 0)
+	if (h.pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		sighandler(var_data, HERE_DOC);
-		prompt = readline("\033[33m> \033[0m");
-		if (!prompt)
+		h.prompt = readline("\033[33m> \033[0m");
+		if (!h.prompt)
 			return (1);
-		if (prompt[0] == '\0')
+		if (h.prompt[0] == '\0')
 			return (-1);
-		while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1)
-				&& prompt[0] && prompt[0] != EOF && prompt[0] != '\4') 
+		while (h.prompt && ft_strncmp(h.prompt, filename, ft_strlen(filename) + 1)
+				&& h.prompt[0] && h.prompt[0] != EOF && h.prompt[0] != '\4') 
 		{
-			write(redir_pipe_fd[1], prompt, ft_strlen(prompt));
-			write(redir_pipe_fd[1], "\n", 1);
-			prompt = readline("\033[33m> \033[0m");
-			if (prompt && prompt[0] == '\0')
+			write(h.redir_pipe_fd[1], h.prompt, ft_strlen(h.prompt));
+			write(h.redir_pipe_fd[1], "\n", 1);
+			h.prompt = readline("\033[33m> \033[0m");
+			if (h.prompt && h.prompt[0] == '\0')
 				return (-1);
 		}
 		sighandler(var_data, MAIN_PROCESS);
-		redir_pipe_fd[0] = dup(STDIN_FILENO);
-		if (redir_pipe_fd[0] == -1)
+		h.redir_pipe_fd[0] = dup(STDIN_FILENO);
+		if (h.redir_pipe_fd[0] == -1)
 			return (ft_printf("Error: dup2 failed\n"), 1);
-		close(redir_pipe_fd[0]);
-		close(redir_pipe_fd[1]);
+		close(h.redir_pipe_fd[0]);
+		close(h.redir_pipe_fd[1]);
 		exit(0);
 	}
 	else
