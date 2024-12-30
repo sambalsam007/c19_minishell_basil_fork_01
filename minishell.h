@@ -32,6 +32,9 @@
 #define ERROR_NULL NULL
 #define EXECUTOR 1
 #define MAIN_PROCESS 3
+#define LEXER_ERROR 999
+#define PARSER_ERROR 998
+#define EXECUTOR_ERROR 997
 
 typedef enum {
 	EXEC = 1,
