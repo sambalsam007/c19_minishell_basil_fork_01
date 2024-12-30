@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-static void free_args_and_redirs(t_ast_node *tmp)
+static void	free_args_and_redirs(t_ast_node *tmp)
 {
 	int			i;
 	t_ast_redir	*curr_redir;
@@ -21,16 +21,16 @@ static void free_args_and_redirs(t_ast_node *tmp)
 	i = 0;
 	if (tmp->arguments)
 	{
-		while (tmp->arguments[i]) 
-			free(tmp->arguments[i++]);	
-		free(tmp->arguments);	
+		while (tmp->arguments[i])
+			free(tmp->arguments[i++]);
+		free(tmp->arguments);
 		i = 0;
 	}
 	curr_redir = tmp->redirect;
 	while (curr_redir)
 	{
 		tmp_redir = curr_redir->next_redir;
-	free(curr_redir->file);
+		free(curr_redir->file);
 		free(curr_redir);
 		curr_redir = tmp_redir;
 	}
@@ -52,7 +52,7 @@ void	free_parser(t_ast_node *first_node_ast)
 		if (tmp->command)
 			free(tmp->command);
 		if (tmp->flag)
-			free(tmp->flag);	
+			free(tmp->flag);
 		if (tmp)
 			free(tmp);
 		tmp = NULL;
