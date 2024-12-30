@@ -135,6 +135,7 @@ void			big_free(t_var_data *var_data, char *prompt);
 /* ************************************************************************** */
 
 int				ms_command_line_inteface(t_var_data *var_data);
+int				execute_logic(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      lexer                                 */
