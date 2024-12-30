@@ -1,0 +1,2 @@
+.PHONY: all clean fclean re obj 
+.PHONY: all clean fclean re obj 

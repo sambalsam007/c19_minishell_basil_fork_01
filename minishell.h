@@ -135,6 +135,9 @@ void			big_free(t_var_data *var_data, char *prompt);
 /* ************************************************************************** */
 
 int				ms_command_line_inteface(t_var_data *var_data);
+int				handle_pipes(t_var_data *var_data);
+int				traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, int error_flow);
+int				execute_logic(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      lexer                                 */
