@@ -35,4 +35,6 @@ int	main(int ac, char **av, char **envp)
 /* errors naar STDERRROR */
 /* ls -a exporteren wordt behandeld als 'ls -a' = command */
 /* werkt echo -n? */
+/* exporting PATH naar iets dat niet bestaat doet crashen */
+/* env | grep werkt niet: builtings ook met pipes? */
 
