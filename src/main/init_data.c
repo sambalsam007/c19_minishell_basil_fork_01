@@ -12,10 +12,6 @@
 
 #include "../../minishell.h"
 
-#define LEXER_ERROR 999
-#define PARSER_ERROR 998
-#define EXECUTOR_ERROR 997
-
 char	***init_envvar_noenvp(void)
 {
 	char	*temp[4];

@@ -12,19 +12,31 @@
 
 #include "../../minishell.h"
 
+/* void	set_error_checks(t_var_data *var_data) */
+/* { */
+/* 	if (var_data->last_error_code != 0) */
+/* 		return ; */
+/* 	if (var_data->error_checks->lexer_level_syntax_error == true) */
+/* 		var_data->last_error_code = LEXER_ERROR; */
+/* 	if (var_data->error_checks->parser_level_syntax_error == true) */
+/* 		var_data->last_error_code = PARSER_ERROR; */
+/* 	if (var_data->error_checks->executor_level_syntax_error == true) */
+/* 		var_data->last_error_code = EXECUTOR_ERROR; */
+/* 	return ; */
+/* } */
+
 char	*expand_error_code_variable(char *argument, 
 									char *error_code, 
 									int i, 
 									int j)
 {
 	char 		*new_arg;
+	int 		k;
 
+	k = 0;
 	while (argument[j])
-	{
-		if (argument[j] == '$')
+		if (argument[j++] == '$')
 			i += ft_strlen(error_code) + 1;
-		j++;
-	}
 	new_arg = malloc(sizeof(char) * (i + j));
 	if (!new_arg)
 		return (free(argument), free(error_code), NULL);
@@ -34,9 +46,9 @@ char	*expand_error_code_variable(char *argument,
 	{
 		if (argument[i] == '$')
 		{
-			while (error_code[j])
-				new_arg[i++] = error_code[j++];
-			i++;
+			while (error_code[k])
+				new_arg[j++] = error_code[k++];
+			i += 2;
 		}
 		else
 			new_arg[j++] = argument[i++];
@@ -69,5 +81,6 @@ int	expand_error_codes(t_var_data *var_data)
 		i = 0;
 		tmp_ast_node = tmp_ast_node->pipe;	
 	}
+	var_data->last_error_code = 0;
 	return (0);
 }
