@@ -268,19 +268,4 @@ int	check_if_binary(t_var_data *var_data,
 		return (free(b.path_bin), 0);
 	b.envvar_array = envvardict_to_envvararray(var_data->envvar);
 	return (newf(&b, var_data, ast_node)); // xxx
-	/* REMOVE ===========
-	b.pid = fork();
-	if (b.pid == -1)
-		return (handle_fork_fail(b.envvar_array, b.tmp_array, b.path_bin));
-	if (b.pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, b.pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(b.path_bin, b.tmp_array, b.envvar_array) == -1))
-			return (child_fail(var_data, b.path_bin, b.tmp_array, b.envvar_array));
-	}
-	else
-		return (parent_free_and_continue(var_data, b));
-	return (1);
-	 * ================== */
 }
