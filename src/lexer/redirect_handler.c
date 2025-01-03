@@ -55,15 +55,25 @@ static int filename_fill_logic(char *prompt,
 		return (0);
 	if (ft_strchr("\"", prompt[i]))
 	{
-		fill_token_expd_vars(&prompt[i + 1], &tokenized_string[*temp_index], 
-				key, var_data->envvar);
-		i += count_total_strlen(&prompt[i], var_data, key, temp_index);
-		*temp_index += ft_strlen(&tokenized_string[*temp_index]);
-		free(key);
+		if (ft_strchr("\"", prompt[i]))
+		{
+			fill_token_expd_vars(&prompt[i + 1], &tokenized_string[*temp_index], 
+					key, var_data->envvar);
+			i += count_total_strlen(&prompt[i], var_data, key, temp_index);
+			*temp_index += ft_strlen(&tokenized_string[*temp_index]);
+			free(key);
+		}
 	}
+	else if (ft_strchr("'", prompt[i]))
+		while (prompt[i++] != '\'')
+		{
+			tokenized_string[*temp_index++]	= prompt[i++];	
+			if (ft_strchr("\0", prompt[i]))
+				return (var_data->error_checks->lexer_level_syntax_error = true, -1);
+		}
 	else
 		tokenized_string[*temp_index] = prompt[i];
-	if (prompt[i] != '\'')
+	if (prompt[0] != '\'')
 		(*temp_index)++;
 	return (i);
 }
@@ -92,7 +102,8 @@ static int	fill_redirect_token(char *prompt,
 		}
 		i += filename_fill_logic(&prompt[i], &tmpindex, token, var_data);
 		if (((ft_strchr("<>|", prompt[i]) && (space_counter >= 1 || i > 3)) 
-				|| (i > 2 && ft_iswhitespace(prompt[i]) && token[tmpindex++])))
+				|| (i > 2 && ft_iswhitespace(prompt[i]) && token[tmpindex++])
+				|| var_data->error_checks->lexer_level_syntax_error == true))
 				break;
 		i++;
 	}
