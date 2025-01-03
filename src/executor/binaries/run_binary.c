@@ -222,8 +222,26 @@ void	handle_pipes(t_var_data *var_data)
 		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 }
 
+// xxx
+int	newf(t_binary_env *b, t_var_data *var_data, t_ast_node *ast_node)
+{
+	b->pid = fork();
+	if (b->pid == -1)
+		return (handle_fork_fail(b->envvar_array, b->tmp_array, b->path_bin));
+	if (b->pid == 0)
+	{
+		if (check_pipe(var_data, ast_node, b->pipe_fd)
+			|| (sighandler(var_data, EXECUTOR))
+			|| (execve(b->path_bin, b->tmp_array, b->envvar_array) == -1))
+			return (child_fail(var_data, b->path_bin, \
+						b->tmp_array, b->envvar_array));
+	}
+	else
+		return (parent_free_and_continue(var_data, *b));
+	return (1);
+}
 
-int	check_if_binary(t_var_data *var_data, 
+int	check_if_binary(t_var_data *var_data,
 						t_ast_node *ast_node)
 {
 	t_binary_env	b;
@@ -233,17 +251,13 @@ int	check_if_binary(t_var_data *var_data,
 	if (var_data->first_node_ast->pipe && pipe(b.pipe_fd) == -1)
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
 	handle_pipes(var_data); // xxx aanpassing
-	/* REMOVE ========
-	if (var_data->first_node_ast->pipe)
-		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
-	 * ==============*/
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		b.path_bin = check_and_create_path(var_data, ast_node->command);
 		if (!(b.path_bin) || !(b.path_bin[0])) // xxx aanpassing
 			return (handle_empty_path_bin(b.path_bin));
 	}
-	else 
+	else
 		b.path_bin = ft_strdup(ast_node->command);
 	if (b.path_bin && var_data->error_checks->executor_level_syntax_error == true)
 		return (0);
@@ -253,6 +267,8 @@ int	check_if_binary(t_var_data *var_data,
 	if (!b.tmp_array[0])
 		return (free(b.path_bin), 0);
 	b.envvar_array = envvardict_to_envvararray(var_data->envvar);
+	return (newf(&b, var_data, ast_node)); // xxx
+	/* REMOVE ===========
 	b.pid = fork();
 	if (b.pid == -1)
 		return (handle_fork_fail(b.envvar_array, b.tmp_array, b.path_bin));
@@ -266,4 +282,5 @@ int	check_if_binary(t_var_data *var_data,
 	else
 		return (parent_free_and_continue(var_data, b));
 	return (1);
+	 * ================== */
 }
