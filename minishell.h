@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 15:48:44 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 19:07:52 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,9 @@ t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_tok
 /* int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node); */
 int				execute_builtin_or_binary(t_var_data *var_data, t_ast_node *ast_node);
 int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect);
-int				check_if_builtin(t_var_data *var_data, t_ast_node *ast_node);
+int				check_if_builtin(t_ast_node *ast_node);
+int				run_builtins_with_output(t_var_data *var_data, t_ast_node *ast_node);
+int				run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_echo(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_env(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_export(t_var_data *var_data, t_ast_node *ast_node);

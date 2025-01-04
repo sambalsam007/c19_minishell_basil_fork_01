@@ -38,6 +38,12 @@ static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 			return (ERROR_STOP);
 		if (error_flow == ERROR_CONTINUE)
 			return (2);
+		error_flow = run_builtins_without_output(var_data, tmp_node);
+		if (error_flow == ERROR_CONTINUE)
+		{
+			tmp_node = tmp_node->pipe;
+			continue;	
+		}
 		error_flow = execute_builtin_or_binary(var_data, tmp_node);
 		if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);

@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:09:43 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 16:03:36 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 19:12:08 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,40 +104,49 @@ static void free_path_and_arrays(char *path_bin,
 	ft_free_split(envvar_array);
 }
 
+
 static int fork_and_execute_child(t_var_data *var_data, 
 						t_ast_node *ast_node,
-						char **tmp_array,
 						char *path_bin,
 						int pipe_fd[2])
 {
 	pid_t	pid;
 	char 	**envvar_array;
+	char 	**tmp_arg_array;
 
 	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	if (!envvar_array)
+		return (1);
+	tmp_arg_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
+	if (!tmp_arg_array)
+		return (free(path_bin), ft_free_split(envvar_array), 
+				ft_putstr_fd("Error\n", STDERR_FILENO), 1);
+	if (!tmp_arg_array[0])
+		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array), 0);
 	pid = fork();
 	if (pid == -1)
 		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				free_path_and_arrays(path_bin, envvar_array, tmp_array), 1);
+				free_path_and_arrays(path_bin, envvar_array, tmp_arg_array), 1);
 	if (pid == 0)
 	{
 		if (check_pipe(var_data, ast_node, pipe_fd)
 				|| (sighandler(var_data, EXECUTOR)))
 			exit(1);
-		if (check_if_builtin(var_data, ast_node))
-			exit(1);
-		if (execve(path_bin, tmp_array, envvar_array) == -1)
+		if (run_builtins_with_output(var_data, ast_node))//new vbasil
+			exit(0);
+		if (execve(path_bin, tmp_arg_array, envvar_array) == -1)
 		{
 			var_data->error_checks->executor_level_syntax_error = true;	
-			free_path_and_arrays(path_bin, envvar_array, tmp_array);
-			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
-			return (1);
+			free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
+			ft_putstr_fd("Execv err: check input\n", STDERR_FILENO);
+			exit (1);
 		}
 	}
 	else
 	{
 		if (ast_node != var_data->first_node_ast)// new_basil
 			close(var_data->tmp_pipe[0]);//new vbasil
-		free_path_and_arrays(path_bin, envvar_array, tmp_array);
+		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
 		return (var_data->tmp_pipe[0] = pipe_fd[0], close(pipe_fd[1]), 0);// can i call close the last node?
 	}
 	return (1);
@@ -147,14 +156,14 @@ int	execute_builtin_or_binary(t_var_data *var_data,
 						t_ast_node *ast_node)
 {
 	char 	*path_bin;
-	char 	**tmp_array;
 	int		pipe_fd[2];
 
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && ast_node->pipe && pipe(pipe_fd) == -1)//new
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
-	if (!ft_strchr("/~.", ast_node->command[0]))
+	if (!ft_strchr("/~.", ast_node->command[0]) 
+			&& !check_if_builtin(ast_node))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
 		if (!path_bin)
@@ -166,10 +175,5 @@ int	execute_builtin_or_binary(t_var_data *var_data,
 		path_bin = ft_strdup(ast_node->command);
 	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
 		return (0);
-	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
-	if (!tmp_array)
-		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
-	if (!tmp_array[0])
-		return (free(path_bin), 0);
-	return (fork_and_execute_child(var_data, ast_node, tmp_array, path_bin, pipe_fd));
+	return (fork_and_execute_child(var_data, ast_node, path_bin, pipe_fd));
 }

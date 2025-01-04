@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 11:48:11 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/19 12:40:03 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 18:42:26 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,4 @@ int	main(int ac, char **av, char **envp)
 /* ls -a exporteren wordt behandeld als 'ls -a' = command */
 /* werkt echo -n? */
 /* exporting PATH naar iets dat niet bestaat doet crashen */
-/* env | grep werkt niet: builtings ook met pipes? */
 /* redirects in het begin werken nog niet */
-
