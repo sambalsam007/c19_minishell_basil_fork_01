@@ -36,4 +36,5 @@ int	main(int ac, char **av, char **envp)
 /* werkt echo -n? */
 /* exporting PATH naar iets dat niet bestaat doet crashen */
 /* env | grep werkt niet: builtings ook met pipes? */
+/* redirects in het begin werken nog niet */
 

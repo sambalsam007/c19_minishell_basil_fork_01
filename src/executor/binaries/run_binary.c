@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:09:43 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 16:17:26 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 16:03:36 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,76 +19,6 @@
 #include <time.h>
 #include <unistd.h>
 
-static char *create_path_or_envp(char *directory_path, 
-					char *command,
-					char *separator) 
-{
-	char *binary_path;
-	char *binary_path_tmp;
-
-	binary_path = ft_strjoin(directory_path, separator); 
-	if (!binary_path)
-		return (ft_printf("malloc fail"), NULL);
-	binary_path_tmp = binary_path;
-	binary_path = ft_strjoin(binary_path, command);
-	free(binary_path_tmp);
-	if (!binary_path)
-		return (ft_printf("malloc fail"), NULL);
-	return (binary_path);
-}
-
-static char *check_and_create_path(t_var_data *var_data, 
-								char *command) 
-{
-	int 			i;
-	char 			**split_PATH;
-	char 			*binary_path;
-	DIR 			*directory;
-	struct dirent	*file_found;
-	
-	i = 0;
-	if (!ft_get_value("PATH", var_data->envvar))
-		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	split_PATH = ft_split(ft_get_value("PATH", var_data->envvar), ':');
-	if (!split_PATH)
-		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
-	while (split_PATH[i])
-	{
-		directory = opendir(split_PATH[i]);
-		if (!directory)
-		{
-			i++;
-			continue;
-		}
-		file_found = readdir(directory);
-		while (file_found)
-		{
-			if (!ft_strncmp(file_found->d_name, command, ft_strlen(command) + 1))
-					break;
-			file_found = readdir(directory);
-		}
-		if (file_found)
-		{
-			binary_path = create_path_or_envp(split_PATH[i], command, "/");
-			if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-			break;
-		}
-		if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-		i++;
-	}
-	ft_free_split(split_PATH);
-	if (!file_found)
-		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	return (binary_path);
-}
 
 /* void	test_print_parser2(t_var_data *var_data) */
 /* { */
@@ -165,21 +95,65 @@ static char	**add_cmd_to_argarray(char **args, char *command)
 	return (new_array);	
 }
 
-int	check_if_binary(t_var_data *var_data, 
-						t_ast_node *ast_node)
+static void free_path_and_arrays(char *path_bin, 
+								char **envvar_array, 
+								char **tmp_array)
+{
+	free(path_bin);
+	ft_free_split(tmp_array);
+	ft_free_split(envvar_array);
+}
+
+static int fork_and_execute_child(t_var_data *var_data, 
+						t_ast_node *ast_node,
+						char **tmp_array,
+						char *path_bin,
+						int pipe_fd[2])
 {
 	pid_t	pid;
+	char 	**envvar_array;
+
+	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	pid = fork();
+	if (pid == -1)
+		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
+				free_path_and_arrays(path_bin, envvar_array, tmp_array), 1);
+	if (pid == 0)
+	{
+		if (check_pipe(var_data, ast_node, pipe_fd)
+				|| (sighandler(var_data, EXECUTOR)))
+			exit(1);
+		if (check_if_builtin(var_data, ast_node))
+			exit(1);
+		if (execve(path_bin, tmp_array, envvar_array) == -1)
+		{
+			var_data->error_checks->executor_level_syntax_error = true;	
+			free_path_and_arrays(path_bin, envvar_array, tmp_array);
+			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
+			return (1);
+		}
+	}
+	else
+	{
+		if (ast_node != var_data->first_node_ast)// new_basil
+			close(var_data->tmp_pipe[0]);//new vbasil
+		free_path_and_arrays(path_bin, envvar_array, tmp_array);
+		return (var_data->tmp_pipe[0] = pipe_fd[0], close(pipe_fd[1]), 0);// can i call close the last node?
+	}
+	return (1);
+}
+
+int	execute_builtin_or_binary(t_var_data *var_data, 
+						t_ast_node *ast_node)
+{
 	char 	*path_bin;
 	char 	**tmp_array;
-	char 	**envvar_array;
 	int		pipe_fd[2];
 
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
-	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
+	if (var_data->first_node_ast->pipe && ast_node->pipe && pipe(pipe_fd) == -1)//new
 		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
-	if (var_data->first_node_ast->pipe)
-		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
 	if (!ft_strchr("/~.", ast_node->command[0]))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
@@ -197,31 +171,5 @@ int	check_if_binary(t_var_data *var_data,
 		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
 	if (!tmp_array[0])
 		return (free(path_bin), 0);
-	envvar_array = envvardict_to_envvararray(var_data->envvar);
-	// hier aparte fct van maken
-	pid = fork();
-	if (pid == -1)
-		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				ft_free_split(envvar_array), ft_free_split(tmp_array),
-				free(path_bin), 1);
-	if (pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(path_bin, tmp_array, envvar_array) == -1))
-		{
-			var_data->error_checks->executor_level_syntax_error = true;	
-			free(path_bin);
-			ft_free_split(tmp_array);
-			ft_free_split(envvar_array);
-			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
-			return (1);
-		}
-	}
-	else
-		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
-				close(pipe_fd[1]), ft_free_split(envvar_array), 
-				ft_free_split(tmp_array), 0);
-	// tot hier 
-	return (1);
+	return (fork_and_execute_child(var_data, ast_node, tmp_array, path_bin, pipe_fd));
 }

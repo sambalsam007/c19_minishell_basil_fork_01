@@ -24,37 +24,32 @@ int	restore_fds(t_var_data *var_data)
 	return (var_data->pipe_check = false, 0);
 }
 
-static int	first_pipe(t_var_data *var_data, 
-						int	*pipe_fd)
+static int	first_pipe(int	*pipe_fd)
 {
-	close(STDOUT_FILENO);
 	close(pipe_fd[0]);
-	close(var_data->tmp_pipe[0]);
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1) 
 		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+	close(pipe_fd[1]); //new
 	return (0);
 }
 
 static int	middle_pipes(t_var_data *var_data, int *pipe_fd)
 {
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
 	close(pipe_fd[0]);
 	if (dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1) 
 		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1) 
 		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+	close(pipe_fd[1]); //new
 	return (0);
 }
 
-static int	last_pipe(t_var_data *var_data, int *pipe_fd)
+/* static int	last_pipe(t_var_data *var_data, int *pipe_fd) */
+static int	last_pipe(t_var_data *var_data)
 {
-	close(STDIN_FILENO);
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	close(var_data->tmp_pipe[1]);
 	if (dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1) 
 		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+	close(var_data->tmp_pipe[0]); //new
 	return (0);
 }
 
@@ -86,7 +81,7 @@ int	check_pipe(t_var_data *var_data,
 		return (0);
 	if (curr_node_pipe == var_data->first_node_ast && curr_node_pipe->pipe) 
 	{
-		if (first_pipe(var_data, pipe_fd))
+		if (first_pipe(pipe_fd))
 			return (1);
 	}
 	else if (curr_node_pipe != var_data->first_node_ast)
@@ -97,7 +92,7 @@ int	check_pipe(t_var_data *var_data,
 				return (1);
 		}
 		else 
-			if (last_pipe(var_data, pipe_fd))
+			if (last_pipe(var_data))
 				return (1);
 		var_data->pipe_check = true;
 	}

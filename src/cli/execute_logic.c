@@ -9,11 +9,11 @@
 #define ERROR_STOP 1
 
 // xxx new
-int	handle_pipes(t_var_data *var_data)
+static int	handle_pipes(t_var_data *var_data)
 {
 	if (var_data->first_node_ast->pipe)
 	{
-		if (pipe(var_data->tmp_pipe) == ERROR_CONTINUE)
+		if (pipe(var_data->tmp_pipe) == -1)
 		{
 			ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO);
 			return (ERROR_STOP);
@@ -23,8 +23,11 @@ int	handle_pipes(t_var_data *var_data)
 }
 
 // xxx new
-int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, int error_flow)
+static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 {
+	int			error_flow;
+
+	error_flow = 0;
 	while (tmp_node)
 	{
 		if (!tmp_node->command)
@@ -35,11 +38,12 @@ int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, int error_flow)
 			return (ERROR_STOP);
 		if (error_flow == ERROR_CONTINUE)
 			return (2);
-		error_flow = check_if_builtin(var_data, tmp_node);
+		error_flow = execute_builtin_or_binary(var_data, tmp_node);
 		if (error_flow == ERROR_STOP)
 			return (ERROR_STOP);
-		if (error_flow == ERROR_CONTINUE && check_if_binary(var_data, tmp_node))
-			return (ERROR_STOP);
+		/* if (error_flow == ERROR_CONTINUE && check_if_binary(var_data, tmp_node)) */
+		/* if (error_flow == ERROR_CONTINUE) */
+		/* 	return (ERROR_STOP); */
 		tmp_node = tmp_node->pipe;
 	}
 	return (2);
@@ -48,15 +52,15 @@ int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, int error_flow)
 int	execute_logic(t_var_data *var_data)
 {
 	t_ast_node	*tmp_node;
-	int			error_flow;
 	int			status;
 	int			traversal_result;
 
 	tmp_node = var_data->first_node_ast;
-	error_flow = 0;
+	if (!tmp_node->command)
+		return (ERROR_STOP);
 	if (handle_pipes(var_data) == ERROR_STOP) // xxx
 		return (ERROR_STOP);
-	traversal_result = traverse_ast(tmp_node, var_data, error_flow); // xxx
+	traversal_result = traverse_ast(tmp_node, var_data); // xxx
 	if (traversal_result != 2)
 		return (traversal_result);
 	while (wait(&status) > 0)

@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 12:49:56 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 14:16:40 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 16:04:14 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,8 @@
 int	check_if_builtin(t_var_data *var_data, t_ast_node *ast_node)
 {
 	size_t	cmd_len;
-	/* pid_t	pid; */
 
-	if (!ast_node->command)
-		return (1);
 	cmd_len = ft_strlen(ast_node->command);
-	/* pid = fork(); */
-	/* if (pid == -1) */
-	/* 	return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO), -1); */
-	/* if (pid == 0) */
-	/* { */
-		/* if (ast_node->pipe) */
-		/* 	builtin_pipes(var_data, ast_node); */
 		if (!ft_strncmp("echo", ast_node->command, cmd_len))
 			ms_echo(var_data, ast_node);
 		else if (!ft_strncmp("env", ast_node->command, cmd_len))
@@ -55,11 +45,7 @@ int	check_if_builtin(t_var_data *var_data, t_ast_node *ast_node)
 			ms_pwd(var_data);
 		else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 			ms_cd(var_data, ast_node);
-		/* else  */
-		/* 	exit(-1); */
-		/* exit(0); */
-	/* } */
-	/* else */
-	/* 	wait(0); */
-	return (0);
+		else 
+			return (0);
+	return (1);
 }
