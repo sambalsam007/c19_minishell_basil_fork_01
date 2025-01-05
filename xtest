@@ -1,2 +1,3 @@
-.PHONY: all clean fclean re obj 
-.PHONY: all clean fclean re obj 
+[33mbazzels_minishell> [0mecho lol
+lol 
+[33mbazzels_minishell> [0mexit
