@@ -26,6 +26,7 @@ static void	free_args_and_redirs(t_ast_node *tmp)
 		free(tmp->arguments);
 		i = 0;
 	}
+	tmp->arguments = NULL;
 	curr_redir = tmp->redirect;
 	while (curr_redir)
 	{
@@ -34,6 +35,7 @@ static void	free_args_and_redirs(t_ast_node *tmp)
 		free(curr_redir);
 		curr_redir = tmp_redir;
 	}
+	tmp->redirect = NULL;
 }
 
 void	free_parser(t_ast_node *first_node_ast)
@@ -74,6 +76,7 @@ void	free_lexer(t_token_node *first_node_lexer)
 		current = current->next;
 		if (tmp->token)
 			free(tmp->token);
+		tmp->type = 0;
 		if (tmp)
 			free(tmp);
 		tmp = NULL;

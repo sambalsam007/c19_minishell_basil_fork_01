@@ -17,9 +17,9 @@
 #include <time.h>
 
 int	exceptions(char *prompt,
-							size_t *index,
-							t_var_data *var_data,
-							char **token)
+				size_t *index,
+				t_var_data *var_data,
+				char **token)
 {
 	int	error_flow;
 
@@ -33,9 +33,8 @@ int	exceptions(char *prompt,
 	else if (ft_strchr("'", prompt[*index]))
 		error_flow = single_quotes(prompt, index, token);
 	else if (ft_strchr("$", prompt[*index]))
-		while (prompt[*index] && ft_strchr("$", prompt[*index]) 
-				&& error_flow != 2
-			&& error_flow != 1)
+		while (prompt[*index] && ft_strchr("$", prompt[*index])
+			&& error_flow != 2 && error_flow != 1)
 			error_flow = no_quotes_arg(prompt, index, var_data->envvar, token);
 	else if (prompt[*index] == '"')
 		error_flow = double_quotes(prompt, index, var_data, token);
@@ -57,10 +56,10 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 	if (!prompt[local_index])
 		return ((*i += local_index), local_index);
 	if (prompt[local_index] && prompt[local_index] == '|')
-		return(*i += 1, *token = ft_strdup("|"), 0);
+		return (*i += 1, *token = ft_strdup("|"), 0);
 	if (ft_strchr("'><$\"", prompt[local_index]))
-		return (tmp_index = exceptions(prompt, &local_index, 
-					var_data, token), *i += local_index, tmp_index);
+		return (tmp_index = exceptions(prompt, &local_index, var_data, token),
+			*i += local_index, tmp_index);
 	tmp_index = local_index;
 	while (!ft_iswhitespace(prompt[tmp_index]) && prompt[tmp_index])
 		tmp_index++;
@@ -69,11 +68,10 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 		return (ft_print_error("Error: strtok malloc failed\n"));
 	tmp_index = 0;
 	while (prompt[local_index] && !ft_iswhitespace(prompt[local_index])
-		&& (prompt[local_index] != '"' && !ft_strchr("|'><$", prompt[local_index])))
+		&& (prompt[local_index] != '"' && !ft_strchr("|'><$",
+			prompt[local_index])))
 		(*token)[tmp_index++] = prompt[local_index++];
-	(*token)[tmp_index] = '\0';
-	*i += local_index;
-	return (0);
+	return (*i += local_index, (*token)[tmp_index] = '\0', 0);
 }
 
 static int	init_tokenizer(t_token_node **first_node,
@@ -116,13 +114,13 @@ int	make_token(t_token_node *first_node,
 	error_flow = ft_strtok(&prompt[i], var_data, tmp_str, &i);
 	if (error_flow == 1)
 		error_flow = -2;
+	if (error_flow == -1)
+		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
 	if (!tmp_str && !first_node->token)
 	{
 		first_node = NULL;
 		error_flow = -2;
 	}
-	if (error_flow == -1)
-		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
 	if (error_flow < 0)
 		return (error_flow);
 	return (i);
@@ -138,25 +136,23 @@ t_token_node	*tokenizer(char *prompt,
 	size_t			i;
 
 	i = init_tokenizer(&first_nd, var_data, &tmp_str, prompt);
-	if (i == 0)
-		return (ERROR_NULL);
 	current = first_nd;
 	while (ft_strlen(prompt) > i && prompt[i] && error_flow >= 0 && current)
-	{ 
+	{
 		if (prompt[i - 1] != '|')
 			i += check_if_join_args(var_data, &prompt[i], tmp_str, current);
 		if (!tmp_str)
 			return (ft_print_error_null("Error: tokenizer malloc failed\n"));
 		error_flow = make_token(first_nd, var_data, &tmp_str, &prompt[i]);
-		if (error_flow < 0 || var_data->error_checks->lexer_level_syntax_error == true)
+		if (error_flow < 0
+			|| var_data->error_checks->lexer_level_syntax_error == true)
 			break ;
 		i += error_flow;
 		current->next = create_node(tmp_str, current, NULL, var_data);
 		current = current->next;
 	}
-	if (var_data->error_checks->lexer_level_syntax_error == true)
-		return (first_nd);
-	if (error_flow == -2 || !current)
+	if ((error_flow == -2 || !current || i < 0)
+		&& !var_data->error_checks->lexer_level_syntax_error)
 		return (NULL);
 	return (first_nd);
 }

@@ -11,15 +11,16 @@
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
+#include <errno.h>
 
-char *create_path_or_envp(char *directory_path, 
-					char *command,
-					char *separator) 
+char	*create_path_or_envp(char *directory_path,
+							char *command,
+							char *separator)
 {
-	char *binary_path;
-	char *binary_path_tmp;
+	char	*binary_path;
+	char	*binary_path_tmp;
 
-	binary_path = ft_strjoin(directory_path, separator); 
+	binary_path = ft_strjoin(directory_path, separator);
 	if (!binary_path)
 		return (ft_printf("malloc fail"), NULL);
 	binary_path_tmp = binary_path;
@@ -30,55 +31,104 @@ char *create_path_or_envp(char *directory_path,
 	return (binary_path);
 }
 
-char *check_and_create_path(t_var_data *var_data, 
-								char *command) 
+static int	path_error_checks(t_var_data *var_data,
+								DIR *directory,
+								struct dirent *file_found,
+								char **split_PATH)
 {
-	int 			i;
-	char 			**split_PATH;
-	char 			*binary_path;
-	DIR 			*directory;
-	struct dirent	*file_found;
-	
+	ft_free_split(split_PATH);
+	if (!directory && errno == ENOENT)
+	{
+		errno = 0;
+		ft_putstr_fd("Error: no valid PATH set\n", STDERR_FILENO);
+		var_data->error_checks->executor_level_syntax_error = true;
+		return (1);
+	}
+	if (!file_found)
+	{
+		ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO);
+		var_data->error_checks->executor_level_syntax_error = true;
+		return (1);
+	}
+	return (0);
+}
+
+static int	search_for_file(char *command,
+							struct dirent **file_found,
+							DIR *directory)
+{
+	if (errno != 0)
+		return (ft_putstr_fd("Error: readdir\n",
+								STDERR_FILENO),
+				1);
+	while (*file_found)
+	{
+		if (!ft_strncmp((*file_found)->d_name, command, ft_strlen(command) + 1))
+		{
+			if (closedir(directory))
+				return (ft_putstr_fd("Error: couldn't close dir\n",
+										STDERR_FILENO),
+						1);
+			return (-1);
+		}
+		*file_found = readdir(directory);
+	}
+	if (closedir(directory))
+		return (ft_putstr_fd("Error: couldn't close dir\n",
+								STDERR_FILENO),
+				1);
+	return (0);
+}
+
+char	*path_creation_logic(char **split_PATH,
+							DIR *directory,
+							struct dirent **file_found,
+							char *command)
+{
+	int	i;
+	int	error_check;
+
 	i = 0;
-	if (!ft_get_value("PATH", var_data->envvar))
-		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	split_PATH = ft_split(ft_get_value("PATH", var_data->envvar), ':');
-	if (!split_PATH)
-		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
 	while (split_PATH[i])
 	{
 		directory = opendir(split_PATH[i]);
 		if (!directory)
 		{
 			i++;
-			continue;
+			continue ;
 		}
-		file_found = readdir(directory);
-		while (file_found)
-		{
-			if (!ft_strncmp(file_found->d_name, command, ft_strlen(command) + 1))
-					break;
-			file_found = readdir(directory);
-		}
-		if (file_found)
-		{
-			binary_path = create_path_or_envp(split_PATH[i], command, "/");
-			if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-			break;
-		}
-		if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
+		errno = 0;
+		*file_found = readdir(directory);
+		error_check = search_for_file(command, file_found, directory);
+		if (error_check == 1)
+			return (NULL);
+		if (error_check == -1)
+			return (create_path_or_envp(split_PATH[i], command, "/"));
 		i++;
 	}
-	ft_free_split(split_PATH);
-	if (!file_found)
-		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
+	return (NULL);
+}
+
+char	*check_and_create_path(t_var_data *var_data,
+							char *command)
+{
+	char			**split_path;
+	char			*binary_path;
+	DIR				*directory;
+	struct dirent	*file_found;
+
+	file_found = NULL;
+	directory = NULL;
+	if (!ft_get_value("PATH", var_data->envvar))
+		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO),
+				var_data->error_checks->executor_level_syntax_error = true,
+				NULL);
+	split_path = ft_split(ft_get_value("PATH", var_data->envvar), ':');
+	if (!split_path)
+		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
+	binary_path = path_creation_logic(split_path, directory, &file_found,
+			command);
+	if (path_error_checks(var_data, directory, file_found, split_path))
+		return (NULL);
 	return (binary_path);
 }

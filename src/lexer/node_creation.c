@@ -12,8 +12,8 @@
 
 #include "../../minishell.h"
 
-static int	type_giver(char *prompt, 
-						t_token_node *prev_node, 
+static int	type_giver(char *prompt,
+						t_token_node *prev_node,
 						t_var_data *var_data)
 {
 	int				i;

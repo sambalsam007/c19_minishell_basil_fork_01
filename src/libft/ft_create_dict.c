@@ -40,7 +40,7 @@ static int	multiple_separators(char **dict_entry, char sep)
 {
 	int		i;
 	int		total_strlen;
-	char 	*separ;
+	char	*separ;
 	char	*new_value;
 	char	*temp_value;
 

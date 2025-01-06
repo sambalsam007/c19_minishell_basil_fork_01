@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 12:49:56 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 19:12:53 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/04 19:14:41 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,14 @@ int	run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node)
 	size_t	cmd_len;
 
 	cmd_len = ft_strlen(ast_node->command);
-	if (!ft_strncmp("export", ast_node->command, cmd_len) 
-			&& ast_node->arguments)
+	if (!ft_strncmp("export", ast_node->command, cmd_len)
+		&& ast_node->arguments)
 		ms_export(var_data, ast_node);
 	else if (!ft_strncmp("unset", ast_node->command, cmd_len))
 		ms_unset(var_data, ast_node);
 	else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 		ms_cd(var_data, ast_node);
-	else 
+	else
 		return (0);
 	return (-1);
 }
@@ -78,7 +78,7 @@ int	run_builtins_with_output(t_var_data *var_data, t_ast_node *ast_node)
 		ms_pwd(var_data);
 	else if (!ft_strncmp("env", ast_node->command, cmd_len))
 		ms_env(var_data, ast_node);
-	else 
+	else
 		return (0);
 	return (1);
 }

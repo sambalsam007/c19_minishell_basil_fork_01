@@ -15,28 +15,28 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-static int	handle_input_redir(char *filename, 
-							t_var_data *var_data)
+static int	handle_input_redir(char *filename,
+								t_var_data *var_data)
 {
-	int fd;
+	int	fd;
 
 	if (access(filename, 0) == -1)
-		return(fd = 0, ft_printf("Error: file %s doesn't exist", filename), 
+		return (fd = 0, ft_printf("Error: file %s doesn't exist", filename),
 				var_data->error_checks->executor_level_syntax_error = true, 0);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (1);
 	if (dup2(fd, STDIN_FILENO) == -1)
 		return (ft_printf("Error: dup2 failed\n"), 1);
-	var_data->open_input_file_fd = fd;	
+	var_data->open_input_file_fd = fd;
 	close(fd);
 	return (0);
 }
 
-static int	handle_output_redir(char *filename, 
-							t_var_data *var_data)
+static int	handle_output_redir(char *filename,
+								t_var_data *var_data)
 {
-	int fd;
+	int	fd;
 
 	fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (fd == -1)
@@ -48,10 +48,10 @@ static int	handle_output_redir(char *filename,
 	return (0);
 }
 
-static int	handle_append_redir(char *filename, 
-							t_var_data *var_data)
+static int	handle_append_redir(char *filename,
+								t_var_data *var_data)
 {
-	int fd;
+	int	fd;
 
 	fd = open(filename, O_RDWR | O_APPEND | O_CREAT, 0666);
 	if (fd == -1)
@@ -63,12 +63,12 @@ static int	handle_append_redir(char *filename,
 	return (0);
 }
 
-static int handle_here_doc(t_var_data *var_data, char *filename)
+static int	handle_here_doc(t_var_data *var_data, char *filename)
 {
-	int redir_pipe_fd[2];
-	int pid;
-	char *prompt;
-	
+	int		redir_pipe_fd[2];
+	int		pid;
+	char	*prompt;
+
 	if (pipe(redir_pipe_fd) == -1)
 		return (1);
 	pid = fork();
@@ -84,7 +84,7 @@ static int handle_here_doc(t_var_data *var_data, char *filename)
 		if (prompt[0] == '\0')
 			return (-1);
 		while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1)
-				&& prompt[0] && prompt[0] != EOF && prompt[0] != '\4') 
+			&& prompt[0] && prompt[0] != EOF && prompt[0] != '\4')
 		{
 			write(redir_pipe_fd[1], prompt, ft_strlen(prompt));
 			write(redir_pipe_fd[1], "\n", 1);

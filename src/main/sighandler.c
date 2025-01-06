@@ -12,16 +12,16 @@
 
 #include "../../minishell.h"
 #include <bits/types/siginfo_t.h>
+#include <readline/readline.h>
 #include <signal.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <termios.h>
-#include <readline/readline.h>
+#include <unistd.h>
 
 int	homemade_getpid(void)
 {
 	int		fd;
-	char 	*pid;
+	char	*pid;
 	int		pid_int;
 
 	pid = malloc(sizeof(char) * 8);
@@ -29,7 +29,7 @@ int	homemade_getpid(void)
 	read(fd, pid, 7);
 	pid[7] = 0;
 	pid_int = ft_atoi(pid);
-	free(pid);	
+	free(pid);
 	close(fd);
 	return (pid_int);
 }
@@ -43,9 +43,9 @@ int	restore_tty(t_var_data *var_data)
 
 int	handle_signals_through_termios(t_var_data *var_data)
 {
-	struct termios termios_p;
+	struct termios	termios_p;
 
-	if ((var_data->termios_backup_check)) 
+	if ((var_data->termios_backup_check))
 		return (0);
 	if (tcgetattr(STDIN_FILENO, &var_data->original_termios) == -1)
 		return (write(2, "Error: tcgetattr\n", 17), 1);
@@ -60,11 +60,11 @@ int	handle_signals_through_termios(t_var_data *var_data)
 void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 {
 	if (info->si_code != SI_USER)
-		return;
+		return ;
 	if (sig == SIGINT)
 	{
 		kill(homemade_getpid(), SIGTERM);
-		return;
+		return ;
 	}
 	(void)context;
 }
@@ -72,14 +72,14 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 void	handle_signal_parent(int sig, siginfo_t *info, void *context)
 {
 	if (info->si_code != SI_USER)
-		return;
+		return ;
 	if (sig == SIGINT)
 	{
-		write(STDIN_FILENO, "\n", 1);	
+		write(STDIN_FILENO, "\n", 1);
 		rl_replace_line("", 1);
 		rl_on_new_line();
 		rl_redisplay();
-		return;
+		return ;
 	}
 	(void)context;
 }
@@ -87,16 +87,15 @@ void	handle_signal_parent(int sig, siginfo_t *info, void *context)
 void	handle_signal_child(int sig, siginfo_t *info, void *context)
 {
 	if (info->si_code != SI_USER)
-		return;
+		return ;
 	if (sig == SIGINT)
 	{
 		exit(0);
-		write(STDIN_FILENO, "\n", 1);	
-		return;
+		write(STDIN_FILENO, "\n", 1);
+		return ;
 	}
 	(void)context;
 }
-
 
 int	sighandler(t_var_data *var_data, int mode)
 {
@@ -109,7 +108,7 @@ int	sighandler(t_var_data *var_data, int mode)
 	else if (mode == HERE_DOC)
 		signal_struct.sa_sigaction = handle_signal_heredoc;
 	else if (mode == MAIN_PROCESS)
-	{ 
+	{
 		if (handle_signals_through_termios(var_data) == 1)
 			return (1);
 		signal_struct.sa_sigaction = handle_signal_parent;
@@ -121,4 +120,3 @@ int	sighandler(t_var_data *var_data, int mode)
 		return (ft_printf("sigaction failed\n", 1));
 	return (0);
 }
-

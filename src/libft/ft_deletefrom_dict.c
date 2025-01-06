@@ -13,8 +13,8 @@
 #include "libft.h"
 
 static char	**ft_add_entry(int i_entry,
-							int	i_entry_new,
-							char ***new_dict, 
+							int i_entry_new,
+							char ***new_dict,
 							char ***dict)
 {
 	new_dict[i_entry_new] = malloc(sizeof(char *) * 3);
@@ -26,7 +26,13 @@ static char	**ft_add_entry(int i_entry,
 	return (new_dict[i_entry_new]);
 }
 
-char	***ft_delete_from_dict(char *key, char ***dict)
+static void	set_back_to_zero(int *i_entry, int *i_entry_new)
+{
+	*i_entry = 0;
+	*i_entry_new = 0;
+}
+
+char		***ft_delete_from_dict(char *key, char ***dict)
 {
 	int		i_entry;
 	int		i_entry_new;
@@ -38,14 +44,13 @@ char	***ft_delete_from_dict(char *key, char ***dict)
 	if (i_entry == 1)
 		return (ft_delete_dict(dict), NULL);
 	new_dict = malloc((i_entry) * (sizeof(char **)));
-	i_entry = 0;
-	i_entry_new = 0;
+	set_back_to_zero(&i_entry, &i_entry_new);
 	while (dict[i_entry])
 	{
 		if (ft_strncmp(dict[i_entry][0], key, ft_strlen(key)))
 		{
 			if (!ft_add_entry(i_entry, i_entry_new, new_dict, dict))
-					return (NULL);
+				return (NULL);
 			i_entry_new++;
 		}
 		i_entry++;

@@ -20,7 +20,7 @@ char	***ft_entry(int i_entry, char ***new_dict, char ***dict)
 	new_dict[i_entry][0] = ft_strdup(dict[i_entry][0]);
 	if (dict[i_entry][1])
 		new_dict[i_entry][1] = ft_strdup(dict[i_entry][1]);
-	else 
+	else
 		new_dict[i_entry][1] = ft_strdup(" ");
 	new_dict[i_entry][2] = NULL;
 	return (new_dict);

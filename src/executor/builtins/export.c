@@ -31,8 +31,8 @@ static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 			return (ft_printf("Error: malloc failed"), 1);
 		if (!split[1] && !ft_get_value(split[0], var_data->envvar)
 			&& !ft_get_value(split[0], var_data->no_var_envvar))
-			var_data->no_var_envvar
-				= ft_addto_dict(split[0], " ", var_data->no_var_envvar);
+			var_data->no_var_envvar = ft_addto_dict(split[0], " ",
+					var_data->no_var_envvar);
 		ft_free_split(split);
 		i++;
 	}
@@ -40,7 +40,9 @@ static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 }
 
 static int	ms_export_update_dicts(t_var_data *var_data,
-									char **arg, int *j, int *i)
+									char **arg,
+									int *j,
+									int *i)
 {
 	*j = 2;
 	(*i)++;
@@ -48,11 +50,10 @@ static int	ms_export_update_dicts(t_var_data *var_data,
 		|| (ft_get_value(arg[0], var_data->no_var_envvar) && arg[1]))
 	{
 		if (ft_get_value(arg[0], var_data->no_var_envvar))
-			var_data->no_var_envvar
-				= ft_delete_from_dict(arg[0], var_data->no_var_envvar);
+			var_data->no_var_envvar = ft_delete_from_dict(arg[0],
+															var_data->no_var_envvar);
 		else
-			var_data->envvar
-				= ft_delete_from_dict(arg[0], var_data->envvar);
+			var_data->envvar = ft_delete_from_dict(arg[0], var_data->envvar);
 		var_data->envvar = ft_addto_dict(arg[0], arg[1], var_data->envvar);
 	}
 	else

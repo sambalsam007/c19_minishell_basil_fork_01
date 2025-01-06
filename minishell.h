@@ -35,6 +35,7 @@
 #define LEXER_ERROR 999
 #define PARSER_ERROR 998
 #define EXECUTOR_ERROR 997
+#define ENV_ERROR 996
 
 typedef enum {
 	EXEC = 1,
@@ -85,6 +86,7 @@ typedef struct s_error_checks
 	bool				lexer_level_syntax_error;
 	bool				parser_level_syntax_error;
 	bool				executor_level_syntax_error;
+	bool				environment_error;
 }	t_error_checks;
 
 typedef struct s_var_data
