@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:47:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/20 17:19:54 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:53:50 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 	tmp_index = 0;
 	while (prompt[local_index] && !ft_iswhitespace(prompt[local_index])
 		&& (prompt[local_index] != '"' && !ft_strchr("|'><$",
-			prompt[local_index])))
+				prompt[local_index])))
 		(*token)[tmp_index++] = prompt[local_index++];
 	return (*i += local_index, (*token)[tmp_index] = '\0', 0);
 }

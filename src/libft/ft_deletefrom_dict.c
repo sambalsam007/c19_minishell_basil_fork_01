@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 14:03:57 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/29 16:37:06 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:59:46 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	set_back_to_zero(int *i_entry, int *i_entry_new)
 	*i_entry_new = 0;
 }
 
-char		***ft_delete_from_dict(char *key, char ***dict)
+char	***ft_delete_from_dict(char *key, char ***dict)
 {
 	int		i_entry;
 	int		i_entry_new;

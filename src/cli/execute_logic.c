@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_logic.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/07 13:11:59 by bclaeys           #+#    #+#             */
+/*   Updated: 2025/01/07 14:00:48 by bclaeys          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 #include <readline/history.h>
 #include <stdbool.h>
@@ -8,7 +20,6 @@
 #define CONTINUE -1
 #define ERROR_STOP 1
 
-// xxx new
 static int	handle_pipes(t_var_data *var_data)
 {
 	if (var_data->first_node_ast->pipe)
@@ -22,7 +33,6 @@ static int	handle_pipes(t_var_data *var_data)
 	return (0);
 }
 
-// xxx new
 static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 {
 	int	error_flow;
@@ -32,14 +42,13 @@ static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 	{
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true,
-					ft_putstr_fd("Error: no command\n", STDERR_FILENO),
-					0);
+				ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
 		error_flow = check_if_redir(var_data, tmp_node->redirect);
-		if (error_flow)
+		if (error_flow || var_data->error_checks->fatal_error)
 			return (ERROR_STOP);
-		if (error_flow == CONTINUE)
+		if (error_flow == CONTINUE 
+				|| var_data->error_checks->executor_level_syntax_error)
 			return (CONTINUE);
-		/* return (2); */
 		error_flow = run_builtins_without_output(var_data, tmp_node);
 		if (error_flow != CONTINUE)
 		{
@@ -61,11 +70,10 @@ int	execute_logic(t_var_data *var_data)
 	tmp_node = var_data->first_node_ast;
 	if (!tmp_node->command)
 		return (ERROR_STOP);
-	if (handle_pipes(var_data) == ERROR_STOP) // xxx
+	if (handle_pipes(var_data) == ERROR_STOP)
 		return (ERROR_STOP);
-	traversal_result = traverse_ast(tmp_node, var_data); // xxx
+	traversal_result = traverse_ast(tmp_node, var_data);
 	if (traversal_result != CONTINUE)
-		/* if (traversal_result != 2) */
 		return (traversal_result);
 	while (wait(&status) > 0)
 	{

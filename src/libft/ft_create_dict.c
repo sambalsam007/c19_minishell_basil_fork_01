@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 17:14:52 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 13:08:46 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:59:11 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	mulsep_logic(char *new_value, char *separ, char **dict_entry, int i)
 	{
 		ft_strlcat(new_value, separ, ft_strlen(new_value) + 2);
 		ft_strlcat(new_value, dict_entry[i], ft_strlen(new_value)
-				+ ft_strlen(dict_entry[i]) + 1);
+			+ ft_strlen(dict_entry[i]) + 1);
 		i++;
 	}
 	free(separ);
@@ -57,7 +57,6 @@ static int	multiple_separators(char **dict_entry, char sep)
 	if (!new_value)
 		return (free(separ), 1);
 	new_value[0] = 0;
-	/* ft_strlcat(new_value, separ, ft_strlen(new_value) + 1); */
 	ft_strlcat(new_value, dict_entry[1], ft_strlen(dict_entry[1]));
 	mulsep_logic(new_value, separ, dict_entry, 2);
 	temp_value = dict_entry[1];

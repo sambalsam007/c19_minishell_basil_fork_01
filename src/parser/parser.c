@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 16:07:35 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/18 19:03:01 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:14:25 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	parser(t_ast_node **first_ast_node,
 		curr_ast_node = curr_ast_node->pipe;
 		if (curr_token->type == PIPE && !curr_token->next)
 			return (var_data->error_checks->parser_level_syntax_error = true,
-					ft_printf("Error: '|' expects command\n"), 0);
+				ft_printf("Error: '|' expects command\n"), 0);
 		curr_token = curr_token->next;
 		curr_ast_node = create_ast_node(prev_ast_node, &curr_token, var_data);
 		if (!curr_ast_node)

@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:26:09 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 15:14:59 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:18:26 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	ms_export_update_dicts(t_var_data *var_data,
 	{
 		if (ft_get_value(arg[0], var_data->no_var_envvar))
 			var_data->no_var_envvar = ft_delete_from_dict(arg[0],
-															var_data->no_var_envvar);
+					var_data->no_var_envvar);
 		else
 			var_data->envvar = ft_delete_from_dict(arg[0], var_data->envvar);
 		var_data->envvar = ft_addto_dict(arg[0], arg[1], var_data->envvar);
@@ -84,8 +84,7 @@ int	ms_export_multiple_separators(char **arg, int *j)
 	return (0);
 }
 
-/* xxx new
- * not sure how to test */
+/* xxx new (samuel) */
 int	free_first_arg_if_empty(char *arg, int *i)
 {
 	if (!arg)
@@ -113,7 +112,7 @@ int	ms_export(t_var_data *var_data, t_ast_node *ast_node)
 		arg = ft_split(ast_node->arguments[i], '=');
 		if (!arg)
 			return (ft_printf("Error: malloc\n"), 1);
-		if (free_first_arg_if_empty(arg[1], &i) == 1) // xxx
+		if (free_first_arg_if_empty(arg[1], &i) == 1)
 			continue ;
 		if (arg[j])
 			if (ms_export_multiple_separators(arg, &j))

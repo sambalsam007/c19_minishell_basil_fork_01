@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:24:49 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 15:14:32 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:58:26 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,6 @@ void	ft_delete_dict(char ***dict);
 char	***ft_create_dict(char **list, char separator);
 char	***ft_entry(int i_entry, char ***new_dict, char ***dict);
 void	ft_update_dict(char *key, char *new_value, char ***dict);
-void 	ft_free_split(char **split_arg);
+void	ft_free_split(char **split_arg);
 
 #endif

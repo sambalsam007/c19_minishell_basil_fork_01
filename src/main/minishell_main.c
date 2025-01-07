@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 11:48:11 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 18:42:26 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 14:00:47 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,3 +38,5 @@ int	main(int ac, char **av, char **envp)
 /* >test.txt echo crasht */
 /* export jdkjd jsjsj crasht*/
 /* echo hey >hallo >hel geeft redir error*/
+/* echo abc -> zit spatie achter */
+

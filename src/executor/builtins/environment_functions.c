@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 15:41:17 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/29 17:14:19 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:17:21 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ms_unset(t_var_data *var_data, t_ast_node *ast_node)
 		if (!ft_get_value(ast_node->arguments[i], var_data->envvar))
 			return (ft_printf("Error: variable not found\n"), 2);
 		envvar_new = ft_delete_from_dict(ast_node->arguments[i],
-											var_data->envvar);
+				var_data->envvar);
 		if (!envvar_new)
 			return (ft_printf("Error: malloc\n"), 2);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:40:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/05 13:06:46 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:10:04 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,6 @@ int	homemade_getpid(void)
 	free(pid);
 	close(fd);
 	return (pid_int);
-}
-
-int	restore_tty(t_var_data *var_data)
-{
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &var_data->original_termios) == -1)
-		return (write(2, "Error: tcsetattr\n", 17), 1);
-	return (0);
-}
-
-int	handle_signals_through_termios(t_var_data *var_data)
-{
-	struct termios	termios_p;
-
-	if ((var_data->termios_backup_check))
-		return (0);
-	if (tcgetattr(STDIN_FILENO, &var_data->original_termios) == -1)
-		return (write(2, "Error: tcgetattr\n", 17), 1);
-	termios_p = var_data->original_termios;
-	termios_p.c_cc[VQUIT] = -1;
-	termios_p.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
-		return (write(2, "Error: tcsetattr\n", 17), 1);
-	return (0);
 }
 
 void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)

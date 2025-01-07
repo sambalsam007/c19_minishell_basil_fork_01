@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 15:02:33 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/08/05 14:41:07 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:58:00 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	ft_extend(char **line, int *l_buf_mul)
 	i = 0;
 	(*l_buf_mul)++;
 	new_line = ft_calloc(BUFFER_SIZE + (BUFFER_SIZE * *l_buf_mul) + 1,
-							sizeof(char));
+			sizeof(char));
 	if (!new_line)
 		return (0);
 	while (line[0][i])

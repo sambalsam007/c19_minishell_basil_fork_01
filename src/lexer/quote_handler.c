@@ -6,110 +6,23 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:13:39 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/15 15:25:07 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:57:29 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <stddef.h>
 
-int	count_key(char **key,
-				char *prompt,
-				int *i,
-				int *j)
+static void	init_local_variables(int *i,
+								size_t *index,
+								int *flow,
+								int *len_expanded_var)
 {
-	*key = ft_get_key(&prompt[*i + 1]);
-	/* *j += ft_strlen(*key) + 1; */
-	*j += ft_strlen(*key);
-	*i += ft_strlen(*key);
-	if (!prompt[*i])
-	{
-		free(key);
-		return (1);
-	}
-	return (0);
+	*i = *index;
+	*flow = 0;
+	*len_expanded_var = 0;
 }
 
-static int	count_value(char *key,
-						int *len_expanded_var,
-						char ***envvar)
-{
-	char	*value;
-
-	value = ft_get_value(key, envvar);
-	free(key);
-	if (value)
-		*len_expanded_var += ft_strlen(value);
-	return (0);
-}
-
-int	count_total_strlen(char *prompt,
-						t_var_data *var_data,
-						char *key,
-						int *len_expanded_var)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (prompt[++i] && prompt[i] != '"')
-	{
-		if (prompt[i] == '$')
-		{
-			if ((prompt[i + 1] && prompt[i + 1] == '?') || !prompt[i + 1]
-				|| ft_iswhitespace(prompt[i + 1]))
-				;
-			else
-			{
-				if (count_key(&key, prompt, &i, &j) == 1)
-					break ;
-				if (!key)
-					return (-1);
-				count_value(key, len_expanded_var, var_data->envvar);
-			}
-		}
-	}
-	if (!prompt[i] && prompt[i - 1] != '"')
-		return (var_data->error_checks->lexer_level_syntax_error = true, -1);
-	return (i - j);
-}
-
-/* static int	count_total_strlen(char *prompt, char ***envvar, char *key, */
-/* 		int *len_expanded_var) */
-/* { */
-/* 	int		i; */
-/* 	int		j; */
-/* 	char	*value; */
-/**/
-/* 	i = 1; */
-/* 	j = 0; */
-/* 	while (prompt[i] && prompt[i] != '"') */
-/* 	{ */
-/* 		if (prompt[i] == '$') */
-/* 		{ */
-/* 			if ((prompt[i+1] && prompt[i+1] == '?') || !prompt[i + 1]  */
-/* 					|| ft_iswhitespace(prompt[i + 1])) */
-/* 				; */
-/* 			else  */
-/* 			{ */
-/* 				key = ft_get_key(&prompt[i + 1]); */
-/* 				i += ft_strlen(key); */
-/* 				if (!prompt[i]) */
-/* 					break ; */
-/* 				j += ft_strlen(key) + 1; */
-/* 				value = ft_get_value(key, envvar); */
-/* 				free(key); */
-/* 				if (value) */
-/* 					*len_expanded_var += ft_strlen(value); */
-/* 			} */
-/* 		} */
-/* 		i++; */
-/* 	} */
-/* 	if (!prompt[i]) */
-/* 		return (-1); */
-/* 	return (i - j); */
-/* } */
-/**/
 int	double_quotes(char *prompt,
 					size_t *index,
 					t_var_data *var_data,
@@ -120,12 +33,10 @@ int	double_quotes(char *prompt,
 	int		len_expanded_var;
 	int		flow;
 
-	i = *index;
-	flow = 0;
-	len_expanded_var = 0;
-	if (!prompt[i])
+	if (!prompt[0])
 		return (1);
 	key = NULL;
+	init_local_variables(&i, index, &flow, &len_expanded_var);
 	i = count_total_strlen(&prompt[i], var_data, key, &len_expanded_var);
 	if (i == -1)
 		return (free(key), ft_printf("Error: parentheses not closed\n"), -1);

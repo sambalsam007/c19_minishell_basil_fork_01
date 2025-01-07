@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 19:07:52 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:54:32 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_error_checks
 	bool				parser_level_syntax_error;
 	bool				executor_level_syntax_error;
 	bool				environment_error;
+	bool				fatal_error;
 }	t_error_checks;
 
 typedef struct s_var_data
@@ -121,6 +122,8 @@ void			*free_var_data(t_var_data *var_data);
 void			free_envvar(char **envvar);
 char 			***init_envvar_noenvp();
 void			init_error_data(t_var_data *var_data, t_error_checks *error_checks);
+int				handle_signals_through_termios(t_var_data *var_data);
+int				restore_tty(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      error_and_free                        */
@@ -145,6 +148,7 @@ int				execute_logic(t_var_data *var_data);
 
 t_token_node	*tokenizer(char *prompt, t_var_data *var_data, t_token_node *first_nd, int flow_check); 
 char			*redirect_handler(char *prompt, size_t *index, t_var_data *var_data);
+int				fill_redirect_token(char *prompt, char *token, int space_counter, t_var_data *var_data);
 int				single_quotes(char *prompt, size_t *index, char **tokenized_string);
 int				double_quotes(char *prompt, size_t *index, t_var_data *var_data, char **token_str);
 char			*ft_get_key(char *prompt);
@@ -175,6 +179,7 @@ t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_tok
 /* int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node); */
 int				execute_builtin_or_binary(t_var_data *var_data, t_ast_node *ast_node);
 int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect);
+int				handle_here_doc(t_var_data *var_data, char *filename);
 int				check_if_builtin(t_ast_node *ast_node);
 int				run_builtins_with_output(t_var_data *var_data, t_ast_node *ast_node);
 int				run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node);

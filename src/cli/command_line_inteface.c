@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 12:23:04 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 18:50:47 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:13:48 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,6 @@
 
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
-
-int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
-		char *prompt)
-{
-	int	i;
-
-	i = 0;
-	while (prompt[i] && ft_iswhitespace(prompt[i]))
-		i++;
-	if (!prompt[0] || !prompt[i])
-		return (ERROR_CONTINUE);
-	var_data->first_node_lexer = tokenizer(prompt, var_data,
-			var_data->first_node_lexer, 0);
-	if (error_checks->lexer_level_syntax_error == true)
-		return (ERROR_CONTINUE);
-	if (!var_data->first_node_lexer)
-		return (free(prompt), ERROR_STOP);
-	if (parser(&var_data->first_node_ast, var_data->first_node_lexer, var_data))
-		return (ERROR_STOP);
-	if (error_checks->parser_level_syntax_error == true)
-		return (ERROR_CONTINUE);
-	/* werkt nog niet: */
-	if (expand_error_codes(var_data))
-		return (ERROR_STOP);
-	return (0);
-}
 
 /* void	test_print_parser(t_var_data *var_data) */
 /* 	{ */
@@ -74,6 +48,31 @@ int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
 /* 			ft_printf("+++++\n"); */
 /* 		} */
 /* } */
+
+int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
+		char *prompt)
+{
+	int	i;
+
+	i = 0;
+	while (prompt[i] && ft_iswhitespace(prompt[i]))
+		i++;
+	if (!prompt[0] || !prompt[i])
+		return (ERROR_CONTINUE);
+	var_data->first_node_lexer = tokenizer(prompt, var_data,
+			var_data->first_node_lexer, 0);
+	if (error_checks->lexer_level_syntax_error == true)
+		return (ERROR_CONTINUE);
+	if (!var_data->first_node_lexer)
+		return (free(prompt), ERROR_STOP);
+	if (parser(&var_data->first_node_ast, var_data->first_node_lexer, var_data))
+		return (ERROR_STOP);
+	if (error_checks->parser_level_syntax_error == true)
+		return (ERROR_CONTINUE);
+	if (expand_error_codes(var_data))
+		return (ERROR_STOP);
+	return (0);
+}
 
 int	ms_execute(t_var_data *var_data)
 {

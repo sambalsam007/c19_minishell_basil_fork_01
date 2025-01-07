@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:09:43 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/04 19:12:08 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 14:00:49 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,6 @@ int	execute_builtin_or_binary(t_var_data *var_data,
 	else
 		path_bin = ft_strdup(ast_node->command);
 	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
-		return (0);
+		return (free(path_bin), 0);
 	return (fork_and_execute_child(var_data, ast_node, path_bin, pipe_fd));
 }
