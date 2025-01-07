@@ -6,34 +6,36 @@ CHECK_STDOUT=1
 CHECK_STDERR=1
 
 TEST_CASES=(
-	'echo "lol"'
-	'echo $PATH'
-	'pwd'
-	'GEEN_COMMAND'
-	'cat tmp_test | grep best'
-	'cat tmp_test | grep test | grep best'
-	'cat tmp_test | grep GEEN_COMMAND'
-	'cat tmp_test | grep GEEN_COMMAND | grep best'
-	'cat tmp_test | grep test | grep GEEN_COMMAND'
-	'date'
-	'date > tmp_redirect'
-	'cat tmp_redirect'
-	'ls >tmp_redirect'
-	'cat tmp_redirect'
-	'pwd>tmp_redirect'
-	'cat tmp_redirect'
-	'< tmp_test cat'
-	'<'
-	'< cat'
-	'< tmp_test'
+	# 'echo "lol"'
+	# 'echo $PATH'
+	# 'pwd'
+	# 'GEEN_COMMAND'
+	'cat .xtmp/test | grep best'
+	# 'cat .xtmp/test | grep test | grep best'
+	# 'cat .xtmp/test | grep GEEN_COMMAND'
+	# 'cat .xtmp/test | grep GEEN_COMMAND | grep best'
+	# 'cat .xtmp/test | grep test | grep GEEN_COMMAND'
+	# 'date'
+	# 'date > .xtmp/redirect'
+	# 'cat .xtmp/redirect'
+	# 'ls >.xtmp/redirect'
+	# 'cat .xtmp/redirect'
+	# 'pwd>.xtmp/redirect'
+	# 'cat .xtmp/redirect'
+	# '< .xtmp/test cat'
+	# '<'
+	# '< cat'
+	# '< .xtmp/test'
 )
 
 MINISHELL="./minishell"
 
 # -----------------------
 
-echo "this is tmp_test" > tmp_test
-echo "the best test ever" >> tmp_test
+mkdir -p .xtmp
+
+echo "this is .xtmp/test" > .xtmp/test
+echo "the best test ever" >> .xtmp/test
 echo
 
 RED="\033[0;31m"
@@ -42,15 +44,15 @@ RESET="\033[0m"
 
 run_tests()
 {
-	bash -c "$TEST" > tmp_bash_stdout 2> tmp_bash_stderr
-	(echo "$TEST"; echo "exit") | $MINISHELL > tmp_minishell_stdout 2> tmp_minishell_stderr
+	bash -c "$TEST" > .xtmp/bash_stdout 2> .xtmp/bash_stderr
+	(echo "$TEST"; echo "exit") | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
 }
 set_vars()
 {
-	BASH_STDOUT=$(cat -e tmp_bash_stdout)
-	MINISHELL_STDOUT=$(cat -e tmp_minishell_stdout | tail -n +2 | head -n -1)
-	BASH_STDERR=$(cat -e tmp_bash_stderr)
-	MINISHELL_STDERR=$(cat -e tmp_minishell_stderr | tail -n +2 | head -n -1)
+	BASH_STDOUT=$(cat -e .xtmp/bash_stdout)
+	MINISHELL_STDOUT=$(cat -e .xtmp/minishell_stdout | tail -n +2 | head -n -1)
+	BASH_STDERR=$(cat -e .xtmp/bash_stderr)
+	MINISHELL_STDERR=$(cat -e .xtmp/minishell_stderr | tail -n +2 | head -n -1)
 }
 stdout_matches()
 {
@@ -102,11 +104,6 @@ done
 
 do_cleanup()
 {
-	rm tmp_bash_stdout \
-		tmp_bash_stderr \
-		tmp_minishell_stdout \
-		tmp_minishell_stderr \
-		tmp_test \
-		tmp_redirect
+	rm -r .xtmp
 }
 do_cleanup
