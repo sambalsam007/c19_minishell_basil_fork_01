@@ -116,12 +116,13 @@ static int	filename_length_count_logic(char *prompt,
 	}
 	else
 		return (-1);
-	while (prompt[*i] && !ft_iswhitespace(prompt[*i]) 
+	while (prompt[*i] && !ft_iswhitespace(prompt[*i]) \
 			&& !ft_strchr("<>", prompt[*i]) && prompt[*i] != '|')
 	{
 		if (prompt[*i] == '"')
 		{
-			count_total_strlen(&prompt[(*i)++], var_data, NULL, &len_expanded_var);
+			count_total_strlen(&prompt[(*i)++], var_data, NULL, \
+					&len_expanded_var);
 			while (prompt[*i] && prompt[*i] != '"')
 				(*i)++;
 		}
@@ -155,7 +156,7 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	check_valid_redir_syntax(token_string, var_data);
 	*index += (size_t)i;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf("Error: redirection syntax error\n"),
-			free(token_string), ERROR_NULL);
+		return (ft_putstr_fd("Error: redirection syntax error\n", \
+					STDERR_FILENO), free(token_string), ERROR_NULL);
 	return (token_string);
 }
