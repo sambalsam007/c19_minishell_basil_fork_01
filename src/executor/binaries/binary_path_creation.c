@@ -59,24 +59,21 @@ static int	search_for_file(char *command,
 {
 	if (errno != 0)
 		return (ft_putstr_fd("Error: readdir\n",
-								STDERR_FILENO),
-				1);
+				STDERR_FILENO), 1);
 	while (*file_found)
 	{
 		if (!ft_strncmp((*file_found)->d_name, command, ft_strlen(command) + 1))
 		{
 			if (closedir(directory))
 				return (ft_putstr_fd("Error: couldn't close dir\n",
-										STDERR_FILENO),
-						1);
+						STDERR_FILENO), 1);
 			return (-1);
 		}
 		*file_found = readdir(directory);
 	}
 	if (closedir(directory))
 		return (ft_putstr_fd("Error: couldn't close dir\n",
-								STDERR_FILENO),
-				1);
+				STDERR_FILENO), 1);
 	return (0);
 }
 
@@ -121,8 +118,7 @@ char	*check_and_create_path(t_var_data *var_data,
 	directory = NULL;
 	if (!ft_get_value("PATH", var_data->envvar))
 		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO),
-				var_data->error_checks->executor_level_syntax_error = true,
-				NULL);
+			var_data->error_checks->executor_level_syntax_error = true, NULL);
 	split_path = ft_split(ft_get_value("PATH", var_data->envvar), ':');
 	if (!split_path)
 		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);

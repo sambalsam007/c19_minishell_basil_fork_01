@@ -13,12 +13,17 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +42 src/libft/ft_deletefrom_dict.c
-badd +0 src/executor/binaries/run_binary.c
+badd +122 src/executor/binaries/binary_path_creation.c
+badd +52 src/executor/pipes/pipe_functions.c
+badd +13 src/executor/binaries/run_binary.c
+badd +88 src/executor/binaries/run_binary_utils.c
+badd +20 src/executor/redirs/redir_checks.c
+badd +203 minishell.h
+badd +18 Makefile
 argglobal
 %argdel
-$argadd src/libft/ft_deletefrom_dict.c
-edit src/libft/ft_deletefrom_dict.c
+$argadd src/executor/binaries/binary_path_creation.c
+edit src/executor/binaries/run_binary_utils.c
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -35,8 +40,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 190 + 191) / 382)
-exe 'vert 2resize ' . ((&columns * 191 + 191) / 382)
+exe 'vert 1resize ' . ((&columns * 117 + 117) / 234)
+exe 'vert 2resize ' . ((&columns * 116 + 117) / 234)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -48,17 +53,18 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 42 - ((41 * winheight(0) + 44) / 88)
+let s:l = 89 - ((68 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 42
-normal! 0
+keepjumps 89
+normal! 08|
+lcd ~/github_kantog/minishell
 wincmd w
 argglobal
-if bufexists(fnamemodify("src/executor/binaries/run_binary.c", ":p")) | buffer src/executor/binaries/run_binary.c | else | edit src/executor/binaries/run_binary.c | endif
+if bufexists(fnamemodify("~/github_kantog/minishell/src/executor/binaries/run_binary.c", ":p")) | buffer ~/github_kantog/minishell/src/executor/binaries/run_binary.c | else | edit ~/github_kantog/minishell/src/executor/binaries/run_binary.c | endif
 if &buftype ==# 'terminal'
-  silent file src/executor/binaries/run_binary.c
+  silent file ~/github_kantog/minishell/src/executor/binaries/run_binary.c
 endif
 setlocal fdm=manual
 setlocal fde=0
@@ -70,17 +76,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 16 - ((15 * winheight(0) + 44) / 88)
+let s:l = 95 - ((58 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 16
-normal! 02|
+keepjumps 95
+normal! 08|
 lcd ~/github_kantog/minishell
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 190 + 191) / 382)
-exe 'vert 2resize ' . ((&columns * 191 + 191) / 382)
+exe 'vert 1resize ' . ((&columns * 117 + 117) / 234)
+exe 'vert 2resize ' . ((&columns * 116 + 117) / 234)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -96,7 +101,6 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

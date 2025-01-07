@@ -6,12 +6,13 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:40:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/07 13:10:04 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 14:38:22 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 #include <bits/types/siginfo_t.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <signal.h>
 #include <stdio.h>
@@ -40,8 +41,8 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 		return ;
 	if (sig == SIGINT)
 	{
+		write(STDIN_FILENO, "\n", 1);
 		kill(homemade_getpid(), SIGTERM);
-		return ;
 	}
 	(void)context;
 }

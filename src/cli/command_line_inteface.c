@@ -76,8 +76,11 @@ int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
 
 int	ms_execute(t_var_data *var_data)
 {
-	if (execute_logic(var_data))
-		return (ERROR_STOP);
+	int	error_flow;
+
+	error_flow = execute_logic(var_data);
+	if (error_flow != 0)
+		return (error_flow);
 	if (restore_fds(var_data))
 		return (ERROR_STOP);
 	return (0);
@@ -135,7 +138,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			continue ;
 		else if (error_flow == ERROR_STOP)
 			return (big_free(var_data, prompt), ERROR_STOP);
-		if (ms_execute(var_data))
+		if (ms_execute(var_data) == ERROR_STOP)
 			return (big_free(var_data, prompt), ERROR_STOP);
 	}
 	return (free(prompt), 0);

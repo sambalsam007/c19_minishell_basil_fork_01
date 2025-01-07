@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 13:49:12 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/07 14:00:48 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 14:52:02 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	handle_input_redir(char *filename,
 	int	fd;
 
 	if (access(filename, 0) == -1)
-		return (fd = 0, ft_printf("Error: file %s doesn't exist", filename),
+		return (fd = 0, ft_printf("Error: file %s doesn't exist\n", filename),
 			var_data->error_checks->executor_level_syntax_error = true, 0);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
@@ -63,19 +63,21 @@ static int	handle_append_redir(char *filename,
 	return (0);
 }
 
-int	check_if_redir(t_var_data *var_data, t_ast_redir *redirect)
+int	check_if_redir(t_var_data *var_data,
+					t_ast_redir *redirect,
+					int error_check)
 {
 	t_ast_redir	*tmp;
-	int			error_check;
 
-	error_check = 0;
 	if (!redirect)
 		return (0);
 	tmp = redirect;
-	while (tmp && error_check != 1)
+	while (tmp && error_check != -1)
 	{
 		if (tmp->type == HERE_DOC)
 			error_check = handle_here_doc(var_data, tmp->file);
+		if (error_check != 0)
+			return (error_check);
 		tmp = tmp->next_redir;
 	}
 	tmp = redirect;

@@ -39,4 +39,3 @@ int	main(int ac, char **av, char **envp)
 /* export jdkjd jsjsj crasht*/
 /* echo hey >hallo >hel geeft redir error*/
 /* echo abc -> zit spatie achter */
-
