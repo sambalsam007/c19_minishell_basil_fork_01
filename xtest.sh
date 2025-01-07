@@ -45,7 +45,8 @@ RESET="\033[0m"
 run_tests()
 {
 	bash -c "$TEST" > .xtmp/bash_stdout 2> .xtmp/bash_stderr
-	(echo -e "$TEST"; echo "exit") | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
+	# (echo -e "$TEST"; echo "exit") | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
+	script -q -c "echo '$TEST' | ./minishell" 1> .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
 }
 set_vars()
 {
@@ -90,7 +91,9 @@ show_stderr()
 }
 
 for TEST in "${TEST_CASES[@]}"; do
-	run_tests
+	# run_tests
+	bash -c "$TEST" > .xtmp/bash_stdout 2> .xtmp/bash_stderr
+	echo -e "$TEST" | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
 	set_vars
 	if [[ "$CHECK_STDOUT" == 1 ]]; then 
 		stdout_matches
