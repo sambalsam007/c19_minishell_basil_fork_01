@@ -45,7 +45,7 @@ RESET="\033[0m"
 run_tests()
 {
 	bash -c "$TEST" > .xtmp/bash_stdout 2> .xtmp/bash_stderr
-	(echo "$TEST"; echo "exit") | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
+	(echo -e "$TEST"; echo "exit") | $MINISHELL > .xtmp/minishell_stdout 2> .xtmp/minishell_stderr
 }
 set_vars()
 {
