@@ -14,12 +14,12 @@
 
 int	ft_print_error(char *string)
 {
-	ft_printf(string);
+	ft_putstr_fd(string, STDERR_FILENO);
 	return (1);
 }
 
 void	*ft_print_error_null(char *string)
 {
-	ft_printf(string);
+	ft_putstr_fd(string, STDERR_FILENO);
 	return (NULL);
 }

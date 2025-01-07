@@ -144,9 +144,10 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	while (prompt[i] && ft_strchr("><", prompt[i]))
 		i++;
 	len_expanded_var = filename_length_count_logic(prompt, index, &i, var_data);
-	if (len_expanded_var == -1 
-			|| var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf("Error: redirection syntax error\n"),  ERROR_NULL);	
+	if (len_expanded_var == -1
+		|| var_data->error_checks->lexer_level_syntax_error == true)
+		return (ft_putstr_fd("Error: redirection syntax error\n", \
+					STDERR_FILENO), ERROR_NULL);
 	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 1)));
 	if (!token_string)
 		return (ft_print_error_null("Error: redirect_handler malloc failed\n"));
@@ -154,7 +155,7 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	check_valid_redir_syntax(token_string, var_data);
 	*index += (size_t)i;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf("Error: redirection syntax error\n"), 
-				free(token_string), ERROR_NULL);	
+		return (ft_printf("Error: redirection syntax error\n"),
+			free(token_string), ERROR_NULL);
 	return (token_string);
 }

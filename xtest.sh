@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "this is tmp_test" > tmp_test
-echo "the best test ever" >> tmp_test
-echo
+# settings --------------
 
-[[ "$1" == 1 ]] && SHOW_STDERR=1
+CHECK_STDOUT=1
+CHECK_STDERR=1
+
 TEST_CASES=(
 	'echo "lol"'
 	'echo $PATH'
@@ -30,6 +30,12 @@ TEST_CASES=(
 
 MINISHELL="./minishell"
 
+# -----------------------
+
+echo "this is tmp_test" > tmp_test
+echo "the best test ever" >> tmp_test
+echo
+
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 RESET="\033[0m"
@@ -43,47 +49,55 @@ set_vars()
 {
 	BASH_STDOUT=$(cat -e tmp_bash_stdout)
 	MINISHELL_STDOUT=$(cat -e tmp_minishell_stdout | tail -n +2 | head -n -1)
+	BASH_STDERR=$(cat -e tmp_bash_stderr)
+	MINISHELL_STDERR=$(cat -e tmp_minishell_stderr | tail -n +2 | head -n -1)
 }
-compare_outputs()
+stdout_matches()
 {
 	if [[ "$BASH_STDOUT" == "$MINISHELL_STDOUT" ]]; then
 		echo -e "${GREEN}stdout OK\t$TEST${RESET}"
 		return 1
 	fi
 }
-show_difference()
+stderr_matches()
 {
-	echo
-	echo -e "$TEST"
-
-	echo
-	echo -e "${RED}BASH stdout"
+	if [[ "$BASH_STDERR" == "$MINISHELL_STDERR" ]]; then
+		echo -e "${GREEN}stdERR OK\t$TEST${RESET}"
+		return 1
+	fi
+}
+show_stdout()
+{
+	echo -e "---------------------------------"
+	echo -e "stdout\t\t$TEST"
+	echo -e "\n${RED}BASH"
 	echo "$BASH_STDOUT"
-
-	echo
-	echo -e "MINISHELL stdout"
+	echo -e "\nMINISHELL"
 	echo -e "$MINISHELL_STDOUT${RESET}"
-	echo
+	echo -e "\n---------------------------------"
 }
 show_stderr()
 {
-	if [[ "$SHOW_STDERR" == 1 ]]; then
-		echo -e "${RED}BASH stderr"
-		cat tmp_bash_stderr
-
-		echo -e "\nMINISHELL stderr"
-		cat tmp_minishell_stderr
-		echo -e "${RESET}"
-	fi
+	echo -e "---------------------------------"
+	echo -e "stdERR\t\t$TEST"
+	echo -e "\n${RED}BASH"
+	echo "$BASH_STDERR"
+	echo -e "\nMINISHELL"
+	echo -e "$MINISHELL_STDERR${RESET}"
+	echo -e "\n---------------------------------"
 }
-for TEST in "${TEST_CASES[@]}"; do
 
+for TEST in "${TEST_CASES[@]}"; do
 	run_tests
 	set_vars
-	compare_outputs
-	[[ $? == 1 ]] && continue
-	show_difference
-	show_stderr
+	if [[ "$CHECK_STDOUT" == 1 ]]; then 
+		stdout_matches
+		[[ $? != 1 ]] && show_stdout
+	fi
+	if [[ "$CHECK_STDERR" == 1 ]]; then 
+		stderr_matches
+		[[ $? != 1 ]] && show_stderr
+	fi
 done
 
 do_cleanup()
