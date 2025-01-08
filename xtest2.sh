@@ -130,4 +130,4 @@ done
 # cleanup
 # read -p "cleanup" YN
 # [[ "$YN" != "y" ]] && exit
-# rm -r .xtmp
+rm -r .xtmp
