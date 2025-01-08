@@ -69,7 +69,8 @@ int	execute_logic(t_var_data *var_data)
 
 	tmp_node = var_data->first_node_ast;
 	if (!tmp_node->command)
-		return (ERROR_STOP);
+		return (ft_putstr_fd("Error: no command\n", STDERR_FILENO),
+			ERROR_CONTINUE);
 	if (handle_pipes(var_data) == ERROR_STOP)
 		return (ERROR_STOP);
 	traversal_result = traverse_ast(tmp_node, var_data);

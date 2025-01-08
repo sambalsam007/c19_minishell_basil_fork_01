@@ -89,7 +89,7 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	if (len_expanded_var == -1
 		|| var_data->error_checks->lexer_level_syntax_error == true)
 		return (ft_printf("Error: redirection syntax error\n"), ERROR_NULL);
-	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 1)));
+	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 2)));
 	if (!token_string)
 		return (ft_print_error_null("Error: redirect_handler malloc failed\n"));
 	fill_redirect_token(&prompt[*index], token_string, 0, var_data);

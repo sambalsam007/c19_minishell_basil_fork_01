@@ -39,7 +39,7 @@ static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 	return (0);
 }
 
-static int	ms_export_update_dicts(t_var_data *var_data,
+static int	export_update_dicts(t_var_data *var_data,
 									char **arg,
 									int *j,
 									int *i)
@@ -64,7 +64,7 @@ static int	ms_export_update_dicts(t_var_data *var_data,
 	return (0);
 }
 
-int	ms_export_multiple_separators(char **arg, int *j)
+int	export_multiple_separators(char **arg, int *j)
 {
 	char	*tmp_arg;
 
@@ -84,16 +84,15 @@ int	ms_export_multiple_separators(char **arg, int *j)
 	return (0);
 }
 
-/* xxx new (samuel) */
-int	free_first_arg_if_empty(char *arg, int *i)
+static int	skip_single_argument(char **arg, int *i)
 {
-	if (!arg)
+	if (!arg[1])
 	{
-		i++;
-		ft_free_split(&arg);
+		(*i)++;
+		free(arg[0]);
+		free(arg);
 		return (1);
 	}
-	(void)i;
 	return (0);
 }
 
@@ -112,12 +111,12 @@ int	ms_export(t_var_data *var_data, t_ast_node *ast_node)
 		arg = ft_split(ast_node->arguments[i], '=');
 		if (!arg)
 			return (ft_printf("Error: malloc\n"), 1);
-		if (free_first_arg_if_empty(arg[1], &i) == 1)
+		if (skip_single_argument(arg, &i) == 1)
 			continue ;
 		if (arg[j])
-			if (ms_export_multiple_separators(arg, &j))
+			if (export_multiple_separators(arg, &j))
 				return (ft_printf("Error: malloc\n"), 1);
-		if (ms_export_update_dicts(var_data, arg, &j, &i))
+		if (export_update_dicts(var_data, arg, &j, &i))
 			return (1);
 	}
 	return (0);

@@ -12,7 +12,6 @@
 
 #include "../../minishell.h"
 
-//WORK IN PROGRESS
 int	prompt_error_checks(t_token_node *first_node,
 						t_error_checks *error_checks)
 {

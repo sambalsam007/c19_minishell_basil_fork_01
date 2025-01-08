@@ -32,10 +32,3 @@ int	main(int ac, char **av, char **envp)
 /* TESTEN */
 /* sowieso alles in valgrind testen op uninit values enzovoort */
 /* errors naar STDERRROR */
-/* ls -a exporteren wordt behandeld als 'ls -a' = command */
-/* werkt echo -n? */
-/* exporting PATH naar iets dat niet bestaat doet crashen */
-/* >test.txt echo crasht */
-/* export jdkjd jsjsj crasht*/
-/* echo hey >hallo >hel geeft redir error*/
-/* echo abc -> zit spatie achter */

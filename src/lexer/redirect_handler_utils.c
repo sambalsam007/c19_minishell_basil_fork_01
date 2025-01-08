@@ -86,7 +86,7 @@ int	fill_redirect_token(char *prompt,
 		if (ft_iswhitespace(prompt[i]))
 		{
 			space_counter++;
-			if (space_counter == 2)
+			if (space_counter == 2 || (space_counter == 1 && i > 2))
 				break ;
 			while (prompt[i] && ft_iswhitespace(prompt[i]) && token[tmpindex])
 				token[tmpindex++] = prompt[i++];
