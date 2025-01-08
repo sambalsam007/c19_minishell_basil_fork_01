@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
+//skip
 
 static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 {
@@ -28,7 +29,7 @@ static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 	{
 		split = ft_split(ast_node->arguments[i], '=');
 		if (!split)
-			return (ft_printf("Error: malloc failed"), 1);
+			return (ft_printf_fd(2, "Err: malloc failed"), 1);
 		if (!split[1] && !ft_get_value(split[0], var_data->envvar)
 			&& !ft_get_value(split[0], var_data->no_var_envvar))
 			var_data->no_var_envvar = ft_addto_dict(split[0], " ",
@@ -59,7 +60,7 @@ static int	export_update_dicts(t_var_data *var_data,
 	else
 		var_data->envvar = ft_addto_dict(arg[0], arg[1], var_data->envvar);
 	if (!var_data->envvar)
-		return (ft_printf("Error: malloc\n"), ft_free_split(arg), 1);
+		return (ft_printf_fd(2, "Err: malloc\n"), ft_free_split(arg), 1);
 	ft_free_split(arg);
 	return (0);
 }
@@ -110,12 +111,12 @@ int	ms_export(t_var_data *var_data, t_ast_node *ast_node)
 	{
 		arg = ft_split(ast_node->arguments[i], '=');
 		if (!arg)
-			return (ft_printf("Error: malloc\n"), 1);
+			return (ft_printf_fd(2, "Err: malloc\n"), 1);
 		if (skip_single_argument(arg, &i) == 1)
 			continue ;
 		if (arg[j])
 			if (export_multiple_separators(arg, &j))
-				return (ft_printf("Error: malloc\n"), 1);
+				return (ft_printf_fd(2, "Err: malloc\n"), 1);
 		if (export_update_dicts(var_data, arg, &j, &i))
 			return (1);
 	}

@@ -18,9 +18,9 @@
 int	restore_fds(t_var_data *var_data)
 {
 	if (dup2(var_data->std_input_fd_backup, STDIN_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	if (dup2(var_data->std_output_fd_backup, STDOUT_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	return (var_data->pipe_check = false, 0);
 }
 
@@ -28,7 +28,7 @@ static int	first_pipe(int *pipe_fd)
 {
 	close(pipe_fd[0]);
 	if (isatty(STDOUT_FILENO) && dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	close(pipe_fd[1]);
 	return (0);
 }
@@ -37,9 +37,9 @@ static int	middle_pipes(t_var_data *var_data, int *pipe_fd)
 {
 	close(pipe_fd[0]);
 	if (isatty(STDIN_FILENO) && dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	if (isatty(STDOUT_FILENO) && dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	close(pipe_fd[1]);
 	return (0);
 }
@@ -47,7 +47,7 @@ static int	middle_pipes(t_var_data *var_data, int *pipe_fd)
 static int	last_pipe(t_var_data *var_data)
 {
 	if (dup2(var_data->tmp_pipe[0], STDIN_FILENO) == -1)
-		return (ft_putstr_fd("Error: dup2 failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	close(var_data->tmp_pipe[0]);
 	return (0);
 }

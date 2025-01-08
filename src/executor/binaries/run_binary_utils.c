@@ -28,8 +28,8 @@ char	**envvardict_to_envvararray(char ***envvar)
 	{
 		new_array[i] = create_path_or_envp(envvar[i][0], envvar[i][1], "=");
 		if (!new_array[i])
-			return (ft_free_split(new_array), write(STDERR_FILENO,
-					"Error: malloc", 9), NULL);
+			return (ft_free_split(new_array), \
+					ft_printf_fd(2, "Err: malloc"), NULL);
 		i++;
 	}
 	new_array[i] = 0;
@@ -93,7 +93,7 @@ int	tmp_argarray_error_checks(char **tmp_arg_array,
 	{
 		free(path_bin);
 		ft_free_split(envvar_array);
-		return (ft_putstr_fd("Error\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Err\n"), 1);
 	}
 	if (!tmp_arg_array[0])
 		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array), 0);

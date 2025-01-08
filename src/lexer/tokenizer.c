@@ -65,7 +65,7 @@ int	ft_strtok(char *prompt, t_var_data *var_data, char **token, size_t *i)
 		tmp_index++;
 	*token = malloc((sizeof(char) * (tmp_index - local_index)) + 1);
 	if (!(*token))
-		return (ft_print_error("Error: strtok malloc failed\n"));
+		return (ft_printf_fd(2, "Err: strtok malloc failed\n"), 1);
 	tmp_index = 0;
 	while (prompt[local_index] && !ft_iswhitespace(prompt[local_index])
 		&& (prompt[local_index] != '"' && !ft_strchr("|'><$",
@@ -142,7 +142,7 @@ t_token_node	*tokenizer(char *prompt,
 		if (prompt[i - 1] != '|')
 			i += check_if_join_args(var_data, &prompt[i], tmp_str, current);
 		if (!tmp_str)
-			return (ft_print_error_null("Error: tokenizer malloc failed\n"));
+			return (ft_printf_fd(2, "Err: tokenizer malloc failed\n"), NULL);
 		error_flow = make_token(first_nd, var_data, &tmp_str, &prompt[i]);
 		if (error_flow < 0
 			|| var_data->error_checks->lexer_level_syntax_error == true)

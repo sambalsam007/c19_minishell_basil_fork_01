@@ -1,0 +1,84 @@
+[0;32mstdout ok	cat .xtmp/grep | grep second
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep second
+[0m[0;32mstdout ok	cat .xtmp/grep | grep first
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep first
+[0m[0;32mstdout ok	asdf
+[0m-------------------------------------
+stdERR		asdf
+
+bash
+[0;31mbash: line 1: asdf: command not found%[0m
+
+mshell
+[0;31mErr: asdf: command not found%[0m
+-------------------------------------
+[0;32mstdout ok	echo "lol"
+[0m[0;32mstdERR ok	echo "lol"
+[0m[0;32mstdout ok	echo $PATH
+[0m[0;32mstdERR ok	echo $PATH
+[0m[0;32mstdout ok	pwd
+[0m[0;32mstdERR ok	pwd
+[0m[0;32mstdout ok	GEEN_COMMAND
+[0m-------------------------------------
+stdERR		GEEN_COMMAND
+
+bash
+[0;31mbash: line 1: GEEN_COMMAND: command not found%[0m
+
+mshell
+[0;31mErr: GEEN_COMMAND: command not found%[0m
+-------------------------------------
+[0;32mstdout ok	cat .xtmp/grep | grep second
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep second
+[0m-------------------------------------
+stdout		cat .xtmp/grep | grep second | grep line
+
+bash
+[0;31msecond line[0m
+
+mshell
+[0;31m[0m
+-------------------------------------
+[0;32mstdERR ok	cat .xtmp/grep | grep second | grep line
+[0m[0;32mstdout ok	cat .xtmp/grep | grep second | grep first
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep second | grep first
+[0m[0;32mstdout ok	cat .xtmp/grep | grep GEEN_COMMAND
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep GEEN_COMMAND
+[0m[0;32mstdout ok	cat .xtmp/grep | grep GEEN_COMMAND | grep second
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep GEEN_COMMAND | grep second
+[0m[0;32mstdout ok	cat .xtmp/grep | grep second | grep GEEN_COMMAND
+[0m[0;32mstdERR ok	cat .xtmp/grep | grep second | grep GEEN_COMMAND
+[0m[0;32mstdout ok	date
+[0m[0;32mstdERR ok	date
+[0m[0;32mstdout ok	date > .xtmp/redirect
+[0m[0;32mstdERR ok	date > .xtmp/redirect
+[0m[0;32mstdout ok	ls >.xtmp/redirect
+[0m[0;32mstdERR ok	ls >.xtmp/redirect
+[0m[0;32mstdout ok	pwd>.xtmp/redirect
+[0m[0;32mstdERR ok	pwd>.xtmp/redirect
+[0m[0;32mstdout ok	< .xtmp/grep cat
+[0m[0;32mstdERR ok	< .xtmp/grep cat
+[0m[0;32mstdout ok	<
+[0m-------------------------------------
+stdERR		<
+
+bash
+[0;31mbash: -c: line 1: syntax error near unexpected token `newline'
+bash: -c: line 1: `<'%[0m
+
+mshell
+[0;31mErr: redirection syntax error%[0m
+-------------------------------------
+[0;32mstdout ok	< cat
+[0m-------------------------------------
+stdERR		< cat
+
+bash
+[0;31mbash: line 1: cat: No such file or directory%[0m
+
+mshell
+[0;31m%[0m
+-------------------------------------
+[0;32mstdout ok	< .xtmp/grep
+[0m[0;32mstdERR ok	< .xtmp/grep
+[0m
