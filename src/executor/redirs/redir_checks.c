@@ -65,7 +65,8 @@ static int	handle_append_redir(char *filename,
 
 int	check_if_redir(t_var_data *var_data,
 					t_ast_redir *redirect,
-					int error_check)
+					int error_check,
+					char *command)
 {
 	t_ast_redir	*tmp;
 
@@ -83,7 +84,7 @@ int	check_if_redir(t_var_data *var_data,
 	tmp = redirect;
 	while (tmp && error_check == 0)
 	{
-		if (tmp->type == INPUT_REDIR)
+		if (tmp->type == INPUT_REDIR && command)
 			error_check = handle_input_redir(tmp->file, var_data);
 		else if (tmp->type == OUTPUT_REDIR)
 			error_check = handle_output_redir(tmp->file, var_data);

@@ -40,10 +40,11 @@ static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 	error_flow = 0;
 	while (tmp_node)
 	{
+		error_flow = check_if_redir(var_data, tmp_node->redirect, 0,
+				tmp_node->command);
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true,
 				ft_printf_fd(2, "Err: no command\n"), 0);
-		error_flow = check_if_redir(var_data, tmp_node->redirect, 0);
 		if (error_flow == ERROR_CONTINUE
 			|| var_data->error_checks->executor_level_syntax_error)
 			return (ERROR_CONTINUE);
@@ -68,9 +69,6 @@ int	execute_logic(t_var_data *var_data)
 	int			traversal_result;
 
 	tmp_node = var_data->first_node_ast;
-	if (!tmp_node->command)
-		return (ft_putstr_fd("Error: no command\n", STDERR_FILENO),
-			ERROR_CONTINUE);
 	if (handle_pipes(var_data) == ERROR_STOP)
 		return (ERROR_STOP);
 	traversal_result = traverse_ast(tmp_node, var_data);

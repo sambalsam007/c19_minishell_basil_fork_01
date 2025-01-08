@@ -176,9 +176,8 @@ t_ast_node 		*create_ast_node(t_ast_node *prev_ast_node, t_token_node **curr_tok
 /*                                      executor                              */
 /* ************************************************************************** */
 
-/* int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node); */
 int				execute_builtin_or_binary(t_var_data *var_data, t_ast_node *ast_node);
-int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect, int error_check);
+int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect, int error_check, char *command);
 int				handle_here_doc(t_var_data *var_data, char *filename);
 int				check_if_builtin(t_ast_node *ast_node);
 int				run_builtins_with_output(t_var_data *var_data, t_ast_node *ast_node);
