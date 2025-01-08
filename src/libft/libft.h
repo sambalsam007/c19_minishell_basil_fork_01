@@ -103,6 +103,15 @@ size_t	ftpr_putptr(size_t p);
 size_t	ftpr_putunsdec(unsigned int d);
 int		ft_printf(const char *s, ...);
 
+void	ft_format_and_count_fd(int fd, char s, va_list ap, size_t *count);
+size_t	ftpr_putchar_fd(int fd, char c);
+size_t	ftpr_puthex_fd(int fd, size_t h, char c);
+size_t	ftpr_putint_fd(int fd, int n);
+size_t	ftpr_putstr_fd(int fd, char *s);
+size_t	ftpr_putptr_fd(int fd, size_t p);
+size_t	ftpr_putunsdec_fd(int fd, unsigned int d);
+int		ft_printf_fd(int fd, const char *s, ...);
+
 /******************************************************************************/
 /*                               get_next_line                                */
 /******************************************************************************/

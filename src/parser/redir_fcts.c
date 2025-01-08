@@ -25,7 +25,7 @@ static char	*replace_filename_w_envvar(char *token_string, t_var_data *var_data)
 	value = ft_get_value(key, var_data->envvar);
 	if (!value)
 		return (var_data->error_checks->parser_level_syntax_error = true,
-			ft_printf("Error: no such file or directory\n"),
+			ft_printf_fd(2, "Err: no such file or directory\n"),
 			free(key), token_string);
 	token_string = ft_strdup(value);
 	free(tmp);

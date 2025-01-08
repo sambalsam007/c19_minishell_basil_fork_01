@@ -85,7 +85,7 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		return (ft_printf("Error: fork\n"), 1);
+		return (ft_printf_fd(2, "Err: fork\n"), 1);
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);

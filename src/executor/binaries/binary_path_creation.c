@@ -34,19 +34,18 @@ char	*create_path_or_envp(char *directory_path,
 static int	path_error_checks(t_var_data *var_data,
 								DIR *directory,
 								struct dirent *file_found,
-								char **split_PATH)
+								char *command)
 {
-	ft_free_split(split_PATH);
 	if (!directory && errno == ENOENT)
 	{
 		errno = 0;
-		ft_putstr_fd("Error: no valid PATH set\n", STDERR_FILENO);
+		ft_printf_fd(2, "Err: no valid PATH set\n");
 		var_data->error_checks->executor_level_syntax_error = true;
 		return (1);
 	}
 	if (!file_found)
 	{
-		ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO);
+		ft_printf_fd(2, "Err: %s: command not found\n", command);
 		var_data->error_checks->executor_level_syntax_error = true;
 		return (1);
 	}
@@ -124,7 +123,8 @@ char	*check_and_create_path(t_var_data *var_data,
 		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
 	binary_path = path_creation_logic(split_path, directory, &file_found,
 			command);
-	if (path_error_checks(var_data, directory, file_found, split_path))
+	ft_free_split(split_path);
+	if (path_error_checks(var_data, directory, file_found, command))
 		return (NULL);
 	return (binary_path);
 }

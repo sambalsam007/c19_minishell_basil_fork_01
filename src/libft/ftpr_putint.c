@@ -37,3 +37,29 @@ size_t	ftpr_putint(int n)
 	count++;
 	return (count);
 }
+
+size_t	ftpr_putint_fd(int fd, int n)
+{
+	int	neg_pos;
+	int	count;
+
+	neg_pos = 0;
+	count = 0;
+	if (n == -2147483648)
+	{
+		ftpr_putstr_fd(fd, "-2147483648");
+		return (11);
+	}
+	if (n < 0)
+	{
+		n *= -1;
+		neg_pos = -1;
+	}
+	if (neg_pos == -1)
+		count += ftpr_putchar_fd(fd, '-');
+	if (n > 9)
+		count += ftpr_putint_fd(fd, n / 10);
+	ftpr_putchar_fd(fd, n % 10 + 48);
+	count++;
+	return (count);
+}

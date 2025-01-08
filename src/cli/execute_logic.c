@@ -26,7 +26,7 @@ static int	handle_pipes(t_var_data *var_data)
 	{
 		if (pipe(var_data->tmp_pipe) == -1)
 		{
-			ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO);
+			ft_printf_fd(2, "Err: pipe failed\n");
 			return (ERROR_STOP);
 		}
 	}
@@ -42,7 +42,7 @@ static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 	{
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true,
-				ft_putstr_fd("Error: no command\n", STDERR_FILENO), 0);
+				ft_printf_fd(2, "Err: no command\n"), 0);
 		error_flow = check_if_redir(var_data, tmp_node->redirect, 0);
 		if (error_flow == ERROR_CONTINUE
 			|| var_data->error_checks->executor_level_syntax_error)
