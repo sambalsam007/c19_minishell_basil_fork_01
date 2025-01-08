@@ -26,3 +26,18 @@ size_t	ftpr_putstr(char *s)
 	}
 	return (i);
 }
+
+size_t	ftpr_putstr_fd(int fd, char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (ftpr_putstr("(null)"));
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+	return (i);
+}

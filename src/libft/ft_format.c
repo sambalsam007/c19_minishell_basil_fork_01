@@ -29,3 +29,21 @@ void	ft_format_and_count(char s, va_list ap, size_t *count)
 	else if (s == '%')
 		*count += ftpr_putchar('%');
 }
+
+void	ft_format_and_count_fd(int fd, char s, va_list ap, size_t *count)
+{
+	if (s == 'c')
+		*count += ftpr_putchar_fd(fd, va_arg(ap, int));
+	else if (s == 's')
+		*count += ftpr_putstr_fd(fd, va_arg(ap, char *));
+	else if (s == 'i' || s == 'd')
+		*count += ftpr_putint_fd(fd, va_arg(ap, int));
+	else if (s == 'p')
+		*count += ftpr_putptr_fd(fd, va_arg(ap, size_t));
+	else if (s == 'u')
+		*count += ftpr_putunsdec_fd(fd, va_arg(ap, unsigned int));
+	else if (s == 'x' || s == 'X')
+		*count += ftpr_puthex_fd(fd, va_arg(ap, unsigned int), s);
+	else if (s == '%')
+		*count += ftpr_putchar_fd(fd, '%');
+}

@@ -74,7 +74,7 @@ int	expand_error_codes(t_var_data *var_data)
 					= expand_error_code_variable(tmp_ast_node->arguments[i],
 						ft_itoa(var_data->last_error_code), 0, 0);
 				if (!tmp_ast_node->arguments[i])
-					return (ft_putstr_fd("Error: malloc\n", STDERR_FILENO), 1);
+					return (ft_printf_fd(2, "Err: malloc\n"), 1);
 			}
 			i++;
 		}

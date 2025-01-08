@@ -23,3 +23,5 @@ void	*ft_print_error_null(char *string)
 	ft_printf(string);
 	return (NULL);
 }
+
+// legacy

@@ -32,3 +32,24 @@ size_t	ftpr_puthex(size_t h, char c)
 		count += ftpr_putchar(symbols_up[h]);
 	return (count);
 }
+
+size_t	ftpr_puthex_fd(int fd, size_t h, char c)
+{
+	int		count;
+	char	*symbols;
+	char	*symbols_up;
+
+	count = 0;
+	symbols = "0123456789abcdef";
+	symbols_up = "0123456789ABCDEF";
+	if (h >= 16)
+	{
+		count += ftpr_puthex_fd(fd, h / 16, c);
+		h = h % 16;
+	}
+	if (c == 'x')
+		count += ftpr_putchar_fd(fd, symbols[h]);
+	if (c == 'X')
+		count += ftpr_putchar_fd(fd, symbols_up[h]);
+	return (count);
+}

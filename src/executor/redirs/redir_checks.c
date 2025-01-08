@@ -21,13 +21,13 @@ static int	handle_input_redir(char *filename,
 	int	fd;
 
 	if (access(filename, 0) == -1)
-		return (fd = 0, ft_printf("Error: file %s doesn't exist\n", filename),
+		return (fd = 0, ft_printf_fd(2, "Err: %s doesn't exist\n", filename),
 			var_data->error_checks->executor_level_syntax_error = true, 0);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (1);
 	if (dup2(fd, STDIN_FILENO) == -1)
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	var_data->open_input_file_fd = fd;
 	close(fd);
 	return (0);
@@ -42,7 +42,7 @@ static int	handle_output_redir(char *filename,
 	if (fd == -1)
 		return (1);
 	if (dup2(fd, STDOUT_FILENO) == -1)
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	var_data->open_output_file_fd = fd;
 	close(fd);
 	return (0);
@@ -57,7 +57,7 @@ static int	handle_append_redir(char *filename,
 	if (fd == -1)
 		return (1);
 	if (dup2(fd, STDOUT_FILENO) == -1)
-		return (ft_printf("Error: dup2 failed\n"), 1);
+		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	var_data->open_output_file_fd = fd;
 	close(fd);
 	return (0);

@@ -69,7 +69,7 @@ static void	run_binary_with_execve(t_var_data *var_data,
 	{
 		var_data->error_checks->executor_level_syntax_error = true;
 		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
-		ft_putstr_fd("Execv err: check input\n", STDERR_FILENO);
+		ft_printf_fd(2, "Execv err: check input\n");
 		exit(1);
 	}
 }
@@ -92,7 +92,7 @@ static int	fork_and_execute_child(t_var_data *var_data,
 	pid = fork();
 	if (pid == -1)
 		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array),
-			ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO), 1);
+			ft_printf_fd(2, "Error: couldn't fork\n"), 1);
 	if (pid == 0)
 	{
 		check_pipes_and_builtins(var_data, ast_node, pipe_fd);
@@ -115,7 +115,7 @@ int	execute_builtin_or_binary(t_var_data *var_data,
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
 	if (var_data->first_node_ast->pipe && ast_node->pipe && pipe(pipe_fd) == -1)
-		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
+		return (ft_printf_fd(2, "Error: pipe failed\n"), 1);
 	if (!ft_strchr("/~.", ast_node->command[0]) && !check_if_builtin(ast_node))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
