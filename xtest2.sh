@@ -24,6 +24,9 @@ TEST_CASES=(
 	'x:<'
 	'x:< cat'
 	'x:< .xtmp/grep'
+	'x:exit'
+	'x:exit   '
+	'x:exit 1'
 )
 # ---------------------
 
