@@ -14,7 +14,7 @@ NAME=minishell
 
 MAIN_SRCS= minishell_main.c init_data.c sighandler.c init_envvars.c tty_fcts.c
 CLI_SRCS = command_line_inteface.c execute_logic.c
-EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c binary_path_creation.c heredoc.c run_binary_utils.c
+EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c binary_path_creation.c heredoc.c run_binary_utils.c exit.c
 LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c argument_concatenation.c node_creation.c var_handler.c error_code_functions.c redirect_handler_utils.c count_total_strlen.c
 PARSER_SRCS = parser.c abstract_syntax_tree_creation_fcts.c redir_fcts.c environment_functions.c
 SIGHANDLER_SRCS =

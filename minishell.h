@@ -210,6 +210,7 @@ int				ms_env(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_export(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
 void			ms_pwd(t_var_data *var_data);
+int				ms_exit(t_ast_node *ast_node);
 int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
 int				restore_fds(t_var_data *var_data);
 int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe, \
