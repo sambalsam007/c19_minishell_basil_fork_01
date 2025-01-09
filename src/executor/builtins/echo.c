@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
-static int	check_other_letters(t_ast_node *ast_node, int i)	
+
+static int	check_other_letters(t_ast_node *ast_node, int i)
 {
 	int	j;
 
@@ -37,12 +38,12 @@ int	ms_echo(t_var_data *var_data, t_ast_node *ast_node)
 	while (ast_node->arguments[i])
 	{
 		if (!ft_strncmp(ast_node->arguments[i], "-n", 2)
-				&& !check_other_letters(ast_node, i))
+			&& !check_other_letters(ast_node, i))
 			flag_check = true;
 		else
 		{
 			ft_putstr_fd(ast_node->arguments[i], 1);
-			if (ast_node->arguments[i+1])
+			if (ast_node->arguments[i + 1])
 				write(1, " ", 1);
 		}
 		i++;

@@ -97,8 +97,8 @@ typedef struct s_var_data
 	bool			is_redirect;
 	bool			termios_backup_check;
 	bool			multiple_heredoc_check;
-	char 			***envvar;
-	char 			***no_var_envvar;
+	char			***envvar;
+	char			***no_var_envvar;
 	t_token_node	*first_node_lexer;
 	t_ast_node		*first_node_ast;
 	t_error_checks	*error_checks;
@@ -237,6 +237,5 @@ int				restore_tty(t_var_data *var_data);
 int				homemade_getpid(void);
 int				fck_around_with_termios(t_var_data *var_data);
 int				restore_tty(t_var_data *var_data);
-
 
 #endif

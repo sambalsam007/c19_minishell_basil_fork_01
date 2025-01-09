@@ -131,8 +131,6 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			return (ft_printf("exit\n"), 0);
 		if (clean_prompt(&prompt))
 			return (ft_printf_fd(2, "Err: malloc\n"), 1);
-		// if (!ft_strncmp(prompt, "exit", 5))
-		// 	break ;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
 		if (error_flow == ERROR_CONTINUE)
 			continue ;

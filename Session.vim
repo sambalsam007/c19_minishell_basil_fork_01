@@ -71,11 +71,11 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 93 - ((62 * winheight(0) + 40) / 81)
+let s:l = 24 - ((23 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 93
+keepjumps 24
 normal! 05|
 wincmd w
 2wincmd w
