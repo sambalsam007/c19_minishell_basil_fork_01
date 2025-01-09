@@ -40,6 +40,7 @@ static int	parent_process_continues(int redir_pipe_fd[2],
 	int	return_status;
 
 	return_status = 100;
+	var_data->multiple_heredoc_check = true;
 	waitpid(childpid, &return_status, 0);
 	WIFEXITED(return_status);
 	if (WTERMSIG(return_status))
@@ -67,11 +68,17 @@ static void	exit_with_error(t_var_data *var_data, char error)
 	exit(1);
 }
 
-static int	finish_process_normally(int redir_pipe_fd[2], t_var_data *var_data)
+static int	finish_process(int redir_pipe_fd[2],
+							char *prompt,
+							t_var_data *var_data,
+							char *filename)
 {
+	if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd))
+		exit_with_error(var_data, NON_FATAL_ERROR);
+	if (redir_pipe_fd[0] == -1)
+		exit_with_error(var_data, FATAL_ERROR);
 	close(redir_pipe_fd[0]);
 	close(redir_pipe_fd[1]);
-	var_data->multiple_heredoc_check = true;
 	exit(0);
 	return (1);
 }
@@ -86,8 +93,7 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 		return (1);
 	if (var_data->multiple_heredoc_check)
 	{
-		restore_fds(var_data);	
-		dup2(var_data->std_input_fd_backup, STDIN_FILENO);
+		restore_fds(var_data);
 		var_data->multiple_heredoc_check = false;
 	}
 	pid = fork();
@@ -100,11 +106,7 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 		prompt = readline("\033[33m> \033[0m");
 		if (!prompt)
 			exit_with_error(var_data, FATAL_ERROR);
-		if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd))
-			exit_with_error(var_data, NON_FATAL_ERROR);
-		if (redir_pipe_fd[0] == -1)
-			exit_with_error(var_data, FATAL_ERROR);
-		return (finish_process_normally(redir_pipe_fd, var_data));
+		return (finish_process(redir_pipe_fd, prompt, var_data, filename));
 	}
 	else
 		return (parent_process_continues(redir_pipe_fd, var_data, pid));

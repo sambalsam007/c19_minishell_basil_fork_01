@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
-//skip
 
 static int	export_exceptions(t_var_data *var_data, t_ast_node *ast_node)
 {

@@ -14,7 +14,13 @@ else
   set shortmess=aoO
 endif
 badd +78 src/executor/redirs/redir_checks.c
-badd +103 ~/github_kantog/minishell/src/executor/redirs/heredoc.c
+badd +109 src/executor/redirs/heredoc.c
+badd +30 src/main/init_envvars.c
+badd +77 src/libft/ft_create_dict.c
+badd +54 src/main/init_data.c
+badd +101 minishell.h
+badd +121 src/executor/builtins/export.c
+badd +18 ~/github_kantog/minishell/src/executor/pipes/pipe_functions.c
 argglobal
 %argdel
 $argadd src/executor/redirs/redir_checks.c
@@ -48,17 +54,17 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 82 - ((67 * winheight(0) + 40) / 81)
+let s:l = 79 - ((64 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 82
-normal! 05|
+keepjumps 79
+normal! 027|
 wincmd w
 argglobal
-if bufexists(fnamemodify("~/github_kantog/minishell/src/executor/redirs/heredoc.c", ":p")) | buffer ~/github_kantog/minishell/src/executor/redirs/heredoc.c | else | edit ~/github_kantog/minishell/src/executor/redirs/heredoc.c | endif
+if bufexists(fnamemodify("src/executor/redirs/heredoc.c", ":p")) | buffer src/executor/redirs/heredoc.c | else | edit src/executor/redirs/heredoc.c | endif
 if &buftype ==# 'terminal'
-  silent file ~/github_kantog/minishell/src/executor/redirs/heredoc.c
+  silent file src/executor/redirs/heredoc.c
 endif
 balt src/executor/redirs/redir_checks.c
 setlocal foldmethod=manual
@@ -71,12 +77,12 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 24 - ((23 * winheight(0) + 40) / 81)
+let s:l = 97 - ((63 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 24
-normal! 05|
+keepjumps 97
+normal! 08|
 wincmd w
 2wincmd w
 exe 'vert 1resize ' . ((&columns * 158 + 159) / 318)
@@ -96,7 +102,6 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
