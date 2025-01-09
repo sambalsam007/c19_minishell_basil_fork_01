@@ -20,35 +20,6 @@
 #include <time.h>
 #include <unistd.h>
 
-/* void	test_print_parser2(t_var_data *var_data) */
-/* { */
-/* 	int				i; */
-/* 	t_ast_node		*tmp; */
-/* 	t_ast_redir		*tmp_redir; */
-/**/
-/* 	i = 0; */
-/* 	tmp = var_data->first_node_ast; */
-/* 	while (tmp) */
-/* 	{ */
-/* 		ft_printf("command: %s\n", tmp->command); */
-/* 		while (tmp->arguments && tmp->arguments[i]) */
-/* 		{ */
-/* 			ft_printf("arguments: %s\n", tmp->arguments[i]); */
-/* 			i++;		*/
-/* 		} */
-/* 		i = 0; */
-/* 		tmp_redir = tmp->redirect; */
-/* 		while (tmp_redir) */
-/* 		{ */
-/* 			ft_printf("redirects: type = %d, file = %s\n",  */
-/* 					tmp_redir->type, tmp_redir->file); */
-/* 			tmp_redir = tmp_redir->next_redir; */
-/* 		} */
-/* 		tmp = tmp->pipe; */
-/* 		ft_printf("+++++\n"); */
-/* 	} */
-/* } */
-
 static void	check_pipes_and_builtins(t_var_data *var_data,
 									t_ast_node *ast_node,
 									int pipe_fd[2])

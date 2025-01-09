@@ -19,7 +19,7 @@ int	restore_tty(t_var_data *var_data)
 	return (0);
 }
 
-int	handle_signals_through_termios(t_var_data *var_data)
+int	fck_around_with_termios(t_var_data *var_data)
 {
 	struct termios	termios_p;
 
@@ -28,7 +28,6 @@ int	handle_signals_through_termios(t_var_data *var_data)
 	if (tcgetattr(STDIN_FILENO, &var_data->original_termios) == -1)
 		return (ft_printf_fd(2, "Err: tcgetattr\n"), 1);
 	termios_p = var_data->original_termios;
-	termios_p.c_cc[VQUIT] = -1;
 	termios_p.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
 		return (ft_printf_fd(2, "Err: tcsetattr\n"), 1);

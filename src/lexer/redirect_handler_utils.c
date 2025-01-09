@@ -35,7 +35,7 @@ static int	single_quotes_logic(int *i,
 	return (0);
 }
 
-static int	filename_fill_logic(char *prompt,
+static int	filename_fill_letter_or_quotes(char *prompt,
 								int *tmpindex,
 								char *tokenized_string,
 								t_var_data *var_data)
@@ -60,9 +60,9 @@ static int	filename_fill_logic(char *prompt,
 				-1);
 	}
 	else
-		tokenized_string[*tmpindex] = prompt[i];
-	if (prompt[0] != '\'')
-		(*tmpindex)++;
+		tokenized_string[(*tmpindex)++] = prompt[i++];
+	/* if (prompt[0] != '\'') */
+	/* 	(*tmpindex)++; */
 	return (i);
 }
 
@@ -86,7 +86,8 @@ int	fill_redirect_token(char *prompt,
 		if (ft_iswhitespace(prompt[i]))
 		{
 			space_counter++;
-			if (space_counter == 2 || (space_counter == 1 && i > 2))
+			if ((space_counter == 1 && i > 1 && !ft_strchr("<>", prompt[i - 1]))
+				|| (space_counter == 2 || (space_counter == 1 && i > 2)))
 				break ;
 			while (prompt[i] && ft_iswhitespace(prompt[i]) && token[tmpindex])
 				token[tmpindex++] = prompt[i++];
@@ -94,12 +95,11 @@ int	fill_redirect_token(char *prompt,
 				return (var_data->error_checks->lexer_level_syntax_error = true,
 					-1);
 		}
-		i += filename_fill_logic(&prompt[i], &tmpindex, token, var_data);
 		if (((ft_strchr("<>|", prompt[i]) && (space_counter >= 1 || i > 3))
-				|| (i > 2 && ft_iswhitespace(prompt[i]) && token[tmpindex++])
+				|| (i > 1 && ft_iswhitespace(prompt[i]) && token[tmpindex])
 				|| var_data->error_checks->lexer_level_syntax_error == true))
 			break ;
-		i++;
+		i += filename_fill_letter_or_quotes(&prompt[i], &tmpindex, token, var_data);
 	}
 	return (token[tmpindex] = '\0', var_data->is_redirect = true, 0);
 }

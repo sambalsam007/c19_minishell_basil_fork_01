@@ -39,7 +39,7 @@ int	double_quotes(char *prompt,
 	init_local_variables(&i, index, &flow, &len_expanded_var);
 	i = count_total_strlen(&prompt[i], var_data, key, &len_expanded_var);
 	if (i == -1)
-		return (free(key), ft_printf_fd(2, "Err: parentheses not closed\n"), -1);
+		return (free(key), ft_printf_fd(2, "Oops: close ur parentheses\n"), -1);
 	*token_str = malloc((sizeof(char) * (i - *index)) + len_expanded_var + 1);
 	if (!token_str)
 		return (ft_printf_fd(2, "Err: malloc failed\n"), 1);
@@ -69,7 +69,7 @@ int	single_quotes(char *prompt,
 	while (prompt[i] && prompt[i] != '\'')
 		i++;
 	if (!prompt[i])
-		return (ft_printf_fd(2, "Err: parentheses not closed\n"), -1);
+		return (ft_printf_fd(2, "Oops: close ur parentheses\n"), -1);
 	*tokenized_string = malloc((sizeof(char) * (i - *index)) + 1);
 	if (!*tokenized_string)
 		return (ft_printf_fd(2, "Err: malloc failed\n"), 1);

@@ -21,7 +21,7 @@
 #define ERROR_STOP 1
 
 /* void	test_print_parser(t_var_data *var_data) */
-/* 	{ */
+/* { */
 /* 		int				i; */
 /* 		t_ast_node		*tmp; */
 /* 		t_ast_redir		*tmp_redir; */
@@ -34,7 +34,7 @@
 /* 			while (tmp->arguments && tmp->arguments[i]) */
 /* 			{ */
 /* 				ft_printf("arguments: %s\n", tmp->arguments[i]); */
-/* 				i++;		*/
+/*  				i++;		 */
 /* 			} */
 /* 			i = 0; */
 /* 			tmp_redir = tmp->redirect; */

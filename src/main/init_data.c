@@ -58,6 +58,7 @@ static void	flip_switches(t_var_data *var_data,
 	var_data->pipe_check = false;
 	var_data->termios_backup_check = false;
 	var_data->is_redirect = false;
+	var_data->multiple_heredoc_check = false;
 }
 
 t_var_data	*init_var_data(char **envp)

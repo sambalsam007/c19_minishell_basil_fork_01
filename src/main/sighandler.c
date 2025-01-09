@@ -68,33 +68,37 @@ void	handle_signal_child(int sig, siginfo_t *info, void *context)
 		return ;
 	if (sig == SIGINT)
 	{
-		exit(0);
 		write(STDIN_FILENO, "\n", 1);
-		return ;
+		exit(0);
 	}
 	(void)context;
 }
 
 int	sighandler(t_var_data *var_data, int mode)
 {
-	struct sigaction	signal_struct;
+	struct sigaction	signal_struct_sigint;
+	struct sigaction	signal_struct_sigquit;
 
-	signal_struct.sa_flags = SA_RESTART;
-	signal_struct.sa_flags = SA_SIGINFO;
+	signal_struct_sigint.sa_flags = SA_RESTART | SA_SIGINFO;
+	signal_struct_sigquit.sa_flags = SA_RESTART | SA_SIGINFO;
+	sigemptyset(&signal_struct_sigint.sa_mask);
+	sigemptyset(&signal_struct_sigquit.sa_mask);
+	if (mode == HERE_DOC)
+		signal_struct_sigint.sa_sigaction = handle_signal_heredoc;
 	if (mode == EXECUTOR)
-		signal_struct.sa_sigaction = handle_signal_child;
-	else if (mode == HERE_DOC)
-		signal_struct.sa_sigaction = handle_signal_heredoc;
-	else if (mode == MAIN_PROCESS)
 	{
-		if (handle_signals_through_termios(var_data) == 1)
-			return (1);
-		signal_struct.sa_sigaction = handle_signal_parent;
+		signal_struct_sigquit.sa_handler = SIG_DFL;
+		signal_struct_sigint.sa_sigaction = handle_signal_child;
 	}
-	sigemptyset(&signal_struct.sa_mask);
-	if (sigaction(SIGINT, &signal_struct, NULL))
-		return (ft_printf("sigaction failed\n", 1));
-	if (sigaction(SIGQUIT, &signal_struct, NULL))
+	if (mode == MAIN_PROCESS)
+	{
+		if (fck_around_with_termios(var_data) == 1)
+			return (1);
+		signal_struct_sigint.sa_sigaction = handle_signal_parent;
+		signal_struct_sigquit.sa_handler = SIG_IGN;
+	}
+	if (sigaction(SIGQUIT, &signal_struct_sigquit, NULL)
+				|| sigaction(SIGINT, &signal_struct_sigint, NULL))
 		return (ft_printf("sigaction failed\n", 1));
 	return (0);
 }

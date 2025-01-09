@@ -95,6 +95,7 @@ typedef struct s_var_data
 	bool			pipe_check;
 	bool			is_redirect;
 	bool			termios_backup_check;
+	bool			multiple_heredoc_check;
 	char 			***envvar;
 	char 			***no_var_envvar;
 	t_token_node	*first_node_lexer;
@@ -122,8 +123,6 @@ void			*free_var_data(t_var_data *var_data);
 void			free_envvar(char **envvar);
 char 			***init_envvar_noenvp();
 void			init_error_data(t_var_data *var_data, t_error_checks *error_checks);
-int				handle_signals_through_termios(t_var_data *var_data);
-int				restore_tty(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      error_and_free                        */
@@ -205,5 +204,8 @@ void			free_path_and_arrays(char *path_bin, char **envvar_array, char **tmp_arra
 int				sighandler(t_var_data *var_data, int mode);
 int				restore_tty(t_var_data *var_data);
 int				homemade_getpid(void);
+int				fck_around_with_termios(t_var_data *var_data);
+int				restore_tty(t_var_data *var_data);
+
 
 #endif
