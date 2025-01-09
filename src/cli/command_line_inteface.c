@@ -115,53 +115,6 @@ static int	clean_prompt(char **prompt)
 	return (new_prompt[j] = 0, free(*prompt), *prompt = new_prompt, 0);
 }
 
-int	is_bad_exit_command(char *prompt)
-{
-	int	i;
-
-	i = 0;
-	ft_printf("pr5: (%c)\n", prompt[4]);
-	if (prompt[4] != ' ' && prompt[4] != '\t' && prompt[4] != '\0')
-		return (1);
-	return (0);
-}
-
-int	is_pipe_after_exit(char *prompt)
-{
-	int	i;
-
-	i = 0;
-	while (prompt[i])
-	{
-		// skip white space
-		while (prompt[i] == ' ' || prompt[i] == '\t')
-			i++;
-		ft_printf("%c", prompt[i]);
-		if (prompt[i] == '|')
-		{
-			ft_printf("pipe\n");
-			return (1);
-		}
-		i++;
-	}
-	ft_printf("\n");
-	return (0);
-}
-
-int	check_for_exit(char *prompt)
-{
-	int i = 0;
-	while (prompt[i] == ' ' || prompt[i] == '\t')
-		i++;
-	ft_printf("checking exit\n");
-	while (prompt[i])
-	{
-		ft_printf("%c", prompt[i]);
-		i++;
-	}
-	return (0);
-}
-
 int	ms_command_line_inteface(t_var_data *var_data)
 {
 	char	*prompt;
@@ -178,18 +131,6 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			return (ft_printf("exit\n"), 0);
 		if (clean_prompt(&prompt))
 			return (ft_printf_fd(2, "Err: malloc\n"), 1);
-		check_for_exit(prompt);
-		if (!ft_strncmp(prompt, "exit", 4))
-		{
-			if (is_bad_exit_command(prompt))
-				ft_printf("bad exit command\n");
-			if (is_pipe_after_exit(prompt))
-				ft_printf("pipe after exit\n");
-		}
-		// handle exit
-			// skip ast first node
-			// return exit code
-			// break
 		// if (!ft_strncmp(prompt, "exit", 5))
 		// 	break ;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);

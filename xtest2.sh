@@ -1,40 +1,51 @@
 #!/bin/bash
 
 # settings ------------
-SHOW_ALL_TESTS=1
+SHOW_ALL_TESTS=0
 TEST_CASES=(
-	# 'pipe:cat .xtmp/grep | grep second'
-	# 'pipe:cat .xtmp/grep | grep first'
-	# 'x:asdf'
-	# 'x:echo "lol"'
-	# 'x:echo $PATH'
-	# 'x:pwd'
-	# 'x:GEEN_COMMAND'
-	# 'pipe:cat .xtmp/grep | grep second'
-	# 'pipe:cat .xtmp/grep | grep second | grep line'
-	# 'pipe:cat .xtmp/grep | grep second | grep first'
-	# 'pipe:cat .xtmp/grep | grep GEEN_COMMAND'
-	# 'pipe:cat .xtmp/grep | grep GEEN_COMMAND | grep second'
-	# 'pipe:cat .xtmp/grep | grep second | grep GEEN_COMMAND'
-	# 'x:date'
-	# 'redir:date > .xtmp/redirect'
-	# 'redir:ls >.xtmp/redirect'
-	# 'redir:pwd>.xtmp/redirect'
-	# 'x:< .xtmp/grep cat'
-	# 'x:<'
-	# 'x:< cat'
-	# 'x:< .xtmp/grep'
-	'exit'
-	'exit 1'
-	'exit -1'
-	'exit 0'
-	'exit   '
-	'exit   asdfl'
-	'exitasdfl'
-	'exit | asdfl'
-	'exit | ls'
+	'pipe:cat .xtmp/grep | grep second'
+	'pipe:cat .xtmp/grep | grep first'
+	'x:asdf'
+	'x:echo "lol"'
+	'x:echo $PATH'
+	'x:pwd'
+	'x:GEEN_COMMAND'
+	'pipe:cat .xtmp/grep | grep second'
+	'pipe:cat .xtmp/grep | grep second | grep line'
+	'pipe:cat .xtmp/grep | grep second | grep first'
+	'pipe:cat .xtmp/grep | grep GEEN_COMMAND'
+	'pipe:cat .xtmp/grep | grep GEEN_COMMAND | grep second'
+	'pipe:cat .xtmp/grep | grep second | grep GEEN_COMMAND'
+	'x:date'
+	'redir:date > .xtmp/redirect'
+	'redir:ls >.xtmp/redirect'
+	'redir:pwd>.xtmp/redirect'
+	'x:< .xtmp/grep cat'
+	'x:<'
+	'x:< cat'
+	'x:< .xtmp/grep'
+	'return:exit'
+	'return:exit 1'
+	'return:exit -1'
+	'return:exit 0'
+	'return:exit   '
+	'return:exit   asdfl'
+	'return:exitasdfl'
+	'return:exit | asdfl'
+	'return:exit | ls'
+	'return:exit 250'
+	'return:exit 251'
+	'return:exit 255'
+	'return:exit 256'
+	'return:exit 257'
+	'return:exit 25s47'
+	'return:exit -1'
+	'return:exit 1 2'
 )
 # ---------------------
+
+# make minishell
+make re || make
 
 # create test files
 mkdir -p .xtmp
@@ -73,6 +84,11 @@ for TEST in "${TEST_CASES[@]}"; do
 		MSHELL_OUT=$(cat .xtmp/redirect)
 		bash -c "$COMMAND" 1>/dev/null 2>&1
 		BASH_OUT=$(cat .xtmp/redirect)
+	elif [[ "$TYPE" == "return" ]];then
+		BASH_EXIT=$(bash -c "$COMMAND" >/dev/null 2>&1; echo $?)
+		MSHELL_EXIT=$(echo "$COMMAND" | ./minishell >/dev/null 2>&1; echo $?)
+		MSHELL_OUT=$(echo "$COMMAND" | ./minishell 2>/dev/null | tail -n +2 | head -n -1 )
+		MSHELL_ERR=$(echo "$COMMAND" | ./minishell 2>&1 1>/dev/null | tail -n +2 | head -n -1 )
 	else
 		MSHELL_OUT=$(echo "$COMMAND" | ./minishell 2>/dev/null | tail -n +2 | head -n -1 )
 		MSHELL_ERR=$(echo "$COMMAND" | ./minishell 2>&1 1>/dev/null | tail -n +2 | head -n -1 )
@@ -132,6 +148,22 @@ for TEST in "${TEST_CASES[@]}"; do
 		echo -e "${RED}${BASH_ERR}%${RESET}"
 		echo -e "\nmshell"
 		echo -e "${RED}${MSHELL_ERR}%${RESET}"
+		echo "-------------------------------------"
+	fi
+
+	# exitcode
+	[[ "$TYPE" != "return" ]] && continue
+	if [[ "$BASH_EXIT" == "$MSHELL_EXIT" ]]; then
+		echo -ne "${GREEN}"
+		echo -e "stdEXIT ok\t$COMMAND"
+		echo -ne "${RESET}"
+	else
+		echo "-------------------------------------"
+		echo -e "stdEXIT\t\t$COMMAND"
+		echo -e "\nbash"
+		echo -e "${RED}${BASH_EXIT}%${RESET}"
+		echo -e "\nmshell"
+		echo -e "${RED}${MSHELL_EXIT}%${RESET}"
 		echo "-------------------------------------"
 	fi
 done

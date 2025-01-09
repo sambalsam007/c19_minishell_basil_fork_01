@@ -32,7 +32,7 @@ int	check_if_builtin(t_ast_node *ast_node)
 {
 	size_t	cmd_len;
 
-	cmd_len = ft_strlen(ast_node->command);
+	cmd_len = ft_strlen(ast_node->command) + 1;
 	if (!ft_strncmp("echo", ast_node->command, cmd_len))
 		return (1);
 	else if (!ft_strncmp("export", ast_node->command, cmd_len))
@@ -45,6 +45,8 @@ int	check_if_builtin(t_ast_node *ast_node)
 		return (1);
 	else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 		return (1);
+	else if (!ft_strncmp("exit", ast_node->command, cmd_len))
+		return (1);
 	return (0);
 }
 
@@ -52,7 +54,7 @@ int	run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node)
 {
 	size_t	cmd_len;
 
-	cmd_len = ft_strlen(ast_node->command);
+	cmd_len = ft_strlen(ast_node->command) + 1;
 	if (!ft_strncmp("export", ast_node->command, cmd_len)
 		&& ast_node->arguments)
 		ms_export(var_data, ast_node);
@@ -60,6 +62,8 @@ int	run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node)
 		ms_unset(var_data, ast_node);
 	else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 		ms_cd(var_data, ast_node);
+	else if (!ft_strncmp("exit", ast_node->command, cmd_len))
+		ms_exit(ast_node);
 	else
 		return (0);
 	return (-1);
@@ -69,7 +73,7 @@ int	run_builtins_with_output(t_var_data *var_data, t_ast_node *ast_node)
 {
 	size_t	cmd_len;
 
-	cmd_len = ft_strlen(ast_node->command);
+	cmd_len = ft_strlen(ast_node->command) + 1;
 	if (!ft_strncmp("echo", ast_node->command, cmd_len))
 		ms_echo(var_data, ast_node);
 	else if (!ft_strncmp("export", ast_node->command, cmd_len))
