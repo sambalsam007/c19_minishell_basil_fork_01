@@ -23,7 +23,7 @@ char	*ft_get_key(char *prompt)
 	if (!prompt[i])
 		return (NULL);
 	if (prompt[i] && prompt[i] == '$')
-			i++;
+		i++;
 	while (prompt[i] && !ft_iswhitespace(prompt[i]) && prompt[i] != '"'
 		&& prompt[i] != '$' && prompt[i] != '|')
 		i++;
@@ -31,13 +31,13 @@ char	*ft_get_key(char *prompt)
 	return (key);
 }
 
-static int	handle_envvars(char *key, 
-							size_t *j, 
+static int	handle_envvars(char *key,
+							size_t *j,
 							char *token_string,
 							char ***envvar)
 {
-	char		*value;
-	size_t		k;
+	char	*value;
+	size_t	k;
 
 	k = 0;
 	if (!key)
@@ -48,13 +48,13 @@ static int	handle_envvars(char *key,
 	return (0);
 }
 
-int			fill_token_expd_vars(char *prmpt, 
-							char *token_string, 
+int	fill_token_expd_vars(char *prmpt,
+							char *token_string,
 							char *key,
 							char ***envvar)
 {
-	size_t		i;
-	size_t		j;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
 	j = 0;
@@ -62,17 +62,17 @@ int			fill_token_expd_vars(char *prmpt,
 	{
 		if (prmpt[i] == '$')
 		{
-				if ((prmpt[i + 1] && prmpt[i + 1] == '?') || !prmpt[i + 1] 
-						|| ft_iswhitespace(prmpt[i+1]) || (prmpt[i+1]) == '"')
-					token_string[j++] = prmpt[i++];
-				else
-				{
-					key = ft_get_key(&prmpt[i + 1]);
-					if (handle_envvars(key, &j, token_string, envvar))
-						return (-1);
-					i += ft_strlen(key) + 1;
-					free(key);
-				}
+			if ((prmpt[i + 1] && prmpt[i + 1] == '?') || !prmpt[i + 1]
+				|| ft_iswhitespace(prmpt[i + 1]) || (prmpt[i + 1]) == '"')
+				token_string[j++] = prmpt[i++];
+			else
+			{
+				key = ft_get_key(&prmpt[i + 1]);
+				if (handle_envvars(key, &j, token_string, envvar))
+					return (-1);
+				i += ft_strlen(key) + 1;
+				free(key);
+			}
 		}
 		else
 			token_string[j++] = prmpt[i++];
@@ -80,10 +80,10 @@ int			fill_token_expd_vars(char *prmpt,
 	return (token_string[j] = '\0', i);
 }
 
-int			check_single_dollar(char *prompt, size_t *index, char **token)
+int	check_single_dollar(char *prompt, size_t *index, char **token)
 {
 	if (!prompt[*index + 1] || ft_iswhitespace(prompt[*index + 1])
-			|| prompt[*index+1] == '"')
+		|| prompt[*index + 1] == '"')
 	{
 		*token = ft_strdup("$");
 		*index += 1;

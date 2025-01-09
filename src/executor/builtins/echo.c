@@ -21,7 +21,7 @@ int	ms_echo(t_var_data *var_data, t_ast_node *ast_node)
 	flag_check = false;
 	if (!ast_node->arguments)
 		ft_putstr_fd("\n", 1);
-	while (ast_node->arguments[i])		
+	while (ast_node->arguments[i])
 	{
 		if (!ft_strncmp(ast_node->arguments[i], "-n", 3))
 			flag_check = true;

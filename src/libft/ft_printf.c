@@ -40,3 +40,32 @@ int	ft_printf(const char *s, ...)
 	va_end(ap);
 	return (count);
 }
+
+int	ft_printf_fd(int fd, const char *s, ...)
+{
+	va_list	ap;
+	size_t	i;
+	size_t	count;
+
+	i = 0;
+	count = 0;
+	va_start(ap, s);
+	if (!s)
+		return (-1);
+	while (s[i])
+	{
+		if (s[i] == '%')
+		{
+			i++;
+			ft_format_and_count_fd(fd, s[i], ap, &count);
+		}
+		else
+		{
+			write(fd, &s[i], 1);
+			count++;
+		}
+		i++;
+	}
+	va_end(ap);
+	return (count);
+}

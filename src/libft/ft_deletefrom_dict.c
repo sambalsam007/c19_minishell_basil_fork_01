@@ -6,15 +6,15 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 14:03:57 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/29 16:37:06 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 12:59:46 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 static char	**ft_add_entry(int i_entry,
-							int	i_entry_new,
-							char ***new_dict, 
+							int i_entry_new,
+							char ***new_dict,
 							char ***dict)
 {
 	new_dict[i_entry_new] = malloc(sizeof(char *) * 3);
@@ -24,6 +24,12 @@ static char	**ft_add_entry(int i_entry,
 	new_dict[i_entry_new][1] = ft_strdup(dict[i_entry][1]);
 	new_dict[i_entry_new][2] = NULL;
 	return (new_dict[i_entry_new]);
+}
+
+static void	set_back_to_zero(int *i_entry, int *i_entry_new)
+{
+	*i_entry = 0;
+	*i_entry_new = 0;
 }
 
 char	***ft_delete_from_dict(char *key, char ***dict)
@@ -38,14 +44,13 @@ char	***ft_delete_from_dict(char *key, char ***dict)
 	if (i_entry == 1)
 		return (ft_delete_dict(dict), NULL);
 	new_dict = malloc((i_entry) * (sizeof(char **)));
-	i_entry = 0;
-	i_entry_new = 0;
+	set_back_to_zero(&i_entry, &i_entry_new);
 	while (dict[i_entry])
 	{
 		if (ft_strncmp(dict[i_entry][0], key, ft_strlen(key)))
 		{
 			if (!ft_add_entry(i_entry, i_entry_new, new_dict, dict))
-					return (NULL);
+				return (NULL);
 			i_entry_new++;
 		}
 		i_entry++;

@@ -6,89 +6,19 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:09:43 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/11/30 16:17:26 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 19:14:02 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 #include <dirent.h>
+#include <errno.h>
 #include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-
-static char *create_path_or_envp(char *directory_path, 
-					char *command,
-					char *separator) 
-{
-	char *binary_path;
-	char *binary_path_tmp;
-
-	binary_path = ft_strjoin(directory_path, separator); 
-	if (!binary_path)
-		return (ft_printf("malloc fail"), NULL);
-	binary_path_tmp = binary_path;
-	binary_path = ft_strjoin(binary_path, command);
-	free(binary_path_tmp);
-	if (!binary_path)
-		return (ft_printf("malloc fail"), NULL);
-	return (binary_path);
-}
-
-static char *check_and_create_path(t_var_data *var_data, 
-								char *command) 
-{
-	int 			i;
-	char 			**split_PATH;
-	char 			*binary_path;
-	DIR 			*directory;
-	struct dirent	*file_found;
-	
-	i = 0;
-	if (!ft_get_value("PATH", var_data->envvar))
-		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	split_PATH = ft_split(ft_get_value("PATH", var_data->envvar), ':');
-	if (!split_PATH)
-		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
-	while (split_PATH[i])
-	{
-		directory = opendir(split_PATH[i]);
-		if (!directory)
-		{
-			i++;
-			continue;
-		}
-		file_found = readdir(directory);
-		while (file_found)
-		{
-			if (!ft_strncmp(file_found->d_name, command, ft_strlen(command) + 1))
-					break;
-			file_found = readdir(directory);
-		}
-		if (file_found)
-		{
-			binary_path = create_path_or_envp(split_PATH[i], command, "/");
-			if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-			break;
-		}
-		if (closedir(directory))
-				return (ft_putstr_fd("Error: couldn't close dir\n", 
-							STDERR_FILENO), NULL);
-		i++;
-	}
-	ft_free_split(split_PATH);
-	if (!file_found)
-		return (ft_putstr_fd("Error: not a valid command\n", STDERR_FILENO), 
-				var_data->error_checks->executor_level_syntax_error = true, 
-				ft_strdup(""));
-	return (binary_path);
-}
 
 /* void	test_print_parser2(t_var_data *var_data) */
 /* { */
@@ -104,7 +34,7 @@ static char *check_and_create_path(t_var_data *var_data,
 /* 		while (tmp->arguments && tmp->arguments[i]) */
 /* 		{ */
 /* 			ft_printf("arguments: %s\n", tmp->arguments[i]); */
-/* 			i++;	 */
+/* 			i++;		*/
 /* 		} */
 /* 		i = 0; */
 /* 		tmp_redir = tmp->redirect; */
@@ -119,109 +49,85 @@ static char *check_and_create_path(t_var_data *var_data,
 /* 	} */
 /* } */
 
-static char	**envvardict_to_envvararray(char ***envvar)
+static void	check_pipes_and_builtins(t_var_data *var_data,
+									t_ast_node *ast_node,
+									int pipe_fd[2])
 {
-	int		i;
-	char 	**new_array;
-
-	i = 0;
-	while (envvar[i]) 
-		i++;
-	new_array = malloc(sizeof(char *) * (i + 1));
-	if (!new_array)
-		return (NULL);
-	i = 0;
-	while (envvar[i]) 
-	{
-		new_array[i] = create_path_or_envp(envvar[i][0], envvar[i][1], "=");
-		if (!new_array[i])
-			return (ft_free_split(new_array), write(STDERR_FILENO, 
-						"Error: malloc", 9), NULL);
-		i++;
-	}	
-	new_array[i] = 0;
-	return (new_array);
+	if (check_pipe(var_data, ast_node, pipe_fd) || (sighandler(var_data,
+				EXECUTOR)))
+		exit(1);
+	if (run_builtins_with_output(var_data, ast_node))
+		exit(0);
 }
 
-static char	**add_cmd_to_argarray(char **args, char *command)
+static void	run_binary_with_execve(t_var_data *var_data,
+									char *path_bin,
+									char **envvar_array,
+									char **tmp_arg_array)
 {
-	char 	**new_array;
-	int 	i;
-	
-	i = 0;
-	while (args[i])
-			i++;
-	new_array = malloc(sizeof(char *) * (i + 2));
-	if (!new_array)
-		return (NULL);
-	i = 0;
-	new_array[0] = ft_strdup(command);	
-	while (args[i])
+	if (execve(path_bin, tmp_arg_array, envvar_array) == -1)
 	{
-		new_array[i + 1] = ft_strdup(args[i]);	
-		i++;
+		var_data->error_checks->executor_level_syntax_error = true;
+		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
+		ft_printf_fd(2, "Execv err: check input\n");
+		exit(1);
 	}
-	new_array[i + 1] = NULL; 
-	return (new_array);	
 }
 
-int	check_if_binary(t_var_data *var_data, 
-						t_ast_node *ast_node)
+static int	fork_and_execute_child(t_var_data *var_data,
+									t_ast_node *ast_node,
+									char *path_bin,
+									int pipe_fd[2])
 {
 	pid_t	pid;
-	char 	*path_bin;
-	char 	**tmp_array;
-	char 	**envvar_array;
+	char	**envvar_array;
+	char	**tmp_arg_array;
+
+	envvar_array = envvardict_to_envvararray(var_data->envvar);
+	if (!envvar_array)
+		return (1);
+	tmp_arg_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
+	if (tmp_argarray_error_checks(tmp_arg_array, envvar_array, path_bin))
+		return (1);
+	pid = fork();
+	if (pid == -1)
+		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array),
+			ft_printf_fd(2, "Error: couldn't fork\n"), 1);
+	if (pid == 0)
+	{
+		check_pipes_and_builtins(var_data, ast_node, pipe_fd);
+		run_binary_with_execve(var_data, path_bin, envvar_array, tmp_arg_array);
+	}
+	else
+	{
+		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
+		return (set_fds_and_continue_parent(var_data, ast_node, pipe_fd));
+	}
+	return (1);
+}
+
+int	execute_builtin_or_binary(t_var_data *var_data,
+								t_ast_node *ast_node)
+{
+	char	*path_bin;
 	int		pipe_fd[2];
 
 	pipe_fd[0] = 0;
 	pipe_fd[1] = 1;
-	if (var_data->first_node_ast->pipe && pipe(pipe_fd) == -1)
-		return (ft_putstr_fd("Error: pipe failed\n", STDERR_FILENO), 1);
-	if (var_data->first_node_ast->pipe)
-		var_data->tmp_pipe[1] = dup(STDOUT_FILENO);
-	if (!ft_strchr("/~.", ast_node->command[0]))
+	if (var_data->first_node_ast->pipe && ast_node->pipe && pipe(pipe_fd) == -1)
+		return (ft_printf_fd(2, "Error: pipe failed\n"), 1);
+	if (!ft_strchr("/~.", ast_node->command[0]) && !check_if_builtin(ast_node))
 	{
 		path_bin = check_and_create_path(var_data, ast_node->command);
+		if ((!path_bin && errno == ENOENT)
+			|| var_data->error_checks->executor_level_syntax_error)
+			return (0);
 		if (!path_bin)
 			return (1);
-		if (!path_bin[0])
-			return (free(path_bin), 0);
-	}
-	else 
-		path_bin = ft_strdup(ast_node->command);
-	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
-		return (0);
-	tmp_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
-	if (!tmp_array)
-		return (free(path_bin), ft_putstr_fd("Error\n", STDERR_FILENO), 1);
-	if (!tmp_array[0])
-		return (free(path_bin), 0);
-	envvar_array = envvardict_to_envvararray(var_data->envvar);
-	// hier aparte fct van maken
-	pid = fork();
-	if (pid == -1)
-		return (ft_putstr_fd("Error: couldn't fork\n", STDERR_FILENO),
-				ft_free_split(envvar_array), ft_free_split(tmp_array),
-				free(path_bin), 1);
-	if (pid == 0)
-	{
-		if (check_pipe(var_data, ast_node, pipe_fd)
-					|| (sighandler(var_data, EXECUTOR))
-					|| (execve(path_bin, tmp_array, envvar_array) == -1))
-		{
-			var_data->error_checks->executor_level_syntax_error = true;	
-			free(path_bin);
-			ft_free_split(tmp_array);
-			ft_free_split(envvar_array);
-			ft_putstr_fd("Execve error: check your command \n", STDERR_FILENO);
-			return (1);
-		}
 	}
 	else
-		return (free(path_bin), var_data->tmp_pipe[0] = dup(pipe_fd[0]), 
-				close(pipe_fd[1]), ft_free_split(envvar_array), 
-				ft_free_split(tmp_array), 0);
-	// tot hier 
-	return (1);
+		path_bin = ft_strdup(ast_node->command);
+	if (path_bin && var_data->error_checks->executor_level_syntax_error == true)
+		return (free(path_bin), 0);
+	return (fork_and_execute_child(var_data, ast_node, path_bin, pipe_fd));
 }

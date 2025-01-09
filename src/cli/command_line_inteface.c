@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 12:23:04 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/20 17:25:42 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 13:13:48 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,42 @@
 #define ERROR_CONTINUE -1
 #define ERROR_STOP 1
 
+<<<<<<< HEAD
 int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
 	char *prompt)
+=======
+/* void	test_print_parser(t_var_data *var_data) */
+/* 	{ */
+/* 		int				i; */
+/* 		t_ast_node		*tmp; */
+/* 		t_ast_redir		*tmp_redir; */
+/**/
+/* 		i = 0; */
+/* 		tmp = var_data->first_node_ast; */
+/* 		while (tmp) */
+/* 		{ */
+/* 			ft_printf("command: %s\n", tmp->command); */
+/* 			while (tmp->arguments && tmp->arguments[i]) */
+/* 			{ */
+/* 				ft_printf("arguments: %s\n", tmp->arguments[i]); */
+/* 				i++;		*/
+/* 			} */
+/* 			i = 0; */
+/* 			tmp_redir = tmp->redirect; */
+/* 			while (tmp_redir) */
+/* 			{ */
+/* 				ft_printf("redirects: type = %d, file = %s\n",  */
+/* 						tmp_redir->type, tmp_redir->file); */
+/* 				tmp_redir = tmp_redir->next_redir; */
+/* 			} */
+/* 			tmp = tmp->pipe; */
+/* 			ft_printf("+++++\n"); */
+/* 		} */
+/* } */
+
+int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
+		char *prompt)
+>>>>>>> upstream/master
 {
 	int	i;
 
@@ -40,12 +74,12 @@ int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
 		return (ERROR_STOP);
 	if (error_checks->parser_level_syntax_error == true)
 		return (ERROR_CONTINUE);
-	/* werkt nog niet: */
 	if (expand_error_codes(var_data))
 		return (ERROR_STOP);
 	return (0);
 }
 
+<<<<<<< HEAD
 /* void	test_print_parser(t_var_data *var_data) */
 	/* { */
 	/* 	int				i; */
@@ -75,10 +109,15 @@ int	ms_lex_and_parse(t_var_data *var_data, t_error_checks *error_checks,
 	/* 	} */
 /* } */
 
+=======
+>>>>>>> upstream/master
 int	ms_execute(t_var_data *var_data)
 {
-	if (execute_logic(var_data))
-		return (ERROR_STOP);
+	int	error_flow;
+
+	error_flow = execute_logic(var_data);
+	if (error_flow != 0)
+		return (error_flow);
 	if (restore_fds(var_data))
 		return (ERROR_STOP);
 	return (0);
@@ -128,7 +167,11 @@ int	ms_command_line_inteface(t_var_data *var_data)
 		if (!prompt)
 			return (ft_printf("exit\n"), 0);
 		if (clean_prompt(&prompt))
+<<<<<<< HEAD
 			return (ft_printf("Error: malloc\n"), 1);
+=======
+			return (ft_printf_fd(2, "Err: malloc\n"), 1);
+>>>>>>> upstream/master
 		if (!ft_strncmp(prompt, "exit", 5))
 			break ;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
@@ -136,7 +179,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			continue ;
 		else if (error_flow == ERROR_STOP)
 			return (big_free(var_data, prompt), ERROR_STOP);
-		if (ms_execute(var_data))
+		if (ms_execute(var_data) == ERROR_STOP)
 			return (big_free(var_data, prompt), ERROR_STOP);
 	}
 	return (free(prompt), 0);

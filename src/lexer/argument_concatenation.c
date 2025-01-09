@@ -12,10 +12,10 @@
 
 #include "../../minishell.h"
 
-int createnode_freetmps(char **tmp_str, 
-		char *tmp_extension, 
-		t_token_node *curr_node,
-		t_var_data *var_data)
+int	createnode_freetmps(char **tmp_str,
+						char *tmp_extension,
+						t_token_node *curr_node,
+						t_var_data *var_data)
 {
 	char	*tmp_ptrstorage;
 
@@ -47,7 +47,7 @@ size_t	check_if_join_args(t_var_data *var_data, char *prompt, char *tmp_str,
 		if (check == -1)
 			return (var_data->error_checks->lexer_level_syntax_error = true, 1);
 		if (!tmp_extension)
-			continue;
+			continue ;
 		if (createnode_freetmps(&tmp_str, tmp_extension, curr_node, var_data))
 			return (-1);
 		if (!*tmp_str)

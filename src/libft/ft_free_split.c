@@ -12,12 +12,12 @@
 
 #include "libft.h"
 
-void ft_free_split(char **split_arg)
+void	ft_free_split(char **split_arg)
 {
 	int	i;
 
 	i = 0;
-	while (split_arg[i])	
+	while (split_arg[i])
 	{
 		free(split_arg[i]);
 		i++;

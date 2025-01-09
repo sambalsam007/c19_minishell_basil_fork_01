@@ -22,3 +22,14 @@ size_t	ftpr_putptr(size_t p)
 	ftpr_putstr("0x");
 	return (ftpr_puthex(memory_adress, 'x') + 2);
 }
+
+size_t	ftpr_putptr_fd(int fd, size_t p)
+{
+	size_t	memory_adress;
+
+	memory_adress = p;
+	if (p == 0)
+		return (ftpr_putstr_fd(fd, "(nil)"));
+	ftpr_putstr_fd(fd, "0x");
+	return (ftpr_puthex_fd(fd, memory_adress, 'x') + 2);
+}

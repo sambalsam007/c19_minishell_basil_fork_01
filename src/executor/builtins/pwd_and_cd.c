@@ -20,18 +20,18 @@ void	ms_pwd(t_var_data *var_data)
 }
 
 /* getcwd(NULL, 0) will only work on GNU systems, see man  */
-int		ms_cd(t_var_data *var_data, t_ast_node *ast_node)
+int	ms_cd(t_var_data *var_data, t_ast_node *ast_node)
 {
 	if (!ast_node->arguments || !ast_node->arguments[0])
-		return (0);	
+		return (0);
 	if (ast_node->arguments[1])
 	{
-		var_data->error_checks->parser_level_syntax_error = true;	
-		ft_printf("Error: too many arguments\n", 2);
+		var_data->error_checks->parser_level_syntax_error = true;
+		ft_printf_fd(2, "Err: too many arguments\n");
 		return (1);
 	}
 	if (chdir(ast_node->arguments[0]) == -1)
-		return (ft_printf("Error: chdir\n", 2), 1);
+		return (ft_printf_fd(2, "Err: chdir\n"), 1);
 	ft_update_dict("PWD", getcwd(NULL, 0), var_data->envvar);
-	return (0);	
+	return (0);
 }

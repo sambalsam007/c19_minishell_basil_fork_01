@@ -6,16 +6,23 @@
 #    By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/24 11:58:53 by bclaeys           #+#    #+#              #
-#    Updated: 2024/12/20 16:39:19 by bclaeys          ###   ########.fr        #
+#    Updated: 2025/01/07 19:13:02 by bclaeys          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME=minishell
 
+<<<<<<< HEAD
 MAIN_SRCS= minishell_main.c init_data.c sighandler.c
 CLI_SRCS = command_line_inteface.c execute_logic.c
 EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c
 LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c argument_concatenation.c node_creation.c var_handler.c error_code_functions.c
+=======
+MAIN_SRCS= minishell_main.c init_data.c sighandler.c init_envvars.c tty_fcts.c
+CLI_SRCS = command_line_inteface.c execute_logic.c
+EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c binary_path_creation.c heredoc.c run_binary_utils.c
+LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c argument_concatenation.c node_creation.c var_handler.c error_code_functions.c redirect_handler_utils.c count_total_strlen.c
+>>>>>>> upstream/master
 PARSER_SRCS = parser.c abstract_syntax_tree_creation_fcts.c redir_fcts.c environment_functions.c
 SIGHANDLER_SRCS =
 ERRORHANDLER_SRCS = error_checks.c big_free.c error_messages.c

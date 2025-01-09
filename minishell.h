@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2024/12/20 17:06:52 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/07 19:13:52 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,42 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+<<<<<<< HEAD
 # define ERROR_NULL NULL
+=======
+>>>>>>> upstream/master
 # define EXECUTOR 1
 # define MAIN_PROCESS 3
 # define LEXER_ERROR 999
 # define PARSER_ERROR 998
 # define EXECUTOR_ERROR 997
+<<<<<<< HEAD
 
 typedef enum
+=======
+# define ENV_ERROR 996
+
+typedef enum s_token_type_enum
+>>>>>>> upstream/master
 {
 	EXEC = 1,
 	ARGUMENT,
 	FLAG,
 	PIPE,
 	REDIRECT,
-} e_token_type_enum;
+}	t_token_type_enum;
 
+<<<<<<< HEAD
 typedef enum
+=======
+typedef enum s_redir_type
+>>>>>>> upstream/master
 {
 	OUTPUT_REDIR_APPEND = 1,
 	HERE_DOC,
 	OUTPUT_REDIR,
 	INPUT_REDIR,
-} e_redir_type;
+}	t_redir_type;
 
 /* ************************************************************************** */
 /*                                      structs                               */
@@ -87,6 +100,8 @@ typedef struct s_error_checks
 	bool				lexer_level_syntax_error;
 	bool				parser_level_syntax_error;
 	bool				executor_level_syntax_error;
+	bool				environment_error;
+	bool				fatal_error;
 }	t_error_checks;
 
 typedef struct s_var_data
@@ -120,7 +135,13 @@ void			*free_var_data(t_var_data *var_data);
 void			free_envvar(char **envvar);
 char			***init_envvar_noenvp(void);
 void			init_error_data(t_var_data *var_data, \
+<<<<<<< HEAD
 								t_error_checks *error_checks);
+=======
+					t_error_checks *error_checks);
+int				handle_signals_through_termios(t_var_data *var_data);
+int				restore_tty(t_var_data *var_data);
+>>>>>>> upstream/master
 
 /* ************************************************************************** */
 /*                                      error_and_free                        */
@@ -138,9 +159,12 @@ void			big_free(t_var_data *var_data, char *prompt);
 /* ************************************************************************** */
 
 int				ms_command_line_inteface(t_var_data *var_data);
+<<<<<<< HEAD
 int				handle_pipes(t_var_data *var_data);
 int				traverse_ast(t_ast_node *tmp_node, t_var_data *var_data, \
 					int error_flow);
+=======
+>>>>>>> upstream/master
 int				execute_logic(t_var_data *var_data);
 
 /* ************************************************************************** */
@@ -151,21 +175,38 @@ t_token_node	*tokenizer(char *prompt, t_var_data *var_data, \
 					t_token_node *first_nd, int flow_check);
 char			*redirect_handler(char *prompt, size_t *index, \
 					t_var_data *var_data);
+<<<<<<< HEAD
+=======
+int				fill_redirect_token(char *prompt, char *token, \
+					int space_counter, t_var_data *var_data);
+>>>>>>> upstream/master
 int				single_quotes(char *prompt, size_t *index, \
 					char **tokenized_string);
 int				double_quotes(char *prompt, size_t *index, \
 					t_var_data *var_data, char **token_str);
 char			*ft_get_key(char *prompt);
+<<<<<<< HEAD
 int				ft_strtok(char *prompt, t_var_data *var_data, \
 					char **token, size_t *i);
+=======
+int				ft_strtok(char *prompt, t_var_data *var_data, char **token, \
+					size_t *i);
+>>>>>>> upstream/master
 t_token_node	*create_node(char *tokenized_str, t_token_node *prev_node, \
 					t_token_node *current_node, t_var_data *var_data);
 size_t			check_if_join_args(t_var_data *var_data, char *prompt, \
 					char *tmp_str, t_token_node *current_node);
+<<<<<<< HEAD
 int				exception(char *prompt, size_t *index, \
 					t_var_data *var_data, char **token);
 int				no_quotes_arg(char *prompt, size_t *index, \
 					char ***envvar, char **token);
+=======
+int				exception(char *prompt, size_t *index, t_var_data *var_data, \
+					char **token);
+int				no_quotes_arg(char *prompt, size_t *index, char ***envvar, \
+					char **token);
+>>>>>>> upstream/master
 int				fill_token_expd_vars(char *prompt, char *token_string, \
 					char *key, char ***envvar);
 int				check_single_dollar(char *prompt, size_t *index, char **token);
@@ -192,9 +233,16 @@ t_ast_node		*create_ast_node(t_ast_node *prev_ast_node, \
 /*                                      executor                              */
 /* ************************************************************************** */
 
-int				check_if_binary(t_var_data *var_data, t_ast_node *ast_node);
-int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect);
-int				check_if_builtin(t_var_data *var_data, t_ast_node *ast_node);
+int				execute_builtin_or_binary(t_var_data *var_data, \
+					t_ast_node *ast_node);
+int				check_if_redir(t_var_data *var_data, t_ast_redir *redirect, \
+					int error_check, char *command);
+int				handle_here_doc(t_var_data *var_data, char *filename);
+int				check_if_builtin(t_ast_node *ast_node);
+int				run_builtins_with_output(t_var_data *var_data, \
+					t_ast_node *ast_node);
+int				run_builtins_without_output(t_var_data *var_data, \
+					t_ast_node *ast_node);
 int				ms_echo(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_env(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_export(t_var_data *var_data, t_ast_node *ast_node);
@@ -204,6 +252,20 @@ int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
 int				restore_fds(t_var_data *var_data);
 int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe, \
 					int *pipe_fd);
+<<<<<<< HEAD
+=======
+char			*create_path_or_envp(char *directory_path, char *command, \
+					char *separator);
+char			*check_and_create_path(t_var_data *var_data, char *command);
+char			**add_cmd_to_argarray(char **args, char *command);
+char			**envvardict_to_envvararray(char ***envvar);
+int				tmp_argarray_error_checks(char **tmp_arg_array,	\
+					char **envvar_array, char *path_bin);
+int				set_fds_and_continue_parent(t_var_data *var_data, \
+					t_ast_node *ast_node, int pipe_fd[2]);
+void			free_path_and_arrays(char *path_bin, char **envvar_array, \
+					char **tmp_array);
+>>>>>>> upstream/master
 
 /* ************************************************************************** */
 /*                                      sighandler                           */
@@ -211,5 +273,6 @@ int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe, \
 
 int				sighandler(t_var_data *var_data, int mode);
 int				restore_tty(t_var_data *var_data);
+int				homemade_getpid(void);
 
 #endif

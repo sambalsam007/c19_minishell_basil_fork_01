@@ -17,7 +17,7 @@ void	ft_update_dict(char *key, char *new_value, char ***dict)
 {
 	int		i_entry;
 	int		longest_len;
-	char 	*str_to_change;
+	char	*str_to_change;
 
 	i_entry = 0;
 	longest_len = 0;
@@ -31,13 +31,13 @@ void	ft_update_dict(char *key, char *new_value, char ***dict)
 		if (ft_strlen(key) < ft_strlen(dict[i_entry][0]))
 			longest_len = ft_strlen(dict[i_entry][0]);
 		if (!ft_strncmp(dict[i_entry][0], key, longest_len))
-			break;
+			break ;
 		i_entry++;
 	}
 	str_to_change = dict[i_entry][1];
 	if (!str_to_change)
 		ft_addto_dict(key, new_value, dict);
 	else
-		dict[i_entry][1] = new_value; 
+		dict[i_entry][1] = new_value;
 	free(str_to_change);
 }

@@ -27,3 +27,19 @@ size_t	ftpr_putunsdec(unsigned int d)
 	count += ftpr_putchar(symbols[d]);
 	return (count);
 }
+
+size_t	ftpr_putunsdec_fd(int fd, unsigned int d)
+{
+	int		count;
+	char	*symbols;
+
+	count = 0;
+	symbols = "0123456789";
+	if (d >= 10)
+	{
+		count += ftpr_putunsdec_fd(fd, d / 10);
+		d = d % 10;
+	}
+	count += ftpr_putchar_fd(fd, symbols[d]);
+	return (count);
+}
