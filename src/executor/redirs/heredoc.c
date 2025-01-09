@@ -19,13 +19,8 @@
 #define FATAL_ERROR 'f'
 #define NON_FATAL_ERROR 'n'
 
-static int	prompt_loop(char *prompt, char *filename, int redir_pipe_fd[2], t_var_data *var_data)
+static int	prompt_loop(char *prompt, char *filename, int redir_pipe_fd[2])
 {
-	if (var_data->multiple_heredoc_check)
-	{
-		dup2(var_data->std_input_fd_backup, STDIN_FILENO);
-		var_data->multiple_heredoc_check = false;
-	}
 	while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1)
 		&& prompt[0] && prompt[0] != EOF && prompt[0] != '\4')
 	{
@@ -89,6 +84,12 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 
 	if (pipe(redir_pipe_fd) == -1)
 		return (1);
+	if (var_data->multiple_heredoc_check)
+	{
+		restore_fds(var_data);	
+		dup2(var_data->std_input_fd_backup, STDIN_FILENO);
+		var_data->multiple_heredoc_check = false;
+	}
 	pid = fork();
 	if (pid == -1)
 		return (ft_printf_fd(2, "Err: fork\n"), 1);
@@ -99,7 +100,7 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 		prompt = readline("\033[33m> \033[0m");
 		if (!prompt)
 			exit_with_error(var_data, FATAL_ERROR);
-		if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd, var_data))
+		if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd))
 			exit_with_error(var_data, NON_FATAL_ERROR);
 		if (redir_pipe_fd[0] == -1)
 			exit_with_error(var_data, FATAL_ERROR);

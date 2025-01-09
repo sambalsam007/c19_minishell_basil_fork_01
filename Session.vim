@@ -13,13 +13,12 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 src/executor/builtins
-badd +45 src/executor/builtins/echo.c
-badd +31 src/libft/ft_strrchr.c
+badd +78 src/executor/redirs/redir_checks.c
+badd +103 ~/github_kantog/minishell/src/executor/redirs/heredoc.c
 argglobal
 %argdel
-$argadd src/executor/builtins
-edit src/executor/builtins/echo.c
+$argadd src/executor/redirs/redir_checks.c
+edit src/executor/redirs/redir_checks.c
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -36,8 +35,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 147 + 147) / 294)
-exe 'vert 2resize ' . ((&columns * 146 + 147) / 294)
+exe 'vert 1resize ' . ((&columns * 158 + 159) / 318)
+exe 'vert 2resize ' . ((&columns * 159 + 159) / 318)
 argglobal
 setlocal foldmethod=manual
 setlocal foldexpr=0
@@ -49,20 +48,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 53 - ((52 * winheight(0) + 37) / 74)
+let s:l = 82 - ((67 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 53
+keepjumps 82
 normal! 05|
-lcd ~/github_kantog/minishell
 wincmd w
 argglobal
-if bufexists(fnamemodify("~/github_kantog/minishell/src/libft/ft_strrchr.c", ":p")) | buffer ~/github_kantog/minishell/src/libft/ft_strrchr.c | else | edit ~/github_kantog/minishell/src/libft/ft_strrchr.c | endif
+if bufexists(fnamemodify("~/github_kantog/minishell/src/executor/redirs/heredoc.c", ":p")) | buffer ~/github_kantog/minishell/src/executor/redirs/heredoc.c | else | edit ~/github_kantog/minishell/src/executor/redirs/heredoc.c | endif
 if &buftype ==# 'terminal'
-  silent file ~/github_kantog/minishell/src/libft/ft_strrchr.c
+  silent file ~/github_kantog/minishell/src/executor/redirs/heredoc.c
 endif
-balt ~/github_kantog/minishell/src/executor/builtins/echo.c
+balt src/executor/redirs/redir_checks.c
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -73,16 +71,16 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 37) / 74)
+let s:l = 93 - ((62 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 15
-normal! 010|
-lcd ~/github_kantog/minishell
+keepjumps 93
+normal! 05|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 147 + 147) / 294)
-exe 'vert 2resize ' . ((&columns * 146 + 147) / 294)
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 158 + 159) / 318)
+exe 'vert 2resize ' . ((&columns * 159 + 159) / 318)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

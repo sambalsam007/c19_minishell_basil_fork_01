@@ -1,0 +1,2 @@
+[
+{ "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/executor/redirs/heredoc.c", "output": "obj/heredoc.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/executor/redirs/heredoc.c", "-Wall", "-Wextra", "-Werror", "-g", "-fsanitize=address", "-fsanitize=undefined", "-fsanitize=bounds", "-fsanitize=null", "-c", "-o", "obj/heredoc.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
