@@ -19,7 +19,8 @@
 #define FATAL_ERROR 'f'
 #define NON_FATAL_ERROR 'n'
 
-static int	prompt_loop(char *prompt, char *filename, int redir_pipe_fd[2], t_var_data *var_data)
+static int	prompt_loop(char *prompt, char *filename, int redir_pipe_fd[2], \
+						t_var_data *var_data)
 {
 	if (var_data->multiple_heredoc_check)
 	{
@@ -99,7 +100,8 @@ int	handle_here_doc(t_var_data *var_data, char *filename)
 		prompt = readline("\033[33m> \033[0m");
 		if (!prompt)
 			exit_with_error(var_data, FATAL_ERROR);
-		if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd, var_data))
+		if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd, \
+					var_data))
 			exit_with_error(var_data, NON_FATAL_ERROR);
 		if (redir_pipe_fd[0] == -1)
 			exit_with_error(var_data, FATAL_ERROR);

@@ -35,7 +35,7 @@ static int	single_quotes_logic(int *i,
 	return (0);
 }
 
-static int	filename_fill_letter_or_quotes(char *prompt,
+static int	file_fill_letter_or_quotes(char *prompt,
 								int *tmpindex,
 								char *tokenized_string,
 								t_var_data *var_data)
@@ -61,10 +61,11 @@ static int	filename_fill_letter_or_quotes(char *prompt,
 	}
 	else
 		tokenized_string[(*tmpindex)++] = prompt[i++];
-	/* if (prompt[0] != '\'') */
-	/* 	(*tmpindex)++; */
 	return (i);
 }
+// na line 63
+	/* if (prompt[0] != '\'') */
+	/* 	(*tmpindex)++; */
 
 static void	init_i_and_tmpindex_for_token(int *i, int *tmpindex)
 {
@@ -99,7 +100,7 @@ int	fill_redirect_token(char *prompt,
 				|| (i > 1 && ft_iswhitespace(prompt[i]) && token[tmpindex])
 				|| var_data->error_checks->lexer_level_syntax_error == true))
 			break ;
-		i += filename_fill_letter_or_quotes(&prompt[i], &tmpindex, token, var_data);
+		i += file_fill_letter_or_quotes(&prompt[i], &tmpindex, token, var_data);
 	}
 	return (token[tmpindex] = '\0', var_data->is_redirect = true, 0);
 }

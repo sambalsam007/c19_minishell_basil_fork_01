@@ -98,7 +98,7 @@ int	sighandler(t_var_data *var_data, int mode)
 		signal_struct_sigquit.sa_handler = SIG_IGN;
 	}
 	if (sigaction(SIGQUIT, &signal_struct_sigquit, NULL)
-				|| sigaction(SIGINT, &signal_struct_sigint, NULL))
+		|| sigaction(SIGINT, &signal_struct_sigint, NULL))
 		return (ft_printf("sigaction failed\n", 1));
 	return (0);
 }
