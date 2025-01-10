@@ -26,6 +26,6 @@ char	***init_envvar_noenvp(void)
 char	***init_envvar_list(char **envp)
 {
 	if (!envp[0])
-		return (init_envvar_noenvp());
-	return (ft_create_dict(envp, '='));
+		return (init_envvar_noenvp());//initialize env var, if not yet initialized
+	return (ft_create_dict(envp, '='));//xx
 }

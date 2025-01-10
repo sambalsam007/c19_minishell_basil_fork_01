@@ -70,11 +70,20 @@ t_var_data	*init_var_data(char **envp)
 	error_checks = malloc(sizeof(t_error_checks));
 	if (!var_data)
 		return (ft_putstr_fd("Error: malloc failed\n", 3), NULL);
-	var_data->envvar = init_envvar_list(envp);
+	var_data->envvar = init_envvar_list(envp); 
+		// -> initialiseert env vars
+		// 		geen env vars meegekregen?
+		// 		vult zelf een template in
 	if (!(var_data->envvar))
 		return (free_var_data(var_data), ft_putstr_fd("Error:mall\n", 3), NULL);
+			// geen env vars kunnen initialiseren?
+			// -> exit minishell
 	if (backup_fds(var_data))
 		return (free_var_data(var_data), NULL);
+			// maakt backup van adres WAAR de stdin en stdout zich bevinden?
+			// om bij het pipen terug te switchen?
+			// backupt maken van locatie van stdin stdout mislukt?
+			// 		quit minishell
 	ft_update_dict("SHLVL", ft_itoa(ft_atoi(ft_get_value("SHLVL",
 					var_data->envvar)) + 1), var_data->envvar);
 	flip_switches(var_data, error_checks);

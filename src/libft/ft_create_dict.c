@@ -65,6 +65,8 @@ static int	multiple_separators(char **dict_entry, char sep)
 
 char	***ft_create_dict(char **list, char separator)
 {
+	// list is envp list, als reeds ingevuld is
+	// of template die basil heeft meegegeven
 	char	***dict;
 	int		i;
 
@@ -75,7 +77,7 @@ char	***ft_create_dict(char **list, char separator)
 	if (!dict)
 		return (NULL);
 	i = 0;
-	while (list[i])
+	while (list[i]) // dict vullen met de lijst van environmnt vars
 	{
 		dict[i] = ft_split(list[i], separator);
 		if (!dict[i])
