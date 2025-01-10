@@ -42,6 +42,7 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 	if (sig == SIGINT)
 	{
 		write(STDIN_FILENO, "\n", 1);
+		ft_printf("test\n");
 		kill(homemade_getpid(), SIGTERM);
 	}
 	(void)context;
@@ -85,16 +86,16 @@ int	sighandler(t_var_data *var_data, int mode)
 	sigemptyset(&signal_struct_sigquit.sa_mask);
 	if (mode == HERE_DOC)
 		set_sigaction_for_heredoc(&signal_struct_sigint, &signal_struct_sigquit,
-				&handle_signal_heredoc);
+			&handle_signal_heredoc);
 	if (mode == EXECUTOR)
 		set_sigaction_for_exec(&signal_struct_sigint, &signal_struct_sigquit,
-				&handle_signal_child);
+			&handle_signal_child);
 	if (mode == MAIN_PROCESS)
 	{
 		if (fck_around_with_termios(var_data) == 1)
 			return (1);
 		set_sigaction_for_main(&signal_struct_sigint, &signal_struct_sigquit,
-				&handle_signal_parent);
+			&handle_signal_parent);
 	}
 	if (sigaction(SIGQUIT, &signal_struct_sigquit, NULL)
 		|| sigaction(SIGINT, &signal_struct_sigint, NULL))

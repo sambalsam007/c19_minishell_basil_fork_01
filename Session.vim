@@ -13,16 +13,14 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +13 src/executor/redirs/heredoc.c
-badd +24 src/executor/builtins/exit.c
-badd +251 minishell.h
-badd +87 src/main/sighandler.c
-badd +13 src/main/sighandler_utils.c
-badd +36 /usr/include/x86_64-linux-gnu/bits/sigaction.h
+badd +43 src/cli/execute_logic.c
+badd +79 src/executor/redirs/redir_checks.c
+badd +46 src/executor/redirs/heredoc.c
+badd +106 minishell.h
 argglobal
 %argdel
-$argadd src/executor/redirs/heredoc.c
-edit src/executor/redirs/heredoc.c
+$argadd src/cli/execute_logic.c
+edit src/cli/execute_logic.c
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -56,19 +54,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 13 - ((12 * winheight(0) + 42) / 84)
+let s:l = 43 - ((42 * winheight(0) + 42) / 84)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 13
-normal! 02|
+keepjumps 43
+normal! 022|
 wincmd w
 argglobal
-if bufexists(fnamemodify("src/main/sighandler.c", ":p")) | buffer src/main/sighandler.c | else | edit src/main/sighandler.c | endif
+if bufexists(fnamemodify("src/executor/redirs/redir_checks.c", ":p")) | buffer src/executor/redirs/redir_checks.c | else | edit src/executor/redirs/redir_checks.c | endif
 if &buftype ==# 'terminal'
-  silent file src/main/sighandler.c
+  silent file src/executor/redirs/redir_checks.c
 endif
-balt src/executor/redirs/heredoc.c
+balt src/cli/execute_logic.c
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -79,35 +77,35 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 96 - ((50 * winheight(0) + 42) / 84)
+let s:l = 79 - ((78 * winheight(0) + 42) / 84)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 96
+keepjumps 79
+normal! 0
+wincmd w
+argglobal
+if bufexists(fnamemodify("src/executor/redirs/heredoc.c", ":p")) | buffer src/executor/redirs/heredoc.c | else | edit src/executor/redirs/heredoc.c | endif
+if &buftype ==# 'terminal'
+  silent file src/executor/redirs/heredoc.c
+endif
+balt src/executor/redirs/redir_checks.c
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 50 - ((18 * winheight(0) + 42) / 84)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 50
 normal! 08|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/main/sighandler_utils.c", ":p")) | buffer src/main/sighandler_utils.c | else | edit src/main/sighandler_utils.c | endif
-if &buftype ==# 'terminal'
-  silent file src/main/sighandler_utils.c
-endif
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 27 - ((26 * winheight(0) + 42) / 84)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 27
-normal! 02|
-lcd ~/github_kantog/minishell
 wincmd w
 3wincmd w
 exe 'vert 1resize ' . ((&columns * 115 + 173) / 347)
@@ -128,6 +126,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

@@ -27,7 +27,6 @@ static int	check_pipes(t_var_data *var_data,
 	if (check_pipe(var_data, ast_node, pipe_fd) || (sighandler(var_data,
 				EXECUTOR)))
 	{
-			
 		big_free(var_data, var_data->prmpt_to_free);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
@@ -37,6 +36,7 @@ static int	check_pipes(t_var_data *var_data,
 	}
 	return (0);
 }
+
 static int	check_builtins(t_var_data *var_data,
 									t_ast_node *ast_node,
 									int pipe_fd[2])
@@ -46,9 +46,9 @@ static int	check_builtins(t_var_data *var_data,
 		big_free(var_data, var_data->prmpt_to_free);
 		(void)pipe_fd;
 		if (!isatty(pipe_fd[0]))
-				close(pipe_fd[0]);
+			close(pipe_fd[0]);
 		if (!isatty(pipe_fd[1]))
-				close(pipe_fd[1]);
+			close(pipe_fd[1]);
 		restore_fds(var_data);
 		free_var_data(var_data);
 		return (1);
@@ -90,8 +90,7 @@ static int	fork_and_execute_child(t_var_data *var_data,
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		return (free_locals_executor(path, envarray, argarr),
-			ft_printf_fd(2, "Error: couldn't fork\n"), 1);
+		return (free_locals_executor(path, envarray, argarr), 1);
 	if (pid == 0)
 	{
 		if (check_pipes(var_data, ast_node, pipe_fd))
@@ -102,7 +101,7 @@ static int	fork_and_execute_child(t_var_data *var_data,
 	}
 	else
 		return (free_locals_executor(path, envarray, argarr),
-				set_fds_and_continue_parent(var_data, pipe_fd));
+			set_fds_and_continue_parent(var_data, pipe_fd));
 	return (1);
 }
 

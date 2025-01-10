@@ -99,10 +99,11 @@ typedef struct s_var_data
 	bool			multiple_heredoc_check;
 	char			***envvar;
 	char			***no_var_envvar;
-	char			*prmpt_to_free; 
+	char			*prmpt_to_free;
 	t_token_node	*first_node_lexer;
 	t_ast_node		*first_node_ast;
 	t_error_checks	*error_checks;
+	int				heredoc_ctrlc_fd_backup;
 	int				open_output_file_fd;
 	int				open_input_file_fd;
 	int				amount_of_pipes;
@@ -239,7 +240,8 @@ int				restore_tty(t_var_data *var_data);
 int				homemade_getpid(void);
 int				fck_around_with_termios(t_var_data *var_data);
 int				restore_tty(t_var_data *var_data);
-void			set_sigaction_for_heredoc(struct sigaction *signal_struct_sigint, \
+void			set_sigaction_for_heredoc(struct sigaction \
+									*signal_struct_sigint, \
 									struct sigaction *signal_struct_sigquit, \
 									void (*handle_signal_heredoc) \
 									(int, siginfo_t *, void *));
@@ -247,8 +249,8 @@ void			set_sigaction_for_main(struct sigaction *signal_struct_sigint, \
 									struct sigaction *signal_struct_sigquit, \
 									void (*handle_signal_parent) \
 									(int, siginfo_t *, void *));
-void			set_sigaction_for_exec(struct sigaction *signal_struct_sigint,\
-									struct sigaction *signal_struct_sigquit,\
+void			set_sigaction_for_exec(struct sigaction *signal_struct_sigint, \
+									struct sigaction *signal_struct_sigquit, \
 									void (*handle_signal_child) \
 									(int, siginfo_t *, void *));
 

@@ -22,12 +22,12 @@
 static int	prompt_loop(char *prompt, char *filename, int redir_pipe_fd[2])
 {
 	while (prompt && ft_strncmp(prompt, filename, ft_strlen(filename) + 1)
-		&& prompt[0] && prompt[0] != EOF && prompt[0] != '\4')
+		&& prompt[0] != EOF && prompt[0] != '\4')
 	{
 		write(redir_pipe_fd[1], prompt, ft_strlen(prompt));
 		write(redir_pipe_fd[1], "\n", 1);
 		prompt = readline("\033[33m> \033[0m");
-		if (!prompt || (prompt && prompt[0] == '\0'))
+		if (!prompt)
 			return (1);
 	}
 	return (0);
@@ -46,6 +46,7 @@ static int	parent_process_continues(int redir_pipe_fd[2],
 	if (WTERMSIG(return_status))
 	{
 		close(redir_pipe_fd[0]);
+		close(redir_pipe_fd[1]);
 		var_data->last_error_code = WTERMSIG(return_status);
 		return (-1);
 	}
@@ -74,7 +75,7 @@ static int	finish_process(int redir_pipe_fd[2],
 							t_var_data *var_data,
 							char *filename)
 {
-	if (prompt[0] == '\0' || prompt_loop(prompt, filename, redir_pipe_fd))
+	if (prompt_loop(prompt, filename, redir_pipe_fd))
 		exit_with_error(var_data, NON_FATAL_ERROR);
 	if (redir_pipe_fd[0] == -1)
 		exit_with_error(var_data, FATAL_ERROR);
