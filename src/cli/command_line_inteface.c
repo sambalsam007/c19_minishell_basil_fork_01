@@ -124,6 +124,9 @@ int	ms_command_line_inteface(t_var_data *var_data)
 	while (true)
 	{
 		big_free(var_data, prompt);
+				// na elk command uit te voeren
+				// prompt freeen ja
+				//
 		init_error_data(var_data, var_data->error_checks);
 		prompt = readline("\033[33mbazzels_minishell> \033[0m");
 		add_history(prompt);
