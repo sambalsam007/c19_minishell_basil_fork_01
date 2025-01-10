@@ -12,7 +12,7 @@
 
 NAME=minishell
 
-MAIN_SRCS= minishell_main.c init_data.c sighandler.c init_envvars.c tty_fcts.c
+MAIN_SRCS= minishell_main.c init_data.c sighandler.c init_envvars.c tty_fcts.c sighandler_utils.c
 CLI_SRCS = command_line_inteface.c execute_logic.c
 EXECUTOR_SRCS = echo.c builtin_checks.c pwd_and_cd.c export.c run_binary.c redir_checks.c pipe_functions.c binary_path_creation.c heredoc.c run_binary_utils.c exit.c
 LEXER_SRCS = tokenizer.c quote_handler.c redirect_handler.c argument_concatenation.c node_creation.c var_handler.c error_code_functions.c redirect_handler_utils.c count_total_strlen.c
@@ -22,7 +22,7 @@ ERRORHANDLER_SRCS = error_checks.c big_free.c error_messages.c
 
 CC=clang
 CFLAGS= -Wall -Wextra -Werror -g
-DEBUG_FLAGS= -fsanitize=address -fsanitize=undefined -fsanitize=bounds -fsanitize=null
+DEBUG_FLAGS= #-fsanitize=address -fsanitize=undefined -fsanitize=bounds -fsanitize=null
 INCLUDES = -I ./libf
 INCFLAGS= -I src/libft -L src/libft -lft -lreadline
 LIBFT=./src/libft/libft.a

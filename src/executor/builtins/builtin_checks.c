@@ -63,7 +63,7 @@ int	run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node)
 	else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 		ms_cd(var_data, ast_node);
 	else if (!ft_strncmp("exit", ast_node->command, cmd_len))
-		ms_exit(ast_node);
+		ms_exit(ast_node, var_data);
 	else
 		return (0);
 	return (-1);

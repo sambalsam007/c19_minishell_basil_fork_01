@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
+#include <unistd.h>
 
 char	**envvardict_to_envvararray(char ***envvar)
 {
@@ -65,7 +66,7 @@ char	**add_cmd_to_argarray(char **args, char *command)
 	return (new_array[i + 1] = NULL, new_array);
 }
 
-void	free_path_and_arrays(char *path_bin,
+void	free_locals_executor(char *path_bin,
 									char **envvar_array,
 									char **tmp_array)
 {
@@ -75,13 +76,13 @@ void	free_path_and_arrays(char *path_bin,
 }
 
 int	set_fds_and_continue_parent(t_var_data *var_data,
-									t_ast_node *ast_node,
 									int pipe_fd[2])
 {
-	if (ast_node != var_data->first_node_ast)
+	if (!isatty(var_data->tmp_pipe[0]))
 		close(var_data->tmp_pipe[0]);
 	var_data->tmp_pipe[0] = pipe_fd[0];
-	close(pipe_fd[1]);
+	if (!isatty(pipe_fd[1]))
+		close(pipe_fd[1]);
 	return (0);
 }
 
@@ -96,6 +97,6 @@ int	tmp_argarray_error_checks(char **tmp_arg_array,
 		return (ft_printf_fd(2, "Err\n"), 1);
 	}
 	if (!tmp_arg_array[0])
-		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array), 0);
+		return (free_locals_executor(path_bin, envvar_array, tmp_arg_array), 0);
 	return (0);
 }

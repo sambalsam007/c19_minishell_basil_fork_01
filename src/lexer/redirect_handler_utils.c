@@ -90,7 +90,7 @@ int	fill_redirect_token(char *prompt,
 			if ((space_counter == 1 && i > 1 && !ft_strchr("<>", prompt[i - 1]))
 				|| (space_counter == 2 || (space_counter == 1 && i > 2)))
 				break ;
-			while (prompt[i] && ft_iswhitespace(prompt[i]) && token[tmpindex])
+			while (prompt[i] && ft_iswhitespace(prompt[i]))
 				token[tmpindex++] = prompt[i++];
 			if (prompt[i] && ft_strchr("<>|", prompt[i]))
 				return (var_data->error_checks->lexer_level_syntax_error = true,

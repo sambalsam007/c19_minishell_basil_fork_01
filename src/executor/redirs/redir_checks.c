@@ -24,7 +24,8 @@ static int	handle_input_redir(char *filename,
 		return (fd = 0, ft_printf_fd(2, "Err: %s doesn't exist\n", filename),
 			var_data->error_checks->executor_level_syntax_error = true, 0);
 	fd = open(filename, O_RDONLY);
-	return (ft_printf_fd(2, "Err: not a valid file\n"), -1);
+	if (fd == -1)
+		return (ft_printf_fd(2, "Err: not a valid file\n"), -1);
 	if (dup2(fd, STDIN_FILENO) == -1)
 		return (ft_printf_fd(2, "Err: dup2 failed\n"), 1);
 	var_data->open_input_file_fd = fd;

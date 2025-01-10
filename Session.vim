@@ -13,24 +13,25 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +78 src/executor/redirs/redir_checks.c
-badd +109 src/executor/redirs/heredoc.c
-badd +30 src/main/init_envvars.c
-badd +77 src/libft/ft_create_dict.c
-badd +54 src/main/init_data.c
-badd +101 minishell.h
-badd +121 src/executor/builtins/export.c
-badd +18 ~/github_kantog/minishell/src/executor/pipes/pipe_functions.c
+badd +13 src/executor/redirs/heredoc.c
+badd +24 src/executor/builtins/exit.c
+badd +251 minishell.h
+badd +87 src/main/sighandler.c
+badd +13 src/main/sighandler_utils.c
+badd +36 /usr/include/x86_64-linux-gnu/bits/sigaction.h
 argglobal
 %argdel
-$argadd src/executor/redirs/redir_checks.c
-edit src/executor/redirs/redir_checks.c
+$argadd src/executor/redirs/heredoc.c
+edit src/executor/redirs/heredoc.c
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-1wincmd h
+wincmd _ | wincmd |
+vsplit
+2wincmd h
+wincmd w
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -41,8 +42,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 158 + 159) / 318)
-exe 'vert 2resize ' . ((&columns * 159 + 159) / 318)
+exe 'vert 1resize ' . ((&columns * 115 + 173) / 347)
+exe 'vert 2resize ' . ((&columns * 115 + 173) / 347)
+exe 'vert 3resize ' . ((&columns * 115 + 173) / 347)
 argglobal
 setlocal foldmethod=manual
 setlocal foldexpr=0
@@ -54,19 +56,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 79 - ((64 * winheight(0) + 40) / 81)
+let s:l = 13 - ((12 * winheight(0) + 42) / 84)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 79
-normal! 027|
+keepjumps 13
+normal! 02|
 wincmd w
 argglobal
-if bufexists(fnamemodify("src/executor/redirs/heredoc.c", ":p")) | buffer src/executor/redirs/heredoc.c | else | edit src/executor/redirs/heredoc.c | endif
+if bufexists(fnamemodify("src/main/sighandler.c", ":p")) | buffer src/main/sighandler.c | else | edit src/main/sighandler.c | endif
 if &buftype ==# 'terminal'
-  silent file src/executor/redirs/heredoc.c
+  silent file src/main/sighandler.c
 endif
-balt src/executor/redirs/redir_checks.c
+balt src/executor/redirs/heredoc.c
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -77,16 +79,40 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 97 - ((63 * winheight(0) + 40) / 81)
+let s:l = 96 - ((50 * winheight(0) + 42) / 84)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 97
+keepjumps 96
 normal! 08|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 158 + 159) / 318)
-exe 'vert 2resize ' . ((&columns * 159 + 159) / 318)
+argglobal
+if bufexists(fnamemodify("src/main/sighandler_utils.c", ":p")) | buffer src/main/sighandler_utils.c | else | edit src/main/sighandler_utils.c | endif
+if &buftype ==# 'terminal'
+  silent file src/main/sighandler_utils.c
+endif
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 27 - ((26 * winheight(0) + 42) / 84)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 27
+normal! 02|
+lcd ~/github_kantog/minishell
+wincmd w
+3wincmd w
+exe 'vert 1resize ' . ((&columns * 115 + 173) / 347)
+exe 'vert 2resize ' . ((&columns * 115 + 173) / 347)
+exe 'vert 3resize ' . ((&columns * 115 + 173) / 347)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

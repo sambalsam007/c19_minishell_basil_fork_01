@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <unistd.h>
 
 static void	free_args_and_redirs(t_ast_node *tmp)
 {
@@ -95,6 +96,18 @@ void	*free_var_data(t_var_data *var_data)
 		free_parser(var_data->first_node_ast);
 	if (var_data->error_checks)
 		free(var_data->error_checks);
+	if (isatty(STDIN_FILENO))
+		close(var_data->std_input_fd_backup);
+	if (isatty(STDOUT_FILENO))
+		close(var_data->std_output_fd_backup);
+	if (!isatty(var_data->open_output_file_fd))
+		close(var_data->open_output_file_fd);
+	if (!isatty(var_data->open_input_file_fd))
+		close(var_data->open_input_file_fd);
+	if (!isatty(var_data->tmp_pipe[0]))
+		close(var_data->tmp_pipe[0]);
+	if (!isatty(var_data->tmp_pipe[1]))
+		close(var_data->tmp_pipe[1]);
 	if (var_data)
 		free(var_data);
 	return (NULL);

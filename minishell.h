@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 12:18:15 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/07 19:13:52 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/10 17:17:56 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ typedef struct s_var_data
 	bool			multiple_heredoc_check;
 	char			***envvar;
 	char			***no_var_envvar;
+	char			*prmpt_to_free; 
 	t_token_node	*first_node_lexer;
 	t_ast_node		*first_node_ast;
 	t_error_checks	*error_checks;
@@ -211,7 +212,7 @@ int				ms_env(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_export(t_var_data *var_data, t_ast_node *ast_node);
 int				ms_unset(t_var_data *var_data, t_ast_node *ast_node);
 void			ms_pwd(t_var_data *var_data);
-int				ms_exit(t_ast_node *ast_node);
+int				ms_exit(t_ast_node *ast_node, t_var_data *var_data);
 int				ms_cd(t_var_data *var_data, t_ast_node *ast_node);
 int				restore_fds(t_var_data *var_data);
 int				check_pipe(t_var_data *var_data, t_ast_node *curr_node_pipe, \
@@ -224,9 +225,10 @@ char			**envvardict_to_envvararray(char ***envvar);
 int				tmp_argarray_error_checks(char **tmp_arg_array,	\
 					char **envvar_array, char *path_bin);
 int				set_fds_and_continue_parent(t_var_data *var_data, \
-					t_ast_node *ast_node, int pipe_fd[2]);
-void			free_path_and_arrays(char *path_bin, char **envvar_array, \
+					int pipe_fd[2]);
+void			free_locals_executor(char *path_bin, char **envvar_array, \
 					char **tmp_array);
+int				free_before_exit(t_var_data *var_data);
 
 /* ************************************************************************** */
 /*                                      sighandler                           */
@@ -237,5 +239,17 @@ int				restore_tty(t_var_data *var_data);
 int				homemade_getpid(void);
 int				fck_around_with_termios(t_var_data *var_data);
 int				restore_tty(t_var_data *var_data);
+void			set_sigaction_for_heredoc(struct sigaction *signal_struct_sigint, \
+									struct sigaction *signal_struct_sigquit, \
+									void (*handle_signal_heredoc) \
+									(int, siginfo_t *, void *));
+void			set_sigaction_for_main(struct sigaction *signal_struct_sigint, \
+									struct sigaction *signal_struct_sigquit, \
+									void (*handle_signal_parent) \
+									(int, siginfo_t *, void *));
+void			set_sigaction_for_exec(struct sigaction *signal_struct_sigint,\
+									struct sigaction *signal_struct_sigquit,\
+									void (*handle_signal_child) \
+									(int, siginfo_t *, void *));
 
 #endif

@@ -81,8 +81,6 @@ int	ms_execute(t_var_data *var_data)
 	error_flow = execute_logic(var_data);
 	if (error_flow != 0)
 		return (error_flow);
-	if (restore_fds(var_data))
-		return (ERROR_STOP);
 	return (0);
 }
 
@@ -131,6 +129,7 @@ int	ms_command_line_inteface(t_var_data *var_data)
 			return (ft_printf("exit\n"), 0);
 		if (clean_prompt(&prompt))
 			return (ft_printf_fd(2, "Err: malloc\n"), 1);
+		var_data->prmpt_to_free = prompt;
 		error_flow = ms_lex_and_parse(var_data, var_data->error_checks, prompt);
 		if (error_flow == ERROR_CONTINUE)
 			continue ;

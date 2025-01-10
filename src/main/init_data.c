@@ -52,13 +52,16 @@ static void	flip_switches(t_var_data *var_data,
 	var_data->first_node_lexer = NULL;
 	var_data->first_node_ast = NULL;
 	var_data->no_var_envvar = NULL;
-	var_data->open_input_file_fd = -1;
-	var_data->open_output_file_fd = -1;
+	var_data->open_input_file_fd = 40;
+	var_data->open_output_file_fd = 41;
+	var_data->tmp_pipe[0] = 42;
+	var_data->tmp_pipe[1] = 43;
 	var_data->last_error_code = 0;
 	var_data->pipe_check = false;
 	var_data->termios_backup_check = false;
 	var_data->is_redirect = false;
 	var_data->multiple_heredoc_check = false;
+	var_data->prmpt_to_free = NULL;
 }
 
 t_var_data	*init_var_data(char **envp)

@@ -20,15 +20,40 @@
 #include <time.h>
 #include <unistd.h>
 
-static void	check_pipes_and_builtins(t_var_data *var_data,
+static int	check_pipes(t_var_data *var_data,
 									t_ast_node *ast_node,
 									int pipe_fd[2])
 {
 	if (check_pipe(var_data, ast_node, pipe_fd) || (sighandler(var_data,
 				EXECUTOR)))
-		exit(1);
+	{
+			
+		big_free(var_data, var_data->prmpt_to_free);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		restore_fds(var_data);
+		free_var_data(var_data);
+		return (1);
+	}
+	return (0);
+}
+static int	check_builtins(t_var_data *var_data,
+									t_ast_node *ast_node,
+									int pipe_fd[2])
+{
 	if (run_builtins_with_output(var_data, ast_node))
-		exit(0);
+	{
+		big_free(var_data, var_data->prmpt_to_free);
+		(void)pipe_fd;
+		if (!isatty(pipe_fd[0]))
+				close(pipe_fd[0]);
+		if (!isatty(pipe_fd[1]))
+				close(pipe_fd[1]);
+		restore_fds(var_data);
+		free_var_data(var_data);
+		return (1);
+	}
+	return (0);
 }
 
 static void	run_binary_with_execve(t_var_data *var_data,
@@ -38,42 +63,46 @@ static void	run_binary_with_execve(t_var_data *var_data,
 {
 	if (execve(path_bin, tmp_arg_array, envvar_array) == -1)
 	{
-		var_data->error_checks->executor_level_syntax_error = true;
-		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
 		ft_printf_fd(2, "Execv err: check input\n");
+		var_data->error_checks->executor_level_syntax_error = true;
+		free_locals_executor(path_bin, envvar_array, tmp_arg_array);
+		big_free(var_data, var_data->prmpt_to_free);
+		restore_fds(var_data);
+		free_var_data(var_data);
 		exit(1);
 	}
 }
 
 static int	fork_and_execute_child(t_var_data *var_data,
 									t_ast_node *ast_node,
-									char *path_bin,
+									char *path,
 									int pipe_fd[2])
 {
 	pid_t	pid;
-	char	**envvar_array;
-	char	**tmp_arg_array;
+	char	**envarray;
+	char	**argarr;
 
-	envvar_array = envvardict_to_envvararray(var_data->envvar);
-	if (!envvar_array)
+	envarray = envvardict_to_envvararray(var_data->envvar);
+	if (!envarray)
 		return (1);
-	tmp_arg_array = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
-	if (tmp_argarray_error_checks(tmp_arg_array, envvar_array, path_bin))
+	argarr = add_cmd_to_argarray(ast_node->arguments, ast_node->command);
+	if (tmp_argarray_error_checks(argarr, envarray, path))
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		return (free_path_and_arrays(path_bin, envvar_array, tmp_arg_array),
+		return (free_locals_executor(path, envarray, argarr),
 			ft_printf_fd(2, "Error: couldn't fork\n"), 1);
 	if (pid == 0)
 	{
-		check_pipes_and_builtins(var_data, ast_node, pipe_fd);
-		run_binary_with_execve(var_data, path_bin, envvar_array, tmp_arg_array);
+		if (check_pipes(var_data, ast_node, pipe_fd))
+			return (free_locals_executor(path, envarray, argarr), exit(1), 1);
+		if (check_builtins(var_data, ast_node, pipe_fd))
+			return (free_locals_executor(path, envarray, argarr), exit(0), 1);
+		run_binary_with_execve(var_data, path, envarray, argarr);
 	}
 	else
-	{
-		free_path_and_arrays(path_bin, envvar_array, tmp_arg_array);
-		return (set_fds_and_continue_parent(var_data, ast_node, pipe_fd));
-	}
+		return (free_locals_executor(path, envarray, argarr),
+				set_fds_and_continue_parent(var_data, pipe_fd));
 	return (1);
 }
 

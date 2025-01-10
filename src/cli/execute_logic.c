@@ -81,5 +81,7 @@ int	execute_logic(t_var_data *var_data)
 		else
 			var_data->last_error_code = 0;
 	}
+	if (restore_fds(var_data))
+		return (ERROR_STOP);
 	return (0);
 }

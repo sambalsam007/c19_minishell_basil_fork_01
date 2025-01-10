@@ -24,7 +24,7 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	sighandler(var_data, MAIN_PROCESS);
 	if (ms_command_line_inteface(var_data))
-		return (free_var_data(var_data), 1);
+		return (restore_tty(var_data), free_var_data(var_data), 1);
 	restore_tty(var_data);
 	free_var_data(var_data);
 	return (0);

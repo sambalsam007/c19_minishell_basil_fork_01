@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:19:39 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/07 14:53:52 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/10 17:02:21 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static void	exit_with_error(t_var_data *var_data, char error)
 		var_data->error_checks->fatal_error = true;
 	if (error == NON_FATAL_ERROR)
 		var_data->error_checks->executor_level_syntax_error = true;
+	free_before_exit(var_data);
 	exit(1);
 }
 
@@ -77,6 +78,7 @@ static int	finish_process(int redir_pipe_fd[2],
 		exit_with_error(var_data, NON_FATAL_ERROR);
 	if (redir_pipe_fd[0] == -1)
 		exit_with_error(var_data, FATAL_ERROR);
+	free_before_exit(var_data);
 	close(redir_pipe_fd[0]);
 	close(redir_pipe_fd[1]);
 	exit(0);

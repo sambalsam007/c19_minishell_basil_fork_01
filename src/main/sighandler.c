@@ -6,7 +6,7 @@
 /*   By: bclaeys <bclaeys@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:40:45 by bclaeys           #+#    #+#             */
-/*   Updated: 2025/01/07 14:38:22 by bclaeys          ###   ########.fr       */
+/*   Updated: 2025/01/10 17:18:09 by bclaeys          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,18 +84,17 @@ int	sighandler(t_var_data *var_data, int mode)
 	sigemptyset(&signal_struct_sigint.sa_mask);
 	sigemptyset(&signal_struct_sigquit.sa_mask);
 	if (mode == HERE_DOC)
-		signal_struct_sigint.sa_sigaction = handle_signal_heredoc;
+		set_sigaction_for_heredoc(&signal_struct_sigint, &signal_struct_sigquit,
+				&handle_signal_heredoc);
 	if (mode == EXECUTOR)
-	{
-		signal_struct_sigquit.sa_handler = SIG_DFL;
-		signal_struct_sigint.sa_sigaction = handle_signal_child;
-	}
+		set_sigaction_for_exec(&signal_struct_sigint, &signal_struct_sigquit,
+				&handle_signal_child);
 	if (mode == MAIN_PROCESS)
 	{
 		if (fck_around_with_termios(var_data) == 1)
 			return (1);
-		signal_struct_sigint.sa_sigaction = handle_signal_parent;
-		signal_struct_sigquit.sa_handler = SIG_IGN;
+		set_sigaction_for_main(&signal_struct_sigint, &signal_struct_sigquit,
+				&handle_signal_parent);
 	}
 	if (sigaction(SIGQUIT, &signal_struct_sigquit, NULL)
 		|| sigaction(SIGINT, &signal_struct_sigint, NULL))
