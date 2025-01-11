@@ -43,8 +43,9 @@ int	ms_exit(t_ast_node *ast_node, t_var_data *var_data)
 		}
 		if (ast_node->arguments[1])
 			return (ft_printf_fd(2, "Err: too many args.\n"), 2);
+		i = ft_atoi(ast_node->arguments[0]);
 		free_before_exit(var_data);
-		exit(ft_atoi(ast_node->arguments[0]));
+		exit(i);
 	}
 	return (0);
 }
