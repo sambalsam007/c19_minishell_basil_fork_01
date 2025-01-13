@@ -52,6 +52,8 @@ void	handle_signal_parent(int sig, siginfo_t *info, void *context)
 {
 	if (info->si_code != SI_USER)
 		return ;
+	if (info->si_code != SI_USER)
+		return ;
 	if (sig == SIGINT)
 	{
 		write(STDIN_FILENO, "\n", 1);
