@@ -86,6 +86,7 @@ int	ms_execute(t_var_data *var_data)
 	return (0);
 }
 
+// clean prompt skipt '\' en ';'
 static int	clean_prompt(char **prompt)
 {
 	int		i;
