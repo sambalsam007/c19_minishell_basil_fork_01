@@ -42,7 +42,6 @@ void	handle_signal_heredoc(int sig, siginfo_t *info, void *context)
 	if (sig == SIGINT)
 	{
 		write(STDIN_FILENO, "\n", 1);
-		ft_printf("test\n");
 		kill(homemade_getpid(), SIGTERM);
 	}
 	(void)context;
