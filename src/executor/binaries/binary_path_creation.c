@@ -74,6 +74,7 @@ static int	search_for_file(char *command,
 		return (ft_putstr_fd("Error: couldn't close dir\n",
 				STDERR_FILENO), 1);
 	return (0);
+
 }
 
 char	*path_creation_logic(char **split_PATH,
@@ -119,10 +120,14 @@ char	*check_and_create_path(t_var_data *var_data,
 		return (ft_putstr_fd("Error: PATH not set\n", STDERR_FILENO),
 			var_data->error_checks->executor_level_syntax_error = true, NULL);
 	split_path = ft_split(ft_get_value("PATH", var_data->envvar), ':');
+		// split path in tables, zodat je 1 per 1 kunt acessen
+		// path createn om te zien of de executable bestaat
 	if (!split_path)
 		return (ft_putstr_fd("Error: malloc failed\n", STDERR_FILENO), NULL);
 	binary_path = path_creation_logic(split_path, directory, &file_found,
 			command);
+		// create full path, 
+		// 'ls' --> '/usr/bin/ls' ofzo
 	ft_free_split(split_path);
 	if (path_error_checks(var_data, directory, file_found, command))
 		return (NULL);

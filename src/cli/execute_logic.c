@@ -42,6 +42,7 @@ static int	traverse_ast(t_ast_node *tmp_node, t_var_data *var_data)
 	{
 		error_flow = check_if_redir(var_data, tmp_node->redirect, 0,
 				tmp_node->command);
+			// check: is het redir, of heredoc
 		if (!tmp_node->command)
 			return (var_data->error_checks->executor_level_syntax_error = true,
 				ft_printf_fd(2, "Err: no command\n"), 0);

@@ -43,6 +43,9 @@ static void	run_binary_with_execve(t_var_data *var_data,
 		ft_printf_fd(2, "Execv err: check input\n");
 		exit(1);
 	}
+	// execve give full path
+	// args for new program
+	// env vars to run in new program
 }
 
 static int	fork_and_execute_child(t_var_data *var_data,
