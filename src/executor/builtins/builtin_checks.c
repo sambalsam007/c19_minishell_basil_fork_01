@@ -58,7 +58,7 @@ int	run_builtins_without_output(t_var_data *var_data, t_ast_node *ast_node)
 	if (!ft_strncmp("export", ast_node->command, cmd_len)
 		&& ast_node->arguments)
 		ms_export(var_data, ast_node);
-	else if (!ft_strncmp("unset", ast_node->command, cmd_len))
+	if (!ft_strncmp("unset", ast_node->command, cmd_len))
 		ms_unset(var_data, ast_node);
 	else if (!ft_strncmp("cd", ast_node->command, cmd_len))
 		ms_cd(var_data, ast_node);

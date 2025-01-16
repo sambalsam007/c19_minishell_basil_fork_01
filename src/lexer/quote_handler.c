@@ -74,7 +74,7 @@ int	single_quotes(char *prompt,
 	if (!*tokenized_string)
 		return (ft_printf_fd(2, "Err: malloc failed\n"), 1);
 	i = *index + 1;
-	while (prompt[i] != '\'' && prompt[i] && prompt[i] != '|')
+	while (prompt[i] != '\'' && prompt[i])
 		(*tokenized_string)[j++] = prompt[i++];
 	*index = i + 1;
 	(*tokenized_string)[j] = '\0';
