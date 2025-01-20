@@ -51,7 +51,7 @@ int	count_total_strlen(char *prompt,
 
 	i = 0;
 	j = 0;
-	while (prompt[++i] && prompt[i] != '"')
+	while (prompt[++i] && prompt[i] != '"' && prompt[i] != '\'')
 	{
 		if (prompt[i] == '$')
 		{

@@ -13,6 +13,35 @@
 #include "../../minishell.h"
 #include <stddef.h>
 
+int	count_single_or_double_quotes(char *tokenized_string)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+		
+	while(tokenized_string[i])
+	{
+		if (tokenized_string[i] == '"')
+			j++;
+		i++;
+	}
+	if (j % 2 != 0)
+		return (1);
+	j = 0;
+	i = 0;
+	while(tokenized_string[i])
+	{
+		if (tokenized_string[i] == '\'')
+			j++;
+		i++;
+	}
+	if (j % 2 != 0)
+		return (1);
+	return (0);
+}
+
 static int	check_valid_redir_syntax(char *tokenized_string,
 									t_var_data *var_data)
 {
@@ -88,7 +117,7 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	len_expanded_var = filename_length_count_logic(prompt, index, &i, var_data);
 	if (len_expanded_var == -1
 		|| var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf_fd(2, "Err: redirection syntax error\n"), NULL);
+		return (ft_printf_fd(2, "1Err: redirection syntax error\n"), NULL);
 	token_string = malloc((sizeof(char) * ((i + len_expanded_var) + 2)));
 	if (!token_string)
 		return (ft_printf_fd(2, "Err: redirect_handler malloc\n"), NULL);
@@ -96,7 +125,7 @@ char	*redirect_handler(char *prompt, size_t *index, t_var_data *var_data)
 	check_valid_redir_syntax(token_string, var_data);
 	*index += (size_t)i;
 	if (var_data->error_checks->lexer_level_syntax_error == true)
-		return (ft_printf_fd(2, "Err: redirection syntax error\n"),
+		return (ft_printf_fd(2, "2Err: redirection syntax error\n"),
 			free(token_string), NULL);
 	return (token_string);
 }

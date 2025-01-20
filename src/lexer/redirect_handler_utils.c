@@ -63,9 +63,6 @@ static int	file_fill_letter_or_quotes(char *prompt,
 		tokenized_string[(*tmpindex)++] = prompt[i++];
 	return (i);
 }
-// na line 63
-	/* if (prompt[0] != '\'') */
-	/* 	(*tmpindex)++; */
 
 static void	init_i_and_tmpindex_for_token(int *i, int *tmpindex)
 {

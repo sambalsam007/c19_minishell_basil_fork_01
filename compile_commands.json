@@ -1,0 +1,3 @@
+[
+{ "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/lexer/count_total_strlen.c", "output": "obj/count_total_strlen.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/lexer/count_total_strlen.c", "-Wall", "-Wextra", "-Werror", "-g", "-c", "-o", "obj/count_total_strlen.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
+{ "directory": "/home/bclaeys/github_kantog/minishell", "file": "src/lexer/redirect_handler.c", "output": "obj/redirect_handler.o", "arguments": ["/usr/lib/llvm-12/bin/clang", "-xc", "src/lexer/redirect_handler.c", "-Wall", "-Wextra", "-Werror", "-g", "-c", "-o", "obj/redirect_handler.o", "-I", "./libf", "--target=x86_64-pc-linux-gnu"]},
