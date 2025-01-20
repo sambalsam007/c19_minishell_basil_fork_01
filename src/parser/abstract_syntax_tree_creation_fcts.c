@@ -63,6 +63,8 @@ static int	fill_all_values(t_token_node **curr_token_node,
 
 	tmp_redir_node = NULL;
 	tmp_curr_node = *curr_token_node;
+	// gebruik wat in curr_token_node zit
+	// om tmp_curr_node te maken
 	new_ast_node->arguments = add_arguments(curr_token_node, tmp_curr_node, 1);
 	while ((*curr_token_node) && (*curr_token_node)->type != PIPE)
 	{
@@ -94,6 +96,7 @@ t_ast_node	*create_ast_node(t_ast_node *prev_ast_node,
 	if (!new_ast_node)
 		return (NULL);
 	set_all_to_null(new_ast_node);
+	// = initialize?
 	if (fill_all_values(curr_token_node, new_ast_node, var_data))
 		return (NULL);
 	if (prev_ast_node)
